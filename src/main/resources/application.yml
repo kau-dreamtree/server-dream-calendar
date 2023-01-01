@@ -4,6 +4,8 @@ server:
 database: h2
 
 spring:
+  profiles:
+    include: key
   jpa:
     show-sql: true
     format-sql: true

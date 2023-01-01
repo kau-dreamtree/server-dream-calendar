@@ -17,7 +17,7 @@ public class ScheduleController {
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody ScheduleDto scheduleDto) {
         scheduleService.create(scheduleDto);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/all")

@@ -1,20 +1,26 @@
 package org.standard.dreamcalendar.config;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
+@Component
 public class JwtTokenProvider {
 
-    private static final String KEY = "SECRETKEY";
+    @Value("${jwt-key}")
+    private String jwtKey;
 
-    public static final long EXPIRATION_MS = TimeUnit.HOURS.toMillis(2);
+    public final long EXPIRATION_MS = TimeUnit.HOURS.toMillis(2);
 
-    public static String generate(String claim) {
+    public String generate(String claim) {
 
         Date now = new Date();
         Date expiration = new Date(now.getTime() + EXPIRATION_MS);
@@ -23,14 +29,15 @@ public class JwtTokenProvider {
                 .setSubject(claim)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
-                .signWith(SignatureAlgorithm.HS512, KEY)
+                .signWith(Keys.hmacShaKeyFor(jwtKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
+
     }
 
-    public static boolean validateToken(String jwt)  {
+    public boolean validateToken(String jwt)  {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(KEY)
+                    .setSigningKey(jwtKey)
                     .build()
                     .parseClaimsJwt(jwt);
             return true;
@@ -48,9 +55,9 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public static String getUserIdFromJwt(String jwt) {
+    public String getUserIdFromJwt(String jwt) {
         return Jwts.parserBuilder()
-                .setSigningKey(KEY)
+                .setSigningKey(jwtKey)
                 .build()
                 .parseClaimsJwt(jwt)
                 .getBody()

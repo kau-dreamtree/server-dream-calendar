@@ -23,7 +23,8 @@ public class DtoConverter {
     }
 
     public UserDto toUserDto(User user) {
-        return UserDto.builder()
+        return (user == null) ? null : UserDto.builder()
+                .id(user.getId())
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .username(user.getUsername())
@@ -32,7 +33,7 @@ public class DtoConverter {
 
     public Schedule toScheduleEntity(ScheduleDto dto) {
         return Schedule.builder()
-                .user(userRepository.findById(dto.getUserId()).get())
+                .user(userRepository.findById(dto.getUserId()).orElse(null))
                 .title(dto.getTitle())
                 .isAllDay(dto.isAllDay())
                 .startAt(dto.getStartAt())
@@ -42,7 +43,7 @@ public class DtoConverter {
     }
 
     public ScheduleDto toScheduleDto(Schedule schedule) {
-        return ScheduleDto.builder()
+        return (schedule == null) ? null : ScheduleDto.builder()
                 .userId(schedule.getUser().getId())
                 .title(schedule.getTitle())
                 .isAllDay(schedule.isAllDay())

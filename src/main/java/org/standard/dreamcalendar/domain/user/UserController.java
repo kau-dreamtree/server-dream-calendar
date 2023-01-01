@@ -37,7 +37,7 @@ public class UserController {
         return (jwt == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(jwt);
     }
 
-    @GetMapping("/info")
+    @GetMapping("/find")
     public ResponseEntity<UserDto> findById(@RequestParam("id") Integer userId) {
         UserDto user = userService.findById(userId);
         return (user == null) ? ResponseEntity.notFound().build() : ResponseEntity.status(HttpStatus.OK).body(user);

@@ -3,7 +3,7 @@ package org.standard.dreamcalendar.domain.schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.standard.dreamcalendar.models.DtoConverter;
+import org.standard.dreamcalendar.model.DtoConverter;
 
 import java.util.List;
 import java.util.stream.Collectors;

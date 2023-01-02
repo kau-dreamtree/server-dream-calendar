@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.standard.dreamcalendar.domain.user.model.LogInResponse;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -24,24 +25,32 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody UserDto user) {
-        // JWT 발급 코드 추가 예정
         return (userService.create(user)) ?
                 ResponseEntity.status(HttpStatus.CREATED).build() :
                 ResponseEntity.unprocessableEntity().build();
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDto user) throws NoSuchAlgorithmException {
-        String jwt = userService.logInByEmailPassword(user);
-        log.debug("UserController login()={}", jwt);
-        return (jwt == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(jwt);
+    @PostMapping("/auth/login")
+    public ResponseEntity<LogInResponse> logInByEmailPassword(@RequestBody UserDto user) throws NoSuchAlgorithmException {
+        LogInResponse logInResponse = userService.logInByEmailPassword(user);
+        return (logInResponse == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(logInResponse);
     }
 
-    @GetMapping("/find")
-    public ResponseEntity<UserDto> findById(@RequestParam("id") Integer userId) {
-        UserDto user = userService.findById(userId);
-        return (user == null) ? ResponseEntity.notFound().build() : ResponseEntity.status(HttpStatus.OK).body(user);
+    @GetMapping("/auth/login")
+    public ResponseEntity<Object> loginByAccessToken(@RequestHeader String accessToken) {
+        HttpStatus status = userService.validateAccessToken(accessToken);
+        return ResponseEntity.status(status).build();
     }
+
+//    @GetMapping("/auth/update/access")
+//    public ResponseEntity<Object> updateAccessToken(@RequestHeader String refreshToken) {
+//
+//    }
+//
+//    @GetMapping("/auth/update/refresh")
+//    public ResponseEntity<Object> updateRefreshToken(@RequestHeader String refreshToken) {
+//
+//    }
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDto>> findAll() {

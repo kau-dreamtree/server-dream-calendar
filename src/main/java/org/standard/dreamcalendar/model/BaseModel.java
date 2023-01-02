@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.models;
+package org.standard.dreamcalendar.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -46,10 +46,12 @@ public class BaseModel implements Comparable<BaseModel> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || obj.getClass() != this.getClass()) {
+
+        if (obj == null || obj.getClass() != this.getClass())
             return false;
-        }
+
         return this.getId().equals(((BaseModel) obj).getId());
+
     }
 
 }

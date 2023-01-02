@@ -15,52 +15,82 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${jwt-key}")
-    private String jwtKey;
+    @Value("${access-key}")
+    private String ACCESS_GENERATION_KEY;
+    @Value("${refresh-key}")
+    private String REFRESH_GENERATION_KEY;
 
-    public final long EXPIRATION_MS = TimeUnit.HOURS.toMillis(2);
+    public final long ACCESS_EXPIRATION_MS = TimeUnit.HOURS.toMillis(2);
+    public final long REFRESH_EXPIRATION_MS = TimeUnit.DAYS.toMillis(14);
 
-    public String generate(String claim) {
+    public String generate(String claim, TokenType type) {
 
         Date now = new Date();
-        Date expiration = new Date(now.getTime() + EXPIRATION_MS);
+        Date expiration = null;
+        String key = null;
+
+        if (type == TokenType.AccessToken) {
+            expiration = new Date(now.getTime() + ACCESS_EXPIRATION_MS);
+            key = ACCESS_GENERATION_KEY;
+        }
+
+        if (type == TokenType.RefreshToken) {
+            expiration = new Date(now.getTime() + REFRESH_EXPIRATION_MS);
+            key = REFRESH_GENERATION_KEY;
+        }
 
         return Jwts.builder()
                 .setSubject(claim)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
-                .signWith(Keys.hmacShaKeyFor(jwtKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
+                .signWith(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
 
     }
 
-    public boolean validateToken(String jwt)  {
+    public TokenValidationResult validateToken(String token, TokenType type)  {
+
+        String key = null;
+
+        if (type == TokenType.AccessToken)
+            key = ACCESS_GENERATION_KEY;
+
+        if (type == TokenType.RefreshToken)
+            key = REFRESH_GENERATION_KEY;
+
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(jwtKey)
-                    .build()
-                    .parseClaimsJwt(jwt);
-            return true;
+
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(token).getBody();
+
+            Date now = new Date();
+            Date expiration = claims.getExpiration();
+            Long longExpiration = expiration.getTime();
+
+            Date refreshDate = new Date(longExpiration - TimeUnit.DAYS.toMillis(2));
+
+            if (type == TokenType.RefreshToken && refreshDate.before(now))
+                return new TokenValidationResult(TokenValidationType.UPDATE, null);
+
+            Integer userId = Integer.valueOf(claims.getSubject());
+
+            return new TokenValidationResult(TokenValidationType.OK, userId);
+
+        } catch (ExpiredJwtException ex) {
+
+            log.error("Expired JWT token");
+            return new TokenValidationResult(TokenValidationType.EXPIRED, null);
+
         } catch (SignatureException ex) {
             log.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token");
-        } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
             log.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
             log.error("JWT claims string is empty.");
         }
-        return false;
+
+        return new TokenValidationResult(TokenValidationType.INVALID, null);
     }
 
-    public String getUserIdFromJwt(String jwt) {
-        return Jwts.parserBuilder()
-                .setSigningKey(jwtKey)
-                .build()
-                .parseClaimsJwt(jwt)
-                .getBody()
-                .getSubject();
-    }
 }

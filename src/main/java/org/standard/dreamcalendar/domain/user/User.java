@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.standard.dreamcalendar.models.BaseModel;
+import org.standard.dreamcalendar.model.BaseModel;
 
 import javax.persistence.*;
 
@@ -25,6 +25,20 @@ public class User extends BaseModel {
     @Column(nullable = false)
     private String username;
 
+    @Column
+    private String accessToken;
+
+    @Column
+    private String refreshToken;
+
+    public void saveAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public void saveRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -33,4 +47,5 @@ public class User extends BaseModel {
                 ", username='" + username + '\'' +
                 '}';
     }
+
 }

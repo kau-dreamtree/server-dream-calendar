@@ -1,6 +1,6 @@
 package org.standard.dreamcalendar.domain.schedule;
 
-import org.standard.dreamcalendar.models.BaseModel;
+import org.standard.dreamcalendar.model.BaseModel;
 import org.standard.dreamcalendar.domain.user.User;
 import lombok.*;
 

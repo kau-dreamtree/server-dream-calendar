@@ -15,5 +15,7 @@ public class UserDto {
     private String email;
     private String password;
     private String username;
+    private String accessToken;
+    private String refreshToken;
 
 }

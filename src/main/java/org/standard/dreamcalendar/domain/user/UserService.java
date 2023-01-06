@@ -1,40 +1,45 @@
 package org.standard.dreamcalendar.domain.user;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.config.*;
-import org.standard.dreamcalendar.domain.user.model.LogInResponse;
+import org.standard.dreamcalendar.config.type.TokenType;
+import org.standard.dreamcalendar.domain.user.dto.TokenResponse;
+import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
+import org.standard.dreamcalendar.domain.user.dto.UserDto;
+import org.standard.dreamcalendar.domain.user.model.*;
 import org.standard.dreamcalendar.model.DtoConverter;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.standard.dreamcalendar.config.type.TokenValidationType.*;
+
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtTokenProvider tokenProvider;
-
-    @Autowired
-    private DtoConverter converter;
+    private final UserRepository userRepository;
+    private final Encryptor encryptor;
+    private final JwtTokenProvider tokenProvider;
+    private final DtoConverter converter;
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean create(UserDto userDto) {
 
         try {
-
-            userDto.setPassword(passwordEncoder.sha256(userDto.getPassword()));
+            userDto.setRole(Role.USER);
+            userDto.setPassword(encryptor.SHA256(userDto.getPassword()));
             userRepository.save(converter.toUserEntity(userDto));
             return true;
 
@@ -48,45 +53,30 @@ public class UserService {
     }
 
     @Transactional
-    public LogInResponse logInByEmailPassword(UserDto userDto) throws NoSuchAlgorithmException {
+    public TokenResponse logInByEmailPassword(UserDto userDto)
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
 
         // Check email address in DB
         User user = userRepository.findByEmail(userDto.getEmail()).orElse(null);
 
-        if (user == null)
-            return null;
-
         // Check password in DB
-        String givenPassword = passwordEncoder.sha256(userDto.getPassword());
-        String expectedPassword = user.getPassword();
+        String givenPassword = encryptor.SHA256(userDto.getPassword());
 
-        if (!givenPassword.equals(expectedPassword)) {
-            log.error("\nGiven: " + givenPassword + "\nExpected: " + expectedPassword);
+        if (user == null || !givenPassword.equals(user.getPassword()))
             return null;
-        }
 
-        // Issue JWT
-        String accessToken = tokenProvider.generate(String.valueOf(user.getId()), TokenType.AccessToken);
-        String refreshToken = tokenProvider.generate(String.valueOf(user.getId()), TokenType.RefreshToken);
+        // Save & issue tokens
+        String accessToken = tokenProvider.generate(user.getEmail(), TokenType.AccessToken);
+        String refreshToken = tokenProvider.generate(user.getEmail(), TokenType.RefreshToken);
 
-        user.saveAccessToken(accessToken);
-        user.saveRefreshToken(refreshToken);
+        user.updateAccessToken(accessToken);
+        user.updateRefreshToken(refreshToken);
 
-        userRepository.save(user);
-
-        return LogInResponse.builder()
+        return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-    }
-
-    @Transactional
-    public HttpStatus logInByAccessToken(String accessToken) {
-
-        HttpStatus status = validateAccessToken(accessToken);
-
-
-        return status;
     }
 
     /**
@@ -98,49 +88,65 @@ public class UserService {
      * 2. 토큰이 DB에 없거나 다를 겅우 400 Bad Request
      */
     @Transactional
-    public HttpStatus validateAccessToken(String accessToken) {
+    public HttpStatus logInByAccessToken(String accessToken)
+            throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException,
+            NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+
+        User user = userRepository.findByAccessToken(accessToken).orElse(null);
 
         TokenValidationResult validation = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
 
-        if (validation.getType() == TokenValidationType.EXPIRED)
+        if (user == null || validation.getType() == INVALID)
+            return HttpStatus.BAD_REQUEST;
+
+        if (validation.getType() == EXPIRED)
             return HttpStatus.UNAUTHORIZED;
-
-        if (validation.getType() == TokenValidationType.INVALID)
-            return HttpStatus.BAD_REQUEST;
-
-        User user = userRepository.findById(validation.getUserId()).orElse(null);
-
-        if (user == null)
-            return HttpStatus.BAD_REQUEST;
-
-        if (!user.getAccessToken().equals(accessToken))
-            return HttpStatus.BAD_REQUEST;
 
         return HttpStatus.ACCEPTED;
     }
 
-//    @Transactional
-//    public Boolean validateRefreshToken(String refreshToken) {
-//
-//        TokenValidationResult validation = tokenProvider.validateToken(refreshToken, TokenType.RefreshToken);
-//
-//        User user = userRepository.findById(userId).orElse(null);
-//
-//        return user != null && user.getAccessToken().equals(refreshToken);
-//    }
+    /**
+     * 1. Refresh token이 서버와 일치하는지 확인 <br>
+     * 2. 정상이고 만료되지 않은 경우 access token만 갱신하여 return <br>
+     * 3. 정상이고 곧 만료되는 경우 두 토큰 모두 갱신하여 return <br>
+     * 4. DB에 없거나 만료된 경우 return null, 400 BAD_REQUEST로 클라이언트에서 로그아웃 <br>
+     *
+     *
+     * @param refreshToken
+     * @return
+     */
+    @Transactional
+    public TokenResponse updateAccessToken(String refreshToken)
+            throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException,
+            NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
 
-//    @Transactional
-//    public String updateAccessToken(String refreshToken) {
-//
-//
-//    }
+        User user = userRepository.findByRefreshToken(refreshToken).orElse(null);
+
+        TokenValidationResult validation = tokenProvider.validateToken(refreshToken, TokenType.RefreshToken);
+
+        if (user == null || validation.getType() == EXPIRED || validation.getType() == INVALID)
+            return null;
+
+        if (validation.getType() == UPDATE) {
+            refreshToken = tokenProvider.generate(user.getEmail(), TokenType.RefreshToken);
+            userRepository.updateRefreshToken(user.getId(), refreshToken);
+        }
+
+        String accessToken = tokenProvider.generate(user.getEmail(), TokenType.AccessToken);
+        userRepository.updateAccessToken(user.getId(), accessToken);
+
+
+        return TokenResponse.builder()
+                .accessToken(user.getAccessToken())
+                .refreshToken(user.getRefreshToken())
+                .build();
+
+    }
 //
 //    @Transactional
 //    public String updateRefreshToken(String refreshToken) {
 //
 //    }
-
-
 
     @Transactional(readOnly = true)
     public List<UserDto> findAll() {
@@ -156,7 +162,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserDto> findUsersByUsername(String username) {
-        List<User> userList = userRepository.findByUsername(username);
+        List<User> userList = userRepository.findByName(username);
         return userList.stream().map(converter::toUserDto).collect(Collectors.toList());
     }
 

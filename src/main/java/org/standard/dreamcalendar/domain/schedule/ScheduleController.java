@@ -1,18 +1,20 @@
 package org.standard.dreamcalendar.domain.schedule;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/schedule")
 public class ScheduleController {
 
-    @Autowired
-    ScheduleService scheduleService;
+    private final ScheduleService scheduleService;
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody ScheduleDto scheduleDto) {

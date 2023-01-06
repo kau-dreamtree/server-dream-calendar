@@ -12,6 +12,8 @@
     <writeAnnotations>
       <writeAnnotation name="org.springframework.beans.factory.annotation.Autowired" />
       <writeAnnotation name="org.springframework.beans.factory.annotation.Value" />
+      <writeAnnotation name="org.springframework.data.annotation.CreatedDate" />
+      <writeAnnotation name="org.springframework.data.annotation.LastModifiedDate" />
     </writeAnnotations>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />

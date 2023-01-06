@@ -2,16 +2,21 @@ package org.standard.dreamcalendar.config;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.standard.dreamcalendar.config.type.TokenType;
+import org.standard.dreamcalendar.config.type.TokenValidationType;
+import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
 
@@ -19,9 +24,15 @@ public class JwtTokenProvider {
     private String ACCESS_GENERATION_KEY;
     @Value("${refresh-key}")
     private String REFRESH_GENERATION_KEY;
+    @Value("${access-expiration-hours}")
+    private int accessTokenExpirationHours;
+    @Value("${refresh-expiration-days}")
+    private int refreshTokenExpirationDays;
+    @Value("${refresh-days}")
+    private int refreshDays;
 
-    public final long ACCESS_EXPIRATION_MS = TimeUnit.HOURS.toMillis(2);
-    public final long REFRESH_EXPIRATION_MS = TimeUnit.DAYS.toMillis(14);
+    public final long ACCESS_EXPIRATION_MS = TimeUnit.HOURS.toMillis(accessTokenExpirationHours);
+    public final long REFRESH_EXPIRATION_MS = TimeUnit.DAYS.toMillis(refreshTokenExpirationDays);
 
     public String generate(String claim, TokenType type) {
 
@@ -39,16 +50,32 @@ public class JwtTokenProvider {
             key = REFRESH_GENERATION_KEY;
         }
 
-        return Jwts.builder()
-                .setSubject(claim)
+        Header header = Jwts.header();
+        Claims claims = Jwts.claims();
+        SecretKey secretKey = Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
+
+        String subject = "authorization";
+
+        header.put("typ", "JWT");
+        header.put("alg", "HS256");
+
+        claims.put("email", claim);
+
+        String jwt = Jwts.builder()
+                .setSubject(subject)
+                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
-                .signWith(Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
-                .compact();
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compressWith(CompressionCodecs.GZIP)
+                .compact()
+                .replace("=", "");
+
+        return jwt;
 
     }
 
-    public TokenValidationResult validateToken(String token, TokenType type)  {
+    public TokenValidationResult validateToken(String token, TokenType type) {
 
         String key = null;
 
@@ -62,35 +89,28 @@ public class JwtTokenProvider {
 
             Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(token).getBody();
 
+            String email = claims.get("email").toString();
+
             Date now = new Date();
             Date expiration = claims.getExpiration();
             Long longExpiration = expiration.getTime();
 
-            Date refreshDate = new Date(longExpiration - TimeUnit.DAYS.toMillis(2));
+            Date refreshDate = new Date(longExpiration - TimeUnit.DAYS.toMillis(refreshDays));
 
             if (type == TokenType.RefreshToken && refreshDate.before(now))
-                return new TokenValidationResult(TokenValidationType.UPDATE, null);
+                return new TokenValidationResult(TokenValidationType.UPDATE, email);
 
-            Integer userId = Integer.valueOf(claims.getSubject());
-
-            return new TokenValidationResult(TokenValidationType.OK, userId);
+            return new TokenValidationResult(TokenValidationType.OK, email) ;
 
         } catch (ExpiredJwtException ex) {
-
             log.error("Expired JWT token");
             return new TokenValidationResult(TokenValidationType.EXPIRED, null);
-
-        } catch (SignatureException ex) {
-            log.error("Invalid JWT signature");
-        } catch (MalformedJwtException ex) {
-            log.error("Invalid JWT token");
-        } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
-        } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty.");
+        } catch (Exception ex) {
+            log.error("Invalid JWT");
         }
 
         return new TokenValidationResult(TokenValidationType.INVALID, null);
+
     }
 
 }

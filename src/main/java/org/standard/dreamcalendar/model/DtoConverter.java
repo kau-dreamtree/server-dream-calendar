@@ -1,11 +1,12 @@
-package org.standard.dreamcalendar.models;
+package org.standard.dreamcalendar.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.standard.dreamcalendar.domain.schedule.Schedule;
-import org.standard.dreamcalendar.domain.schedule.ScheduleDto;
-import org.standard.dreamcalendar.domain.user.User;
-import org.standard.dreamcalendar.domain.user.UserDto;
+import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
+import org.standard.dreamcalendar.domain.schedule.model.Schedule;
+import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
+import org.standard.dreamcalendar.domain.user.model.User;
+import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.UserRepository;
 
 @Component
@@ -18,7 +19,19 @@ public class DtoConverter {
         return User.builder()
                 .email(dto.getEmail())
                 .password(dto.getPassword())
-                .username(dto.getUsername())
+                .name(dto.getName())
+                .picture(dto.getPicture())
+                .role(dto.getRole())
+                .accessToken(dto.getAccessToken())
+                .refreshToken(dto.getRefreshToken())
+                .build();
+    }
+
+    public User toUserEntity(OAuthAttributes attributes) {
+        return User.builder()
+                .email(attributes.getEmail())
+                .name(attributes.getName())
+                .picture(attributes.getPicture())
                 .build();
     }
 
@@ -27,7 +40,11 @@ public class DtoConverter {
                 .id(user.getId())
                 .email(user.getEmail())
                 .password(user.getPassword())
-                .username(user.getUsername())
+                .name(user.getName())
+                .picture(user.getPicture())
+                .role(user.getRole())
+                .accessToken(user.getAccessToken())
+                .refreshToken(user.getRefreshToken())
                 .build();
     }
 

@@ -1,43 +1,30 @@
-package org.standard.dreamcalendar.models;
+package org.standard.dreamcalendar.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @MappedSuperclass
-public class BaseModel implements Comparable<BaseModel> {
+@EntityListeners(AuditingEntityListener.class)
+public abstract class BaseModel implements Comparable<BaseModel> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Integer id;
 
-    @Column
+    @CreatedDate
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
-    @Column
+    @LastModifiedDate
     @JsonProperty("modified_at")
     private LocalDateTime modifiedAt;
-
-    @Column
-    @JsonProperty("deleted_at")
-    private LocalDateTime deletedAt;
-
-    @PrePersist
-    public void prePersist() {
-        createdAt = modifiedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        modifiedAt = LocalDateTime.now();
-    }
 
     @Override
     public int compareTo(BaseModel o) {
@@ -46,10 +33,12 @@ public class BaseModel implements Comparable<BaseModel> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || obj.getClass() != this.getClass()) {
+
+        if (obj == null || obj.getClass() != this.getClass())
             return false;
-        }
+
         return this.getId().equals(((BaseModel) obj).getId());
+
     }
 
 }

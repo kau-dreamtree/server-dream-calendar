@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.domain.schedule;
+package org.standard.dreamcalendar.domain.schedule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

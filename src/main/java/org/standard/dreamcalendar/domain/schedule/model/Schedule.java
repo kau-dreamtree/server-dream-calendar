@@ -1,7 +1,7 @@
-package org.standard.dreamcalendar.domain.schedule;
+package org.standard.dreamcalendar.domain.schedule.model;
 
-import org.standard.dreamcalendar.models.BaseModel;
-import org.standard.dreamcalendar.domain.user.User;
+import org.standard.dreamcalendar.model.BaseModel;
+import org.standard.dreamcalendar.domain.user.model.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @Entity
-@Table(name = "schedules")
+@Table(name = "SCHEDULES")
 public class Schedule extends BaseModel {
 
     @ManyToOne

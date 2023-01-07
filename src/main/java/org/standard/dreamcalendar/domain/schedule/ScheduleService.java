@@ -1,21 +1,22 @@
 package org.standard.dreamcalendar.domain.schedule;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.standard.dreamcalendar.models.DtoConverter;
+import org.standard.dreamcalendar.domain.schedule.model.Schedule;
+import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
+import org.standard.dreamcalendar.model.DtoConverter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class ScheduleService {
 
-    @Autowired
-    ScheduleRepository scheduleRepository;
-
-    @Autowired
-    DtoConverter converter;
+    private final ScheduleRepository scheduleRepository;
+    private final DtoConverter converter;
 
     @Transactional(rollbackFor = Exception.class)
     public void create(ScheduleDto scheduleDto) {

@@ -1,46 +1,63 @@
 package org.standard.dreamcalendar.domain.user;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.standard.dreamcalendar.domain.user.dto.TokenResponse;
+import org.standard.dreamcalendar.domain.user.dto.UserDto;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/test")
-    public ResponseEntity<Object> test() {
+    public ResponseEntity<HttpStatus> test() {
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Object> create(@RequestBody UserDto user) {
-        // JWT 발급 코드 추가 예정
+    public ResponseEntity<HttpStatus> create(@RequestBody UserDto user) {
         return (userService.create(user)) ?
                 ResponseEntity.status(HttpStatus.CREATED).build() :
                 ResponseEntity.unprocessableEntity().build();
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDto user) throws NoSuchAlgorithmException {
-        String jwt = userService.logInByEmailPassword(user);
-        log.debug("UserController login()={}", jwt);
-        return (jwt == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(jwt);
+    @PostMapping("/auth/login")
+    public ResponseEntity<TokenResponse> logInByEmailPassword(@RequestBody UserDto user)
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        TokenResponse tokenResponse = userService.logInByEmailPassword(user);
+        return (tokenResponse == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(tokenResponse);
     }
 
-    @GetMapping("/find")
-    public ResponseEntity<UserDto> findById(@RequestParam("id") Integer userId) {
-        UserDto user = userService.findById(userId);
-        return (user == null) ? ResponseEntity.notFound().build() : ResponseEntity.status(HttpStatus.OK).body(user);
+    @GetMapping("/auth/login")
+    public ResponseEntity<HttpStatus> loginByAccessToken(@RequestHeader String accessToken)
+            throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException,
+            NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        HttpStatus status = userService.logInByAccessToken(accessToken);
+        return ResponseEntity.status(status).build();
+    }
+
+    @GetMapping("/auth/update/access")
+    public ResponseEntity<TokenResponse> updateAccessToken(@RequestHeader String refreshToken)
+            throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException,
+            NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        TokenResponse tokenResponse = userService.updateAccessToken(refreshToken);
+        return (tokenResponse == null) ? ResponseEntity.badRequest().build() : ResponseEntity.ok().body(tokenResponse);
     }
 
     @GetMapping("/all")
@@ -52,7 +69,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Object> delete(@RequestParam("id") Integer userId) {
+    public ResponseEntity<HttpStatus> delete(@RequestParam("id") Integer userId) {
         return (userService.delete(userId)) ?
                 ResponseEntity.status(HttpStatus.OK).build() :
                 ResponseEntity.notFound().build();

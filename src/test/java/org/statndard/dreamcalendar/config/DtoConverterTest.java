@@ -9,8 +9,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.standard.dreamcalendar.DreamCalendarApplication;
 import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
-import org.standard.dreamcalendar.domain.user.model.Role;
-import org.standard.dreamcalendar.domain.user.model.User;
+import org.standard.dreamcalendar.domain.user.Role;
+import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.model.DtoConverter;
 
 @SpringBootTest(classes = DreamCalendarApplication.class)

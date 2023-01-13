@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.standard.dreamcalendar.config.type.TokenType;
-import org.standard.dreamcalendar.config.type.TokenValidationType;
+import org.standard.dreamcalendar.domain.user.type.TokenType;
+import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 
 import javax.crypto.SecretKey;
@@ -25,29 +25,37 @@ public class JwtTokenProvider {
     @Value("${refresh-key}")
     private String REFRESH_GENERATION_KEY;
     @Value("${access-expiration-hours}")
-    private int accessTokenExpirationHours;
+    private long accessTokenExpirationHours;
     @Value("${refresh-expiration-days}")
-    private int refreshTokenExpirationDays;
+    private long refreshTokenExpirationDays;
     @Value("${refresh-days}")
     private int refreshDays;
 
-    public final long ACCESS_EXPIRATION_MS = TimeUnit.HOURS.toMillis(accessTokenExpirationHours);
-    public final long REFRESH_EXPIRATION_MS = TimeUnit.DAYS.toMillis(refreshTokenExpirationDays);
-
     public String generate(String claim, TokenType type) {
 
+        long ACCESS_EXPIRATION_MS = TimeUnit.HOURS.toMillis(accessTokenExpirationHours);
+        long REFRESH_EXPIRATION_MS = TimeUnit.DAYS.toMillis(refreshTokenExpirationDays);
+
         Date now = new Date();
-        Date expiration = null;
-        String key = null;
 
-        if (type == TokenType.AccessToken) {
-            expiration = new Date(now.getTime() + ACCESS_EXPIRATION_MS);
-            key = ACCESS_GENERATION_KEY;
-        }
+        Date expiration;
+        String key;
 
-        if (type == TokenType.RefreshToken) {
-            expiration = new Date(now.getTime() + REFRESH_EXPIRATION_MS);
-            key = REFRESH_GENERATION_KEY;
+        switch (type) {
+
+            case AccessToken:
+                expiration = new Date(now.getTime() + ACCESS_EXPIRATION_MS);
+                key = ACCESS_GENERATION_KEY;
+                break;
+
+            case RefreshToken:
+                expiration = new Date(now.getTime() + REFRESH_EXPIRATION_MS);
+                key = REFRESH_GENERATION_KEY;
+                break;
+
+            default:
+                return null;
+
         }
 
         Header header = Jwts.header();
@@ -67,7 +75,6 @@ public class JwtTokenProvider {
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
-                .compressWith(CompressionCodecs.GZIP)
                 .compact()
                 .replace("=", "");
 
@@ -77,40 +84,57 @@ public class JwtTokenProvider {
 
     public TokenValidationResult validateToken(String token, TokenType type) {
 
-        String key = null;
+        String key;
 
-        if (type == TokenType.AccessToken)
-            key = ACCESS_GENERATION_KEY;
+        switch (type) {
 
-        if (type == TokenType.RefreshToken)
-            key = REFRESH_GENERATION_KEY;
+            case AccessToken:
+                key = ACCESS_GENERATION_KEY;
+                break;
+
+            case RefreshToken:
+                key = REFRESH_GENERATION_KEY;
+                break;
+
+            default:
+                return null;
+
+        }
 
         try {
 
-            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJwt(token).getBody();
+            SecretKey secretKey = Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
+
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
             String email = claims.get("email").toString();
 
             Date now = new Date();
-            Date expiration = claims.getExpiration();
-            Long longExpiration = expiration.getTime();
+            Date refreshDate = getRefreshDate(claims.getExpiration().getTime());
 
-            Date refreshDate = new Date(longExpiration - TimeUnit.DAYS.toMillis(refreshDays));
+            if (type == TokenType.RefreshToken && refreshDate.before(now)) {
+                return new TokenValidationResult(TokenValidationStatus.UPDATE, email);
+            }
 
-            if (type == TokenType.RefreshToken && refreshDate.before(now))
-                return new TokenValidationResult(TokenValidationType.UPDATE, email);
-
-            return new TokenValidationResult(TokenValidationType.OK, email) ;
+            return new TokenValidationResult(TokenValidationStatus.OK, email) ;
 
         } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
-            return new TokenValidationResult(TokenValidationType.EXPIRED, null);
+            log.error("Expired JWT token " + ex);
+            return new TokenValidationResult(TokenValidationStatus.EXPIRED, null);
         } catch (Exception ex) {
-            log.error("Invalid JWT");
+            log.error("Invalid JWT " + ex);
         }
 
-        return new TokenValidationResult(TokenValidationType.INVALID, null);
+        return new TokenValidationResult(TokenValidationStatus.INVALID, null);
 
+    }
+
+    private Date getRefreshDate(Long expiration) {
+        return new Date(expiration - TimeUnit.DAYS.toMillis(refreshDays));
     }
 
 }

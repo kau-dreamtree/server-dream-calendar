@@ -184,6 +184,8 @@ gradle-app.setting
 
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,intellij,git
 
+# User Custom
 application-key.yml
 application-oauth.yml
+application-real-db.yml
 .DS_Store

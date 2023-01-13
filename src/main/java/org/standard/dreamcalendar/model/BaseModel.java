@@ -16,14 +16,12 @@ public abstract class BaseModel implements Comparable<BaseModel> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @CreatedDate
-    @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @JsonProperty("modified_at")
     private LocalDateTime modifiedAt;
 
     @Override

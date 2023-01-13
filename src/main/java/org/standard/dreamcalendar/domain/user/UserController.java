@@ -7,12 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.standard.dreamcalendar.domain.user.dto.TokenResponse;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
+import org.standard.dreamcalendar.domain.user.dto.LoginByAccessTokenResponse;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -29,50 +25,49 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<HttpStatus> create(@RequestBody UserDto user) {
+    @PostMapping("/auth/create")
+    public ResponseEntity<LoginByAccessTokenResponse> create(@RequestBody UserDto user) throws NoSuchAlgorithmException {
         return (userService.create(user)) ?
                 ResponseEntity.status(HttpStatus.CREATED).build() :
-                ResponseEntity.unprocessableEntity().build();
+                ResponseEntity.status(HttpStatus.CONFLICT).body(new LoginByAccessTokenResponse(HttpStatus.CONFLICT));
     }
 
     @PostMapping("/auth/login")
     public ResponseEntity<TokenResponse> logInByEmailPassword(@RequestBody UserDto user)
-            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchPaddingException,
-            IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+            throws NoSuchAlgorithmException {
         TokenResponse tokenResponse = userService.logInByEmailPassword(user);
-        return (tokenResponse == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(tokenResponse);
+        return (tokenResponse == null) ?
+                ResponseEntity.status(HttpStatus.NOT_FOUND).build() :
+                ResponseEntity.status(HttpStatus.OK).body(tokenResponse);
     }
 
     @GetMapping("/auth/login")
-    public ResponseEntity<HttpStatus> loginByAccessToken(@RequestHeader String accessToken)
-            throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException,
-            NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public ResponseEntity<LoginByAccessTokenResponse> loginByAccessToken(@RequestHeader("Authorization") String accessToken) {
         HttpStatus status = userService.logInByAccessToken(accessToken);
-        return ResponseEntity.status(status).build();
+        return ResponseEntity.status(status).body(new LoginByAccessTokenResponse(status));
     }
 
-    @GetMapping("/auth/update/access")
-    public ResponseEntity<TokenResponse> updateAccessToken(@RequestHeader String refreshToken)
-            throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException,
-            NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        TokenResponse tokenResponse = userService.updateAccessToken(refreshToken);
-        return (tokenResponse == null) ? ResponseEntity.badRequest().build() : ResponseEntity.ok().body(tokenResponse);
+    @GetMapping("/auth/login/update")
+    public ResponseEntity<TokenResponse> updateToken(@RequestHeader("Authorization") String refreshToken) {
+        TokenResponse tokenResponse = userService.updateToken(refreshToken);
+        return (tokenResponse == null) ?
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build() :
+                ResponseEntity.status(HttpStatus.OK).body(tokenResponse);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDto>> findAll() {
         List<UserDto> userDtoList = userService.findAll();
         return (userDtoList.isEmpty()) ?
-                ResponseEntity.notFound().build() :
+                ResponseEntity.status(HttpStatus.NOT_FOUND).build() :
                 ResponseEntity.status(HttpStatus.OK).body(userDtoList);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<HttpStatus> delete(@RequestParam("id") Integer userId) {
-        return (userService.delete(userId)) ?
+    @DeleteMapping("/auth/delete")
+    public ResponseEntity<HttpStatus> delete(@RequestHeader("Authorization") String accessToken) {
+        return (userService.delete(accessToken)) ?
                 ResponseEntity.status(HttpStatus.OK).build() :
-                ResponseEntity.notFound().build();
+                ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 }

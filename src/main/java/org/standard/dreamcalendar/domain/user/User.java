@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.domain.user.model;
+package org.standard.dreamcalendar.domain.user;
 
 import lombok.*;
 import org.standard.dreamcalendar.model.BaseModel;
@@ -59,7 +59,7 @@ public class User extends BaseModel {
                 '}';
     }
 
-    public User update(String name, String picture) {
+    public User updateOnSocialLogIn(String name, String picture) {
         this.name = name;
         this.picture = picture;
         return this;

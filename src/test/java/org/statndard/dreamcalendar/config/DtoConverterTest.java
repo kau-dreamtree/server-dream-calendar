@@ -24,7 +24,7 @@ public class DtoConverterTest {
     public void 변환_테스트() {
 
         UserDto dto = UserDto.builder()
-                .id(1)
+                .id(1L)
                 .email("john@test.com")
                 .name("John")
                 .role(Role.USER)

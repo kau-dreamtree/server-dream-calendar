@@ -50,7 +50,5 @@ jobs:
         run: |
           aws s3 cp \
           --region ap-northeast-2 \
-          -acl private \
+          --acl private \
           ./dream-calendar-build.zip s3://dream-calendar-build/
-        
-        

@@ -19,7 +19,7 @@ public class SecurityConfig {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user/**").permitAll()
+                .antMatchers("/user/**", "/profile", "/h2-console/**").permitAll()
                 .anyRequest().hasRole(Role.USER.name())
                 .and()
                 .logout()

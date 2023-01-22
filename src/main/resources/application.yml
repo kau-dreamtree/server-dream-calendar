@@ -3,7 +3,6 @@ spring:
   profiles:
     include:
       - key
-      - oauth
 
   h2:
     console:

@@ -4,7 +4,7 @@ server:
 spring:
   profiles:
     include:
-      - oauth
+      - key
       - real-db
   jpa:
     properties:

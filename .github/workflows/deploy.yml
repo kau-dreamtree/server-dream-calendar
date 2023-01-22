@@ -9,7 +9,7 @@ name: CI/CD with Gradle & AWS
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "user" ]
 
 env:
   AWS_REGION: ap-northeast-2

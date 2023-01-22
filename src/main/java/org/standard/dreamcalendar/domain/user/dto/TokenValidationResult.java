@@ -1,10 +1,10 @@
 package org.standard.dreamcalendar.domain.user.dto;
 
 import lombok.Data;
-import org.standard.dreamcalendar.config.type.TokenValidationType;
+import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
 
 @Data
 public class TokenValidationResult {
-    private final TokenValidationType type;
+    private final TokenValidationStatus status;
     private final String email;
 }

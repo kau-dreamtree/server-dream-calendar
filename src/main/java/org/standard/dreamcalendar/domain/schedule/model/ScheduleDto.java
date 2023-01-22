@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class ScheduleDto {
 
     @JsonProperty("user_id")
-    private Integer userId;
+    private Long userId;
 
     private String title;
 

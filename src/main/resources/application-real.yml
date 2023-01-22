@@ -1,0 +1,16 @@
+spring:
+
+  profiles:
+    include:
+      - key
+      - real-db
+
+  jpa:
+    properties:
+      hibernate:
+        dialect:
+          nodeValue: org.hibernate.dialect.MySQL57Dialect
+          storage_engine: innodb
+
+  session:
+    store-type: jdbc

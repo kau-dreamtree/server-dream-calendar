@@ -1,6 +1,5 @@
 package org.standard.dreamcalendar.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,14 +15,12 @@ public abstract class BaseModel implements Comparable<BaseModel> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @CreatedDate
-    @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @JsonProperty("modified_at")
     private LocalDateTime modifiedAt;
 
     @Override

@@ -9,7 +9,7 @@ source "${ABSDIR}"/profile.sh
 JAR_DIR="$PROJECT_ROOT/jar"
 
 echo "$TIME_NOW > Copy JAR file to $JAR_DIR" >> "$DEPLOY_LOG"
-cp "$PROJECT_ROOT"/deploy/*.jar "$JAR_DIR"/
+cp "$PROJECT_ROOT"/*.jar "$JAR_DIR"/
 
 JAR_NAME=$(ls -tr "$JAR_DIR"/*.jar | tail -n 1)
 chmod +x "$JAR_NAME"

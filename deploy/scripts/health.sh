@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
-source ./base.sh
-source ./profile.sh
-source ./switch.sh
+ABSPATH=$(readlink -f "$0")
+ABSDIR=$(dirname "$ABSPATH")
+
+source "${ABSDIR}"/base.sh
+source "${ABSDIR}"/profile.sh
+source "${ABSDIR}"/switch.sh
 
 IDLE_PORT=$(find_idle_port)
 PROFILE_URI="http://localhost:$IDLE_PORT/profile"

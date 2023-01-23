@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-source ./base.sh
-source ./profile.sh
+ABSPATH=$(readlink -f "$0")
+ABSDIR=$(dirname "$ABSPATH")
+
+source "${ABSDIR}"/base.sh
+source "${ABSDIR}"/profile.sh
 
 JAR_DIR="$PROJECT_ROOT/jar"
 

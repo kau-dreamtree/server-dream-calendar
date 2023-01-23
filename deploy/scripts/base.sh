@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-ABSPATH=$(readlink -f "$0")
-ABSDIR=$(dirname "$ABSPATH")
-
 TIME_NOW=$(date +%c)
 
 PROJECT_ROOT="/home/ec2-user/dreamtree"

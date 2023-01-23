@@ -12,6 +12,7 @@ echo "$TIME_NOW > Copy JAR file to $JAR_DIR" >> "$DEPLOY_LOG"
 cp "$PROJECT_ROOT"/deploy/*.jar "$JAR_DIR"/
 
 JAR_NAME=$(ls -tr "$JAR_DIR"/*.jar | tail -n 1)
+chmod +x "$JAR_NAME"
 
 echo "$TIME_NOW > $JAR_NAME 실행" >> "$DEPLOY_LOG"
 nohup java -jar \

@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
 
-PROJECT_ROOT="/home/ec2-user/dreamtree"
-JAR_FILE="$PROJECT_ROOT/dream-calendar-server.jar"
+source ./base.sh
+source ./profile.sh
 
-APP_LOG="$PROJECT_ROOT/application.log"
-ERROR_LOG="$PROJECT_ROOT/application-error.log"
-DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
+JAR_DIR="$PROJECT_ROOT/jar"
 
-TIME_NOW=$(date +%c)
+echo "$TIME_NOW > Copy JAR file to $JAR_DIR" >> "$DEPLOY_LOG"
+cp "$PROJECT_ROOT"/deploy/*.jar "$JAR_DIR"/
 
-echo "$TIME_NOW > $JAR_FILE 복사" >> $DEPLOY_LOG
-cp $PROJECT_ROOT/build/libs/*.jar $JAR_FILE
+JAR_NAME=$(ls -tr "$JAR_DIR"/*.jar | tail -n 1)
 
-echo "$TIME_NOW > $JAR_FILE 실행" >> $DEPLOY_LOG
-nohup java -jar $JAR_FILE \
-  -Dspring.config.location=classpath:/application.yml,$PROJECT_ROOT/application-key.yml \
-  > $APP_LOG 2> $ERROR_LOG &
+echo "$TIME_NOW > $JAR_NAME 실행" >> "$DEPLOY_LOG"
+nohup java -jar \
+  -Dspring.config.location=classpath:/application.yml,"$PROJECT_ROOT"/application-key.yml \
+  -Dspring.profiles.active="$IDLE_PROFILE" \
+  "$JAR_NAME" > "$APP_LOG" 2> "$ERROR_LOG" &
 
-CURRENT_PID=$(pgrep -f $JAR_FILE)
-echo "$TIME_NOW > 실행된 PID $CURRENT_PID" >> $DEPLOY_LOG
-
+CURRENT_PID=$(pgrep -f JAR_NAME)
+echo "$TIME_NOW > 실행된 PID $CURRENT_PID" >> "$DEPLOY_LOG"

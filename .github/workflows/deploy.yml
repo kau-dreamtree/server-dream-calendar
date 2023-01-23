@@ -43,7 +43,7 @@ jobs:
           arguments: clean build -x test
 
       - name: Copy JAR file
-        run: cp ./build/libs/*.jar ./deploy/$CODE_DEPLOY_APPLICATION_NAME-server.jar
+        run: cp ./build/libs/*.jar ./deploy/
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

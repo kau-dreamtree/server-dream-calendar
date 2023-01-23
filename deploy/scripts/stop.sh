@@ -1,17 +1,14 @@
 #!/usr/bin/env bash
 
-PROJECT_ROOT="/home/ec2-user/dreamtree"
-JAR_FILE="$PROJECT_ROOT/dream-calendar-server.jar"
+source ./base.sh
+source ./profile.sh
 
-DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
+IDLE_PORT=$(find_idle_port)
+IDLE_PID=$(lsof -ti tcp:"$IDLE_PORT")
 
-TIME_NOW=$(date +%c)
-
-CURRENT_PID=$(pgrep -f $JAR_FILE)
-
-if [ -z $CURRENT_PID ]; then
-  echo "$TIME_NOW > 현재 실행중인 애플리케이션이 없습니다." >> $DEPLOY_LOG
+if [ -z "$IDLE_PID" ]; then
+  echo "$TIME_NOW > 현재 실행중인 애플리케이션이 없습니다." >> "$DEPLOY_LOG"
 else
-  echo "$TIME_NOW > 실행중인 $CURRENT_PID 애플리케이션을 종료합니다." >> $DEPLOY_LOG
-  kill -15 $CURRENT_PID
+  echo "$TIME_NOW > 실행중인 $IDLE_PID 애플리케이션을 종료합니다." >> "$DEPLOY_LOG"
+  kill -15 "$IDLE_PID"
 fi

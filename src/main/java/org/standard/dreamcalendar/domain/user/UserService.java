@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.config.Encryptor;
 import org.standard.dreamcalendar.config.JwtTokenProvider;
+import org.standard.dreamcalendar.domain.user.dto.response.UpdateTokenResponse;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
-import org.standard.dreamcalendar.domain.user.dto.TokenResponse;
+import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.model.DtoConverter;
 
@@ -53,7 +54,7 @@ public class UserService {
      * @throws NoSuchAlgorithmException
      */
     @Transactional
-    public TokenResponse logInByEmailPassword(UserDto userDto) throws NoSuchAlgorithmException {
+    public LogInByEmailPasswordResponse logInByEmailPassword(UserDto userDto) throws NoSuchAlgorithmException {
 
         // Check email address in DB
         User user = userRepository.findByEmail(userDto.getEmail()).orElse(null);
@@ -72,7 +73,7 @@ public class UserService {
         user.updateAccessToken(accessToken);
         user.updateRefreshToken(refreshToken);
 
-        return TokenResponse.builder()
+        return LogInByEmailPasswordResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -103,7 +104,7 @@ public class UserService {
             return HttpStatus.UNAUTHORIZED;
         }
 
-        return HttpStatus.ACCEPTED;
+        return HttpStatus.OK;
     }
 
     /**
@@ -117,7 +118,7 @@ public class UserService {
      * @return UpdateTokenResponse
      */
     @Transactional
-    public TokenResponse updateToken(String refreshToken) {
+    public UpdateTokenResponse updateToken(String refreshToken) {
 
         User user = userRepository.findByRefreshToken(refreshToken).orElse(null);
 
@@ -127,20 +128,56 @@ public class UserService {
             return null;
         }
 
+        String message = null;
+
         if (validation.getStatus() == UPDATE) {
             String newRefreshToken = tokenProvider.generate(user.getEmail(), TokenType.RefreshToken);
             user.updateRefreshToken(newRefreshToken);
+            message = String.format("Refresh Token Updated");
+        }
+
+        if (message == null) {
+            message = String.format("Access Token Updated");
         }
 
         String accessToken = tokenProvider.generate(user.getEmail(), TokenType.AccessToken);
 
+
         user.updateAccessToken(accessToken);
 
-        return TokenResponse.builder()
+        return UpdateTokenResponse.builder()
+                .message(message)
                 .accessToken(user.getAccessToken())
                 .refreshToken(user.getRefreshToken())
                 .build();
 
+    }
+
+    public Boolean logOut(String accessToken) {
+
+        User user = userRepository.findByAccessToken(accessToken).orElse(null);
+
+        if (user == null) {
+            return false;
+        }
+
+        userRepository.updateAccessTokenAndRefreshTokenBy(null, null);
+
+        return true;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean delete(String accessToken) {
+
+        User user = userRepository.findByAccessToken(accessToken).orElse(null);
+
+        if (user == null) {
+            return false;
+        }
+
+        userRepository.deleteById(user.getId());
+
+        return true;
     }
 
     @Transactional(readOnly = true)
@@ -165,20 +202,6 @@ public class UserService {
     public UserDto findByEmail(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
         return converter.toUserDto(user);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean delete(String accessToken) {
-
-        User user = userRepository.findByAccessToken(accessToken).orElse(null);
-
-        if (user == null) {
-            return false;
-        }
-
-        userRepository.deleteById(user.getId());
-
-        return true;
     }
 
 }

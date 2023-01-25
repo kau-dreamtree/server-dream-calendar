@@ -22,5 +22,5 @@ nohup java -jar \
 
 # -Dspring.profiles.active=$IDLE_PROFILE
 
-CURRENT_PID=$(pgrep -f JAR_NAME)
+CURRENT_PID=$(pgrep -f "$JAR_NAME")
 echo "$TIME_NOW > 실행된 PID $CURRENT_PID" >> "$DEPLOY_LOG"

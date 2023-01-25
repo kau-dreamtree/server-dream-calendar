@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class Schedule extends BaseModel {
 
     @ManyToOne
+    // TODO : 변경 불가능하도록 설정
     private User user;
 
     @Column(length = 50, nullable = false)

@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.standard.dreamcalendar.domain.schedule.ScheduleService;
 import org.standard.dreamcalendar.domain.user.dto.TokenResponse;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 
@@ -16,6 +18,12 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+/*
+* Schedule 관리를 위한 import 구문 -> 추후 제거
+ */
+import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
+
+@Validated // TODO : 추후 제거
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -74,5 +82,40 @@ public class UserController {
                 ResponseEntity.status(HttpStatus.OK).build() :
                 ResponseEntity.notFound().build();
     }
+
+    /*
+    * 스케줄 Controller 오류 발생 -> UserController에 임시로 등록해둠
+    *
+    */
+    private final ScheduleService scheduleService;
+
+    @GetMapping("/scheduleTest")
+    public ResponseEntity<HttpStatus> scheduleTest() {
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/createSchedule")
+    public ResponseEntity<HttpStatus> createSchedule(@RequestBody ScheduleDto schedule) {
+        if (scheduleService.create(schedule)) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        return ResponseEntity.unprocessableEntity().build();
+    }
+
+    @PostMapping("/updateSchedule")
+    public ResponseEntity<HttpStatus> updateSchedule(@RequestBody ScheduleDto schedule) {
+        if (scheduleService.update(schedule)) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        return ResponseEntity.unprocessableEntity().build();
+    }
+
+//    @PostMapping("/findSchedule")
+//    public ResponseEntity<HttpStatus> createSchedule(@RequestBody ScheduleDto schedule) {
+//        if (scheduleService.create(schedule)) {
+//            return ResponseEntity.status(HttpStatus.CREATED).build();
+//        }
+//        return ResponseEntity.unprocessableEntity().build();
+//    }
 
 }

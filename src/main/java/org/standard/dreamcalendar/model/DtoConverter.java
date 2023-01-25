@@ -50,12 +50,12 @@ public class DtoConverter {
 
     public Schedule toScheduleEntity(ScheduleDto dto) {
         return Schedule.builder()
-                .user(userRepository.findById(dto.getUserId()).orElse(null))
+//                .user(userRepository.findById(dto.getUserId()).orElse(null))
                 .title(dto.getTitle())
-                .isAllDay(dto.isAllDay())
-                .startAt(dto.getStartAt())
-                .endAt(dto.getEndAt())
-                .tag(dto.getTag())
+//                .isAllDay(dto.isAllDay())
+//                .startAt(dto.getStartAt())
+//                .endAt(dto.getEndAt())
+//                .tag(dto.getTag())
                 .build();
     }
 

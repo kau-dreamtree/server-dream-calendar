@@ -34,7 +34,7 @@ public class UserController {
                 ResponseEntity.status(HttpStatus.CONFLICT).body(new CreateResponse("이미 등록된 이메일입니다."));
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/auth/signin")
     public ResponseEntity<LogInByEmailPasswordResponse> logInByEmailPassword(@RequestBody UserDto user)
             throws NoSuchAlgorithmException {
         LogInByEmailPasswordResponse response = userService.logInByEmailPassword(user);

@@ -4,20 +4,20 @@ server:
 spring:
   profiles:
     include:
-      - oauth
-      - real-db
+      - key
+#      - real-db
   jpa:
+    show-sql: true
+    format-sql: true
     properties:
       hibernate:
         dialect:
           nodeValue: org.hibernate.dialect.MySQL57Dialect
           storage_engine: innodb
 
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:mem://localhost/~/test;MODE=MYSQL
+
   session:
     store-type: jdbc
-
-#server.port=8081
-#spring.profiles.include=oauth,real-db
-#spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL57Dialect
-#spring.jpa.properties.hibernate.dialect.storage_engine=innodb
-#spring.session.store-type=jdbc

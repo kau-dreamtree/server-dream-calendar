@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.domain.user.dto;
+package org.standard.dreamcalendar.domain.user.dto.response;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;

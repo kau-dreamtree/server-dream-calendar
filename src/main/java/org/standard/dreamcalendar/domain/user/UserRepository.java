@@ -11,6 +11,11 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
+    @Modifying
+    @Query("update User u set u.accessToken = ?1, u.refreshToken = ?2")
+    int updateAccessTokenAndRefreshTokenBy(String accessToken, String refreshToken);
+
+    @Transactional
     @Modifying(clearAutomatically = true)
     @Query("update User u set u.accessToken = ?2 where u.id = ?1")
     int updateAccessToken(@NonNull Integer id, @NonNull String accessToken);

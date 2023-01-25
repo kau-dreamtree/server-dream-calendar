@@ -23,7 +23,6 @@ import java.util.List;
  */
 import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
 
-@Validated // TODO : 추후 제거
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -82,40 +81,5 @@ public class UserController {
                 ResponseEntity.status(HttpStatus.OK).build() :
                 ResponseEntity.notFound().build();
     }
-
-    /*
-    * 스케줄 Controller 오류 발생 -> UserController에 임시로 등록해둠
-    *
-    */
-    private final ScheduleService scheduleService;
-
-    @GetMapping("/scheduleTest")
-    public ResponseEntity<HttpStatus> scheduleTest() {
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/createSchedule")
-    public ResponseEntity<HttpStatus> createSchedule(@RequestBody ScheduleDto schedule) {
-        if (scheduleService.create(schedule)) {
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        }
-        return ResponseEntity.unprocessableEntity().build();
-    }
-
-    @PostMapping("/updateSchedule")
-    public ResponseEntity<HttpStatus> updateSchedule(@RequestBody ScheduleDto schedule) {
-        if (scheduleService.update(schedule)) {
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        }
-        return ResponseEntity.unprocessableEntity().build();
-    }
-
-//    @PostMapping("/findSchedule")
-//    public ResponseEntity<HttpStatus> createSchedule(@RequestBody ScheduleDto schedule) {
-//        if (scheduleService.create(schedule)) {
-//            return ResponseEntity.status(HttpStatus.CREATED).build();
-//        }
-//        return ResponseEntity.unprocessableEntity().build();
-//    }
 
 }

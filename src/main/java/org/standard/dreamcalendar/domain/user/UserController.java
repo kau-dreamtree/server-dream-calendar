@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.standard.dreamcalendar.domain.user.dto.response.CreateResponse;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
-import org.standard.dreamcalendar.domain.user.dto.response.LoginByAccessTokenResponse;
+import org.standard.dreamcalendar.domain.user.dto.response.LogInByAccessTokenResponse;
 import org.standard.dreamcalendar.domain.user.dto.response.UpdateTokenResponse;
 
 import java.security.NoSuchAlgorithmException;
@@ -34,7 +34,7 @@ public class UserController {
                 ResponseEntity.status(HttpStatus.CONFLICT).body(new CreateResponse("이미 등록된 이메일입니다."));
     }
 
-    @PostMapping("/auth/signin")
+    @PostMapping("/auth/login")
     public ResponseEntity<LogInByEmailPasswordResponse> logInByEmailPassword(@RequestBody UserDto user)
             throws NoSuchAlgorithmException {
         LogInByEmailPasswordResponse response = userService.logInByEmailPassword(user);
@@ -44,11 +44,11 @@ public class UserController {
     }
 
     @GetMapping("/auth/login")
-    public ResponseEntity<LoginByAccessTokenResponse> loginByAccessToken(
+    public ResponseEntity<LogInByAccessTokenResponse> loginByAccessToken(
             @RequestHeader("Authorization") String accessToken
     ) {
         HttpStatus status = userService.logInByAccessToken(accessToken);
-        return ResponseEntity.status(status).body(new LoginByAccessTokenResponse(status));
+        return ResponseEntity.status(status).body(new LogInByAccessTokenResponse(status));
     }
 
     @GetMapping("/auth/login/update")

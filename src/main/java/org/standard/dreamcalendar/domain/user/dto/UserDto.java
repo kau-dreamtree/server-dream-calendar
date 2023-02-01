@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.standard.dreamcalendar.domain.user.model.Role;
+import org.standard.dreamcalendar.domain.user.Role;
 
 @Data
 @Builder
@@ -12,7 +12,7 @@ import org.standard.dreamcalendar.domain.user.model.Role;
 @NoArgsConstructor
 public class UserDto {
 
-    private Integer id;
+    private Long id;
     private String email;
     private String password;
     private String name;

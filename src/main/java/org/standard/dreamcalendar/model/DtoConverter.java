@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
 import org.standard.dreamcalendar.domain.schedule.model.Schedule;
 import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
-import org.standard.dreamcalendar.domain.user.model.User;
+import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.UserRepository;
 

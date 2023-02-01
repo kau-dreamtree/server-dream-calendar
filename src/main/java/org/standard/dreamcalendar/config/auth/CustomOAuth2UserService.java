@@ -9,10 +9,11 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
 import org.standard.dreamcalendar.config.auth.dto.SessionUser;
 import org.standard.dreamcalendar.domain.user.UserRepository;
-import org.standard.dreamcalendar.domain.user.model.User;
+import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.model.DtoConverter;
 
 import javax.servlet.http.HttpSession;
@@ -51,10 +52,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     }
 
+    @Transactional
     private User saveOrUpdate(OAuthAttributes attributes) {
 
         User user = userRepository.findByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
+                .map(entity -> entity.updateOnSocialLogIn(attributes.getName(), attributes.getPicture()))
                 .orElse(converter.toUserEntity(attributes));
 
         return userRepository.save(user);

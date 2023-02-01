@@ -21,7 +21,7 @@ public class ScheduleDto {
 
     // TODO : user 정보 받아오는 방법?
     @JsonProperty("user_id")
-    private Integer userId;
+    private Long userId;
 
     @NotNull
     private String title;

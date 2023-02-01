@@ -19,6 +19,7 @@
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+.idea/
 
 # User-specific stuff
 .idea/**/workspace.xml
@@ -157,7 +158,7 @@ replay_pid*
 
 ### Gradle ###
 .gradle
-**/build/
+deploy/jar/
 !src/**/build/
 
 # Ignore Gradle GUI config
@@ -184,6 +185,8 @@ gradle-app.setting
 
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,intellij,git
 
+# User Custom
 application-key.yml
 application-oauth.yml
+application-real-db.yml
 .DS_Store

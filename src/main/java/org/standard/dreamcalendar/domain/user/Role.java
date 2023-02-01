@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.domain.user.model;
+package org.standard.dreamcalendar.domain.user;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

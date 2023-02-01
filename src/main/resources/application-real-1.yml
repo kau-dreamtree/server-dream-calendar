@@ -1,13 +1,11 @@
-spring:
+server:
+  port: '8081'
 
+spring:
   profiles:
     include:
       - key
-
-  h2:
-    console:
-      enabled: 'true'
-
+#      - real-db
   jpa:
     show-sql: true
     format-sql: true
@@ -17,17 +15,9 @@ spring:
           nodeValue: org.hibernate.dialect.MySQL57Dialect
           storage_engine: innodb
 
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-
   datasource:
     hikari:
       jdbc-url: jdbc:h2:mem://localhost/~/test;MODE=MYSQL
 
   session:
     store-type: jdbc
-
-  output:
-    ansi:
-      enabled: always

@@ -4,11 +4,11 @@ import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 @Data
-public class LoginByAccessTokenResponse {
+public class LogInByAccessTokenResponse {
 
     private String message;
 
-    public LoginByAccessTokenResponse(HttpStatus status) {
+    public LogInByAccessTokenResponse(HttpStatus status) {
 
         switch (status) {
 
@@ -28,7 +28,7 @@ public class LoginByAccessTokenResponse {
                 this.message = "이미 등록된 이메일입니다.";
                 break;
 
-            case ACCEPTED:
+            case OK:
                 this.message = "success";
                 break;
 

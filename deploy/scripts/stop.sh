@@ -25,5 +25,3 @@ else
   echo "$TIME_NOW > 실행중인 $CURRENT_PID 애플리케이션을 종료합니다." >> "$DEPLOY_LOG"
   kill -15 "$CURRENT_PID"
 fi
-
-#

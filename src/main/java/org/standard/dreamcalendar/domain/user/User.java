@@ -1,9 +1,12 @@
 package org.standard.dreamcalendar.domain.user;
 
 import lombok.*;
+import org.standard.dreamcalendar.domain.schedule.model.Schedule;
 import org.standard.dreamcalendar.model.BaseModel;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,6 +36,14 @@ public class User extends BaseModel {
     @Column(unique = true)
     private String refreshToken;
 
+    @OneToMany(mappedBy = "user")
+    private List<Schedule> schedules = new ArrayList<>();
+
+    public void addSchedule(Schedule schedule) {
+        schedule.setUser(this);
+        schedules.add(schedule);
+    }
+
     public void updatePassword(String password) {
         this.password = password;
     }
@@ -43,6 +54,12 @@ public class User extends BaseModel {
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public User updateOnSocialLogIn(String name, String picture) {
+        this.name = name;
+        this.picture = picture;
+        return this;
     }
 
     @Override
@@ -57,12 +74,6 @@ public class User extends BaseModel {
                 ", accessToken='" + accessToken + '\'' +
                 ", refreshToken='" + refreshToken + '\'' +
                 '}';
-    }
-
-    public User updateOnSocialLogIn(String name, String picture) {
-        this.name = name;
-        this.picture = picture;
-        return this;
     }
 
 }

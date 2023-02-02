@@ -1,14 +1,10 @@
 package org.standard.dreamcalendar.domain.user.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class ReadAllUserResponse {
 
@@ -16,5 +12,13 @@ public class ReadAllUserResponse {
 
      private List<UserDto> userDtoList;
 
+     public ReadAllUserResponse(String message) {
+          this.message = message;
+     }
+
+     public ReadAllUserResponse(String message, List<UserDto> userDtoList) {
+          this.message = message;
+          this.userDtoList = userDtoList;
+     }
 
 }

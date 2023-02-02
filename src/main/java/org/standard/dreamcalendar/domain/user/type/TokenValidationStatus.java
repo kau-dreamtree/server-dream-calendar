@@ -1,3 +1,3 @@
 package org.standard.dreamcalendar.domain.user.type;
 
-public enum TokenValidationStatus { OK, UPDATE, EXPIRED, INVALID }
+public enum TokenValidationStatus { VALID, UPDATE, EXPIRED, INVALID }

@@ -48,6 +48,24 @@ public class ScheduleService {
     }
 
     @Transactional
+    public ScheduleDto find(String accessToken, Long id) {
+
+        TokenValidationStatus status = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+        if (status != VALID) {
+            // TODO: 토큰 갱신 루틴, AOP 적용
+            return null;
+        }
+
+        Schedule schedule = scheduleRepository.findById(id).orElse(null);
+        if (schedule == null) {
+            return null;
+        }
+
+        return converter.toScheduleDto(schedule);
+
+    }
+
+    @Transactional
     public List<ScheduleDto> findAll(String accessToken) {
 
         TokenValidationStatus status = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
@@ -69,6 +87,14 @@ public class ScheduleService {
 
     }
 
+    @Transactional
+    public List<ScheduleDto> findAllAdmin() {
+        return scheduleRepository.findAll().stream()
+                .map(converter::toScheduleDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public ScheduleDto update(String accessToken, ScheduleDto scheduleDto) {
 
         TokenValidationStatus status = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
@@ -101,6 +127,7 @@ public class ScheduleService {
 
     }
 
+    @Transactional
     public void delete(String accessToken, Long id) {
 
         TokenValidationStatus status = tokenProvider.validateToken(accessToken, TokenType.AccessToken);

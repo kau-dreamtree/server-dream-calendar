@@ -114,15 +114,6 @@ public class ScheduleService {
             return converter.toScheduleDto(schedule);
         }
 
-        // TODO: 코드 개선 - 너무 많은 set method 사용
-        schedule.setUuid(scheduleDto.getUuid());
-        schedule.setUser(user);
-        schedule.setTitle(scheduleDto.getTitle());
-        schedule.setTag(scheduleDto.getTag());
-        schedule.setAllDay(scheduleDto.isAllDay());
-        schedule.setStartAt(scheduleDto.getStartAt());
-        schedule.setEndAt(scheduleDto.getEndAt());
-
         return converter.toScheduleDto(schedule);
 
     }

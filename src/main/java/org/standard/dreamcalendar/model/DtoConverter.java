@@ -1,19 +1,16 @@
 package org.standard.dreamcalendar.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
 import org.standard.dreamcalendar.domain.schedule.model.Schedule;
 import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
-import org.standard.dreamcalendar.domain.user.UserRepository;
 
+@RequiredArgsConstructor
 @Component
 public class DtoConverter {
-
-    @Autowired
-    UserRepository userRepository;
 
     public User toUserEntity(UserDto dto) {
         return User.builder()
@@ -36,7 +33,7 @@ public class DtoConverter {
     }
 
     public UserDto toUserDto(User user) {
-        return (user == null) ? null : UserDto.builder()
+        return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .password(user.getPassword())
@@ -50,7 +47,7 @@ public class DtoConverter {
 
     public Schedule toScheduleEntity(ScheduleDto dto) {
         return Schedule.builder()
-                .user(userRepository.findById(dto.getUserId()).orElse(null))
+                .uuid(dto.getUuid())
                 .title(dto.getTitle())
                 .isAllDay(dto.isAllDay())
                 .startAt(dto.getStartAt())
@@ -60,13 +57,14 @@ public class DtoConverter {
     }
 
     public ScheduleDto toScheduleDto(Schedule schedule) {
-        return (schedule == null) ? null : ScheduleDto.builder()
-                .userId(schedule.getUser().getId())
+        return ScheduleDto.builder()
+                .id(schedule.getId())
+                .uuid(schedule.getUuid())
                 .title(schedule.getTitle())
+                .tag(schedule.getTag())
                 .isAllDay(schedule.isAllDay())
                 .startAt(schedule.getStartAt())
                 .endAt(schedule.getEndAt())
-                .tag(schedule.getTag())
                 .build();
     }
 

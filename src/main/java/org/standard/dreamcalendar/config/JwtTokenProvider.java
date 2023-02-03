@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
-import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -82,7 +81,7 @@ public class JwtTokenProvider {
 
     }
 
-    public TokenValidationResult validateToken(String token, TokenType type) {
+    public TokenValidationStatus validateToken(String token, TokenType type) {
 
         String key;
 
@@ -111,25 +110,23 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token)
                     .getBody();
 
-            String email = claims.get("email").toString();
-
             Date now = new Date();
             Date refreshDate = getRefreshDate(claims.getExpiration().getTime());
 
             if (type == TokenType.RefreshToken && refreshDate.before(now)) {
-                return new TokenValidationResult(TokenValidationStatus.UPDATE, email);
+                return TokenValidationStatus.UPDATE;
             }
 
-            return new TokenValidationResult(TokenValidationStatus.OK, email) ;
+            return TokenValidationStatus.VALID;
 
         } catch (ExpiredJwtException ex) {
             log.error("Expired JWT token " + ex);
-            return new TokenValidationResult(TokenValidationStatus.EXPIRED, null);
+            return TokenValidationStatus.EXPIRED;
         } catch (Exception ex) {
             log.error("Invalid JWT " + ex);
         }
 
-        return new TokenValidationResult(TokenValidationStatus.INVALID, null);
+        return TokenValidationStatus.INVALID;
 
     }
 

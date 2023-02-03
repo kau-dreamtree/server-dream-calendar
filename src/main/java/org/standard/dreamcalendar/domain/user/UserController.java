@@ -61,9 +61,9 @@ public class UserController {
 
     @GetMapping("/auth/logout")
     public ResponseEntity<HttpStatus> logOut(@RequestHeader("Authorization") String accessToken) {
-        return (userService.logOut(accessToken) == null) ?
-                ResponseEntity.status(HttpStatus.NOT_FOUND).build() :
-                ResponseEntity.status(HttpStatus.OK).build();
+        return (userService.logOut(accessToken)) ?
+                ResponseEntity.status(HttpStatus.OK).build() :
+                ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @DeleteMapping("/auth/delete")

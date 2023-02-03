@@ -9,9 +9,9 @@ import org.standard.dreamcalendar.config.Encryptor;
 import org.standard.dreamcalendar.config.JwtTokenProvider;
 import org.standard.dreamcalendar.domain.user.dto.response.UpdateTokenResponse;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
-import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
+import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
 import org.standard.dreamcalendar.model.DtoConverter;
 
 import java.security.NoSuchAlgorithmException;
@@ -30,7 +30,7 @@ public class UserService {
     private final JwtTokenProvider tokenProvider;
     private final DtoConverter converter;
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public Boolean create(UserDto userDto) throws NoSuchAlgorithmException {
 
         if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
@@ -94,13 +94,13 @@ public class UserService {
     public HttpStatus logInByAccessToken(String accessToken) {
 
         User user = userRepository.findByAccessToken(accessToken).orElse(null);
-        TokenValidationResult validation = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+        TokenValidationStatus validation = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
 
-        if (user == null || validation.getStatus() == INVALID) {
+        if (user == null || validation == INVALID) {
             return HttpStatus.BAD_REQUEST;
         }
 
-        if (validation.getStatus() == EXPIRED) {
+        if (validation == EXPIRED) {
             return HttpStatus.UNAUTHORIZED;
         }
 
@@ -122,26 +122,21 @@ public class UserService {
 
         User user = userRepository.findByRefreshToken(refreshToken).orElse(null);
 
-        TokenValidationResult validation = tokenProvider.validateToken(refreshToken, TokenType.RefreshToken);
+        TokenValidationStatus validation = tokenProvider.validateToken(refreshToken, TokenType.RefreshToken);
 
-        if (user == null || validation.getStatus() == EXPIRED || validation.getStatus() == INVALID) {
+        if (user == null || validation == EXPIRED || validation == INVALID) {
             return null;
         }
 
-        String message = null;
+        String message = "Access Token Updated";
 
-        if (validation.getStatus() == UPDATE) {
+        if (validation == UPDATE) {
             String newRefreshToken = tokenProvider.generate(user.getEmail(), TokenType.RefreshToken);
             user.updateRefreshToken(newRefreshToken);
-            message = String.format("Refresh Token Updated");
-        }
-
-        if (message == null) {
-            message = String.format("Access Token Updated");
+            message = "Access & Refresh Token Updated";
         }
 
         String accessToken = tokenProvider.generate(user.getEmail(), TokenType.AccessToken);
-
 
         user.updateAccessToken(accessToken);
 
@@ -153,6 +148,7 @@ public class UserService {
 
     }
 
+    @Transactional
     public Boolean logOut(String accessToken) {
 
         User user = userRepository.findByAccessToken(accessToken).orElse(null);
@@ -161,12 +157,12 @@ public class UserService {
             return false;
         }
 
-        userRepository.updateAccessTokenAndRefreshTokenBy(null, null);
+        userRepository.updateAccessTokenAndRefreshToken(null, null);
 
         return true;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public Boolean delete(String accessToken) {
 
         User user = userRepository.findByAccessToken(accessToken).orElse(null);

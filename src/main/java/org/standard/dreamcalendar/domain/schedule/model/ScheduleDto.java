@@ -1,24 +1,21 @@
 package org.standard.dreamcalendar.domain.schedule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Data
 public class ScheduleDto {
 
-    @JsonProperty("user_id")
-    private Long userId;
+    // TODO : 유효성 검사 추가
 
+    private Long id;
+    private String uuid;
     private String title;
-
     private int tag;
 
     @JsonProperty("is_all_day")

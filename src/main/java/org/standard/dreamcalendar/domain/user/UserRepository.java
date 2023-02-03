@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Modifying
     @Query("update User u set u.accessToken = ?1, u.refreshToken = ?2")
-    int updateAccessTokenAndRefreshTokenBy(String accessToken, String refreshToken);
+    int updateAccessTokenAndRefreshToken(String accessToken, String refreshToken);
 
     @Transactional
     @Modifying(clearAutomatically = true)

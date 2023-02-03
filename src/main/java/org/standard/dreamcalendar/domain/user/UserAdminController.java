@@ -30,11 +30,9 @@ public class UserAdminController {
 
         List<UserDto> userDtoList = userService.findAll();
 
-        if (userDtoList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        String message = (userDtoList.isEmpty()) ? "등록된 사용자가 없습니다." : "success";
 
-        ReadAllUserResponse response = new ReadAllUserResponse("Success", userDtoList);
+        ReadAllUserResponse response = new ReadAllUserResponse(message, userDtoList);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

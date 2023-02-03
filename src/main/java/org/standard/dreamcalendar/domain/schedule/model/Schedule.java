@@ -10,10 +10,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
 @Entity
 @Table(name = "SCHEDULES")
 public class Schedule extends BaseModel {
+
+    private String uuid;
 
     @ManyToOne
     private User user;

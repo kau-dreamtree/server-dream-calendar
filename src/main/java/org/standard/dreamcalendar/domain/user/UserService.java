@@ -152,12 +152,11 @@ public class UserService {
     public Boolean logOut(String accessToken) {
 
         User user = userRepository.findByAccessToken(accessToken).orElse(null);
-
         if (user == null) {
             return false;
         }
 
-        userRepository.updateAccessTokenAndRefreshToken(null, null);
+        userRepository.updateAccessTokenAndRefreshToken(user.getId(), null, null);
 
         return true;
     }
@@ -166,7 +165,6 @@ public class UserService {
     public Boolean delete(String accessToken) {
 
         User user = userRepository.findByAccessToken(accessToken).orElse(null);
-
         if (user == null) {
             return false;
         }

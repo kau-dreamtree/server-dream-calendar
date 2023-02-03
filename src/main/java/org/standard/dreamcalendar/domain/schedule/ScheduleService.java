@@ -9,7 +9,6 @@ import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
-import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
 import org.standard.dreamcalendar.model.DtoConverter;
 
 import java.util.List;
@@ -29,8 +28,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleDto create(String accessToken, ScheduleDto scheduleDto) {
 
-        TokenValidationStatus status = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
-        if (status != VALID) {
+        if (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) {
             // TODO: 토큰 갱신 루틴, AOP 적용
             return null;
         }
@@ -48,40 +46,36 @@ public class ScheduleService {
     }
 
     @Transactional
+    public Boolean exists(Long id) {
+        return scheduleRepository.existsById(id);
+    }
+
+    @Transactional
     public ScheduleDto find(String accessToken, Long id) {
 
-        TokenValidationStatus status = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
-        if (status != VALID) {
+        if (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) {
             // TODO: 토큰 갱신 루틴, AOP 적용
             return null;
         }
 
-        Schedule schedule = scheduleRepository.findById(id).orElse(null);
-        if (schedule == null) {
-            return null;
-        }
-
-        return converter.toScheduleDto(schedule);
+        return converter.toScheduleDto(scheduleRepository.findById(id).orElse(null));
 
     }
 
     @Transactional
     public List<ScheduleDto> findAll(String accessToken) {
 
-        TokenValidationStatus status = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
-        if (status != VALID) {
+        if (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) {
             // TODO: 토큰 갱신 루틴, AOP 적용
             return null;
         }
 
-        User user = userRepository.findByAccessToken(accessToken).orElse(null);
-        if (user == null) {
+        if (!userRepository.existsByAccessToken(accessToken)) {
             return null;
         }
 
-        List<Schedule> scheduleList = user.getSchedules();
-
-        return scheduleList.stream()
+        return userRepository.findByAccessToken(accessToken).orElse(null)
+                .getSchedules().stream()
                 .map(converter::toScheduleDto)
                 .collect(Collectors.toList());
 
@@ -97,32 +91,28 @@ public class ScheduleService {
     @Transactional
     public ScheduleDto update(String accessToken, ScheduleDto scheduleDto) {
 
-        TokenValidationStatus status = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
-        if (status != VALID) {
+        if (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) {
             // TODO: 토큰 갱신 루틴, AOP 적용
             return null;
         }
 
-        User user = userRepository.findByAccessToken(accessToken).orElse(null);
-        if (user == null) {
+        if (!userRepository.existsByAccessToken(accessToken) || !scheduleRepository.existsById(scheduleDto.getId())) {
             return null;
         }
 
-        Schedule schedule = scheduleRepository.findByUuid(scheduleDto.getUuid()).orElse(null);
-        if (schedule == null) {
-            schedule = converter.toScheduleEntity(scheduleDto);
-            return converter.toScheduleDto(schedule);
-        }
+        scheduleRepository.updateByAllParams(
+                scheduleDto.getId(), scheduleDto.getUuid(), scheduleDto.getTitle(),
+                scheduleDto.isAllDay(), scheduleDto.getStartAt(), scheduleDto.getEndAt(), scheduleDto.getTag()
+        );
 
-        return converter.toScheduleDto(schedule);
+        return converter.toScheduleDto(scheduleRepository.findById(scheduleDto.getId()).orElse(null));
 
     }
 
     @Transactional
     public void delete(String accessToken, Long id) {
 
-        TokenValidationStatus status = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
-        if (status != VALID) {
+        if (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) {
             // TODO: 토큰 갱신 루틴, AOP 적용
         }
 

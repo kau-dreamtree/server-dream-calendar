@@ -13,7 +13,7 @@ import org.standard.dreamcalendar.domain.user.dto.response.ReadAllUserResponse;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RestController
+@RestController("/admin")
 public class UserAdminController {
 
     private final UserService userService;
@@ -21,7 +21,7 @@ public class UserAdminController {
     @Value("${spring.security.user.password}")
     private String adminAuth;
 
-    @GetMapping("/user/all")
+    @GetMapping("/users")
     public ResponseEntity<ReadAllUserResponse> readAllUsers(@RequestHeader("Authorization") String authorization) {
 
         if (!authorization.equals(adminAuth)) {
@@ -32,8 +32,6 @@ public class UserAdminController {
 
         String message = (userDtoList.isEmpty()) ? "등록된 사용자가 없습니다." : "success";
 
-        ReadAllUserResponse response = new ReadAllUserResponse(message, userDtoList);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(new ReadAllUserResponse(message, userDtoList));
     }
 }

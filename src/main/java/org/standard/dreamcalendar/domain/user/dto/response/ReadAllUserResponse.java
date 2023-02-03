@@ -1,5 +1,6 @@
 package org.standard.dreamcalendar.domain.user.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 
@@ -10,6 +11,7 @@ public class ReadAllUserResponse {
 
      private String message;
 
+     @JsonProperty("user_list")
      private List<UserDto> userDtoList;
 
      public ReadAllUserResponse(String message) {

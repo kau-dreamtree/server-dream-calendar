@@ -26,8 +26,16 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ScheduleDto> read(
+            @PathVariable Long id ,@RequestHeader("Authorization") String accessToken
+    ) {
+        ScheduleDto scheduleDto = scheduleService.find(accessToken, id);
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleDto);
+    }
+
     @GetMapping
-    public ResponseEntity<List<ScheduleDto>> read(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<List<ScheduleDto>> readAll(@RequestHeader("Authorization") String accessToken) {
         List<ScheduleDto> scheduleDtoList = scheduleService.findAll(accessToken);
         return ResponseEntity.status(HttpStatus.OK).body(scheduleDtoList);
     }

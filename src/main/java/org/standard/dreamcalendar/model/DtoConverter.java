@@ -1,20 +1,20 @@
 package org.standard.dreamcalendar.model;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
 import org.standard.dreamcalendar.domain.schedule.ScheduleRepository;
 import org.standard.dreamcalendar.domain.schedule.model.Schedule;
 import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
-import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class DtoConverter {
 
-    private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
 
     public User toUserEntity(UserDto dto) {
@@ -51,8 +51,8 @@ public class DtoConverter {
     }
 
     public Schedule toScheduleEntity(ScheduleDto dto) {
-        Schedule schedule = scheduleRepository.findById(dto.getId()).orElse(null);
-        if (schedule == null) {
+
+        if (dto.getId() == null || !scheduleRepository.existsById(dto.getId())) {
             return Schedule.builder()
                     .uuid(dto.getUuid())
                     .title(dto.getTitle())
@@ -63,13 +63,12 @@ public class DtoConverter {
                     .build();
         }
 
-        schedule.setUuid(dto.getUuid());
-        schedule.setTitle(dto.getTitle());
-        schedule.setTag(dto.getTag());
-        schedule.setAllDay(dto.isAllDay());
-        schedule.setStartAt(dto.getStartAt());
-        schedule.setEndAt(dto.getEndAt());
-        return schedule;
+        scheduleRepository.updateByAllParams(
+                dto.getId(), dto.getUuid(), dto.getTitle(), dto.isAllDay(), dto.getStartAt(), dto.getEndAt(), dto.getTag()
+        );
+
+        return scheduleRepository.findById(dto.getId()).orElse(null);
+
     }
 
     public ScheduleDto toScheduleDto(Schedule schedule) {

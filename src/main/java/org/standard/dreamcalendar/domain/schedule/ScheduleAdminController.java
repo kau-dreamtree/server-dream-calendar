@@ -14,7 +14,7 @@ import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RestController("/admin")
+@RestController
 public class ScheduleAdminController {
 
     private final ScheduleService scheduleService;
@@ -22,7 +22,7 @@ public class ScheduleAdminController {
     @Value("${spring.security.user.password}")
     private String adminAuth;
 
-    @GetMapping("/schedules")
+    @GetMapping("/admin/schedules")
     public ResponseEntity<ReadAllScheduleResponse> readAllSchedule(@RequestHeader("Authorization") String authorization) {
 
         if (!authorization.equals(adminAuth)) {

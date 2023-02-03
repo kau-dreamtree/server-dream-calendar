@@ -13,7 +13,7 @@ import org.standard.dreamcalendar.domain.user.dto.response.ReadAllUserResponse;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RestController("/admin")
+@RestController("")
 public class UserAdminController {
 
     private final UserService userService;
@@ -21,7 +21,7 @@ public class UserAdminController {
     @Value("${spring.security.user.password}")
     private String adminAuth;
 
-    @GetMapping("/users")
+    @GetMapping("/admin/users")
     public ResponseEntity<ReadAllUserResponse> readAllUsers(@RequestHeader("Authorization") String authorization) {
 
         if (!authorization.equals(adminAuth)) {

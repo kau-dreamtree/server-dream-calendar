@@ -101,8 +101,8 @@ public class ScheduleService {
         }
 
         scheduleRepository.updateByAllParams(
-                scheduleDto.getId(), scheduleDto.getUuid(), scheduleDto.getTitle(),
-                scheduleDto.isAllDay(), scheduleDto.getStartAt(), scheduleDto.getEndAt(), scheduleDto.getTag()
+                scheduleDto.getId(), scheduleDto.getTitle(), scheduleDto.isAllDay(),
+                scheduleDto.getStartAt(), scheduleDto.getEndAt(), scheduleDto.getTag()
         );
 
         return converter.toScheduleDto(scheduleRepository.findById(scheduleDto.getId()).orElse(null));

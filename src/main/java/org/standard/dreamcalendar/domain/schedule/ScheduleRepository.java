@@ -13,10 +13,10 @@ import java.util.Optional;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("update Schedule s set s.uuid = ?2, s.title = ?3, s.isAllDay = ?4, s.startAt = ?5, s.endAt = ?6, s.tag = ?7 " +
+    @Query("update Schedule s set s.title = ?2, s.isAllDay = ?3, s.startAt = ?4, s.endAt = ?5, s.tag = ?6 " +
             "where s.id = ?1")
     void updateByAllParams(
-            @NonNull Long id, @NonNull String uuid, @NonNull String title, @NonNull boolean isAllDay,
+            @NonNull Long id, @NonNull String title, @NonNull boolean isAllDay,
             LocalDateTime startAt, LocalDateTime endAt, @NonNull int tag
     );
 

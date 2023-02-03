@@ -54,7 +54,6 @@ public class DtoConverter {
 
         if (dto.getId() == null || !scheduleRepository.existsById(dto.getId())) {
             return Schedule.builder()
-                    .uuid(dto.getUuid())
                     .title(dto.getTitle())
                     .isAllDay(dto.isAllDay())
                     .startAt(dto.getStartAt())
@@ -64,7 +63,7 @@ public class DtoConverter {
         }
 
         scheduleRepository.updateByAllParams(
-                dto.getId(), dto.getUuid(), dto.getTitle(), dto.isAllDay(), dto.getStartAt(), dto.getEndAt(), dto.getTag()
+                dto.getId(), dto.getTitle(), dto.isAllDay(), dto.getStartAt(), dto.getEndAt(), dto.getTag()
         );
 
         return scheduleRepository.findById(dto.getId()).orElse(null);
@@ -74,7 +73,6 @@ public class DtoConverter {
     public ScheduleDto toScheduleDto(Schedule schedule) {
         return ScheduleDto.builder()
                 .id(schedule.getId())
-                .uuid(schedule.getUuid())
                 .title(schedule.getTitle())
                 .tag(schedule.getTag())
                 .isAllDay(schedule.isAllDay())

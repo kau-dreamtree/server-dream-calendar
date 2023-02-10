@@ -4,13 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.config.JwtTokenProvider;
+import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.schedule.model.Schedule;
-import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.model.DtoConverter;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,23 +27,23 @@ public class ScheduleService {
     private final UserRepository userRepository;
 
     @Transactional
-    public ScheduleDto create(String accessToken, ScheduleDto scheduleDto) {
+    public Boolean create(String accessToken, ScheduleDto scheduleDto) {
 
-        if (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) {
-            // TODO: 토큰 갱신 루틴, AOP 적용
-            return null;
+        if (
+                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
+                (!userRepository.existsByAccessToken(accessToken))
+        ) {
+            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
+            return false;
         }
 
         User user = userRepository.findByAccessToken(accessToken).orElse(null);
-        if (user == null) {
-            return null;
-        }
 
         Schedule schedule = converter.toScheduleEntity(scheduleDto);
         user.addSchedule(schedule);
         scheduleRepository.save(schedule);
 
-        return converter.toScheduleDto(schedule);
+        return true;
     }
 
     @Transactional
@@ -52,71 +53,86 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleDto find(String accessToken, Long id) {
-
-        if (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) {
-            // TODO: 토큰 갱신 루틴, AOP 적용
+        
+        if (
+                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
+                (!userRepository.existsByAccessToken(accessToken))
+        ) {
+            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
             return null;
         }
 
-        return converter.toScheduleDto(scheduleRepository.findById(id).orElse(null));
+        Schedule schedule = scheduleRepository.findById(id).orElse(null);
+        
+        return converter.toScheduleDto(schedule);
 
     }
 
     @Transactional
     public List<ScheduleDto> findAll(String accessToken) {
 
-        if (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) {
-            // TODO: 토큰 갱신 루틴, AOP 적용
+        if (
+                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
+                (!userRepository.existsByAccessToken(accessToken))
+        ) {
+            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
             return null;
         }
 
-        if (!userRepository.existsByAccessToken(accessToken)) {
-            return null;
-        }
+        User user = userRepository.findByAccessToken(accessToken).orElse(null);
+        List<Schedule> schedules = user.getSchedules();
 
-        return userRepository.findByAccessToken(accessToken).orElse(null)
-                .getSchedules().stream()
-                .map(converter::toScheduleDto)
-                .collect(Collectors.toList());
+        return (schedules.isEmpty()) ?
+                Collections.emptyList() :
+                schedules.stream()
+                        .map(converter::toScheduleDto)
+                        .collect(Collectors.toList());
 
     }
 
     @Transactional
     public List<ScheduleDto> findAllAdmin() {
-        return scheduleRepository.findAll().stream()
-                .map(converter::toScheduleDto)
-                .collect(Collectors.toList());
+        List<Schedule> schedules = scheduleRepository.findAll();
+        return (schedules.isEmpty()) ?
+                Collections.emptyList() :
+                schedules.stream()
+                        .map(converter::toScheduleDto)
+                        .collect(Collectors.toList());
     }
 
     @Transactional
-    public ScheduleDto update(String accessToken, ScheduleDto scheduleDto) {
+    public Boolean update(String accessToken, ScheduleDto scheduleDto) {
 
-        if (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) {
-            // TODO: 토큰 갱신 루틴, AOP 적용
-            return null;
-        }
-
-        if (!userRepository.existsByAccessToken(accessToken) || !scheduleRepository.existsById(scheduleDto.getId())) {
-            return null;
+        if (
+                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
+                (!userRepository.existsByAccessToken(accessToken))
+        ) {
+            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
+            return false;
         }
 
         scheduleRepository.updateByAllParams(
-                scheduleDto.getId(), scheduleDto.getTitle(), scheduleDto.isAllDay(),
-                scheduleDto.getStartAt(), scheduleDto.getEndAt(), scheduleDto.getTag()
+                scheduleDto.getId(), scheduleDto.getTitle(), scheduleDto.getTag(),
+                scheduleDto.isAllDay(), scheduleDto.getStartAt(), scheduleDto.getEndAt()
         );
 
-        return converter.toScheduleDto(scheduleRepository.findById(scheduleDto.getId()).orElse(null));
+        return true;
 
     }
 
     @Transactional
-    public void delete(String accessToken, Long id) {
+    public Boolean delete(String accessToken, Long id) {
 
-        if (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) {
-            // TODO: 토큰 갱신 루틴, AOP 적용
+        if (
+                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
+                (!userRepository.existsByAccessToken(accessToken))
+        ) {
+            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
+            return false;
         }
 
         scheduleRepository.deleteById(id);
+        return true;
     }
 
 }

@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import org.standard.dreamcalendar.domain.schedule.model.ReadAllScheduleResponse;
-import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
+import org.standard.dreamcalendar.domain.schedule.dto.response.ReadAllScheduleResponse;
+import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 
 import java.util.List;
 

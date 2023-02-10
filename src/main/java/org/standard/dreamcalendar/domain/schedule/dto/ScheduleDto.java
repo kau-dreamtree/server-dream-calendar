@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.domain.schedule.model;
+package org.standard.dreamcalendar.domain.schedule.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
 import org.standard.dreamcalendar.domain.schedule.ScheduleRepository;
 import org.standard.dreamcalendar.domain.schedule.model.Schedule;
-import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
+import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 
@@ -63,7 +63,7 @@ public class DtoConverter {
         }
 
         scheduleRepository.updateByAllParams(
-                dto.getId(), dto.getTitle(), dto.isAllDay(), dto.getStartAt(), dto.getEndAt(), dto.getTag()
+                dto.getId(), dto.getTitle(), dto.getTag(), dto.isAllDay(), dto.getStartAt(), dto.getEndAt()
         );
 
         return scheduleRepository.findById(dto.getId()).orElse(null);

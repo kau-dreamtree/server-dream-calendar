@@ -1,7 +1,8 @@
-package org.standard.dreamcalendar.domain.schedule.model;
+package org.standard.dreamcalendar.domain.schedule.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 
 import java.util.List;
 

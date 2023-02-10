@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.standard.dreamcalendar.domain.user.dto.response.CreateResponse;
+import org.standard.dreamcalendar.domain.user.dto.response.CreateUserResponse;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByAccessTokenResponse;
@@ -27,11 +27,11 @@ public class UserController {
     }
 
     @PostMapping("/auth/create")
-    public ResponseEntity<CreateResponse> create(@RequestBody UserDto user)
+    public ResponseEntity<CreateUserResponse> create(@RequestBody UserDto user)
             throws NoSuchAlgorithmException {
         return (userService.create(user)) ?
                 ResponseEntity.status(HttpStatus.CREATED).build() :
-                ResponseEntity.status(HttpStatus.CONFLICT).body(new CreateResponse("이미 등록된 이메일입니다."));
+                ResponseEntity.status(HttpStatus.CONFLICT).body(new CreateUserResponse("이미 등록된 이메일입니다."));
     }
 
     @PostMapping("/auth/login")

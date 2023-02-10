@@ -47,8 +47,8 @@ public class UserController {
     public ResponseEntity<LogInByAccessTokenResponse> loginByAccessToken(
             @RequestHeader("Authorization") String accessToken
     ) {
-        HttpStatus status = userService.logInByAccessToken(accessToken);
-        return ResponseEntity.status(status).body(new LogInByAccessTokenResponse(status));
+        LogInByAccessTokenResponse response = userService.logInByAccessToken(accessToken);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @GetMapping("/auth-refresh")

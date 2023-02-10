@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.config.Encryptor;
 import org.standard.dreamcalendar.config.JwtTokenProvider;
+import org.standard.dreamcalendar.domain.user.dto.response.LogInByAccessTokenResponse;
 import org.standard.dreamcalendar.domain.user.dto.response.UpdateTokenResponse;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
@@ -91,20 +92,20 @@ public class UserService {
      * @return HttpStatus
      */
     @Transactional
-    public HttpStatus logInByAccessToken(String accessToken) {
+    public LogInByAccessTokenResponse logInByAccessToken(String accessToken) {
 
         User user = userRepository.findByAccessToken(accessToken).orElse(null);
         TokenValidationStatus validation = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
 
         if (user == null || validation == INVALID) {
-            return HttpStatus.BAD_REQUEST;
+            return new LogInByAccessTokenResponse(HttpStatus.BAD_REQUEST);
         }
 
         if (validation == EXPIRED) {
-            return HttpStatus.UNAUTHORIZED;
+            return new LogInByAccessTokenResponse(HttpStatus.UNAUTHORIZED);
         }
 
-        return HttpStatus.OK;
+        return new LogInByAccessTokenResponse(HttpStatus.OK);
     }
 
     /**

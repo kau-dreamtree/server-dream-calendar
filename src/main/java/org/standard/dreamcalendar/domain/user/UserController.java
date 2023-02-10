@@ -60,14 +60,14 @@ public class UserController {
     public ResponseEntity<HttpStatus> logOut(@RequestHeader("Authorization") String accessToken) {
         return (userService.logOut(accessToken)) ?
                 ResponseEntity.status(HttpStatus.OK).build() :
-                ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @DeleteMapping
     public ResponseEntity<HttpStatus> delete(@RequestHeader("Authorization") String accessToken) {
         return (userService.delete(accessToken)) ?
                 ResponseEntity.status(HttpStatus.OK).build() :
-                ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
 }

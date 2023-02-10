@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 @Table(name = "SCHEDULES")
 public class Schedule extends BaseModel {
 
-    private String uuid;
-
     @ManyToOne
     private User user;
 

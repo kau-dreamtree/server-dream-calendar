@@ -5,57 +5,67 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
+import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
+import org.standard.dreamcalendar.domain.schedule.dto.response.CreateScheduleResponse;
+import org.standard.dreamcalendar.domain.schedule.dto.response.ReadAllScheduleResponse;
+import org.standard.dreamcalendar.domain.schedule.dto.response.ReadScheduleResponse;
+import org.standard.dreamcalendar.domain.schedule.dto.response.UpdateScheduleResponse;
 
 import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/schedule")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    @PostMapping
-    public ResponseEntity<ScheduleDto> create(
+    @PostMapping("/schedule")
+    public ResponseEntity<HttpStatus> create(
             @RequestHeader("Authorization")  String accessToken,
             @RequestBody ScheduleDto scheduleDto
     ) {
-        ScheduleDto response = scheduleService.create(accessToken, scheduleDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return (scheduleService.create(accessToken, scheduleDto)) ?
+                ResponseEntity.status(HttpStatus.CREATED).build() :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/schedule/{id}")
     public ResponseEntity<ScheduleDto> read(
             @PathVariable Long id ,@RequestHeader("Authorization") String accessToken
     ) {
         ScheduleDto scheduleDto = scheduleService.find(accessToken, id);
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleDto);
+        return (scheduleDto != null) ?
+                ResponseEntity.status(HttpStatus.OK).body(scheduleDto) :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<ScheduleDto>> readAll(@RequestHeader("Authorization") String accessToken) {
+    @GetMapping("/schedules")
+    public ResponseEntity<List> readAll(@RequestHeader("Authorization") String accessToken) {
         List<ScheduleDto> scheduleDtoList = scheduleService.findAll(accessToken);
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleDtoList);
+        return (scheduleDtoList != null) ?
+                ResponseEntity.status(HttpStatus.OK).body(scheduleDtoList) :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @PutMapping
-    public ResponseEntity<ScheduleDto> update(
+    @PutMapping("/schedule")
+    public ResponseEntity<HttpStatus> update(
             @RequestHeader("Authorization")  String accessToken,
             @RequestBody ScheduleDto scheduleDto
     ) {
-        ScheduleDto response = scheduleService.update(accessToken, scheduleDto);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return (scheduleService.update(accessToken, scheduleDto)) ?
+                ResponseEntity.status(HttpStatus.OK).build() :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/schedule")
     public ResponseEntity<HttpStatus> delete(
             @RequestHeader("Authorization") String accessToken,
             @RequestBody ScheduleDto scheduleDto
     ) {
-        scheduleService.delete(accessToken, scheduleDto.getId());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return (scheduleService.delete(accessToken, scheduleDto.getId())) ?
+                ResponseEntity.status(HttpStatus.NO_CONTENT).build() :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
 }

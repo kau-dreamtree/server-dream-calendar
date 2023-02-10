@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
 import org.standard.dreamcalendar.domain.schedule.ScheduleRepository;
 import org.standard.dreamcalendar.domain.schedule.model.Schedule;
-import org.standard.dreamcalendar.domain.schedule.model.ScheduleDto;
+import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 
@@ -54,7 +54,6 @@ public class DtoConverter {
 
         if (dto.getId() == null || !scheduleRepository.existsById(dto.getId())) {
             return Schedule.builder()
-                    .uuid(dto.getUuid())
                     .title(dto.getTitle())
                     .isAllDay(dto.isAllDay())
                     .startAt(dto.getStartAt())
@@ -64,7 +63,7 @@ public class DtoConverter {
         }
 
         scheduleRepository.updateByAllParams(
-                dto.getId(), dto.getUuid(), dto.getTitle(), dto.isAllDay(), dto.getStartAt(), dto.getEndAt(), dto.getTag()
+                dto.getId(), dto.getTitle(), dto.getTag(), dto.isAllDay(), dto.getStartAt(), dto.getEndAt()
         );
 
         return scheduleRepository.findById(dto.getId()).orElse(null);
@@ -74,7 +73,6 @@ public class DtoConverter {
     public ScheduleDto toScheduleDto(Schedule schedule) {
         return ScheduleDto.builder()
                 .id(schedule.getId())
-                .uuid(schedule.getUuid())
                 .title(schedule.getTitle())
                 .tag(schedule.getTag())
                 .isAllDay(schedule.isAllDay())

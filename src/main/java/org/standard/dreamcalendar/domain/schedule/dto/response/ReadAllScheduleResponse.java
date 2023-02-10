@@ -14,10 +14,6 @@ public class ReadAllScheduleResponse {
     @JsonProperty("schedule_list")
     private List<ScheduleDto> scheduleDtoList;
 
-    public ReadAllScheduleResponse(String message) {
-        this.message = message;
-    }
-
     public ReadAllScheduleResponse(String message, List<ScheduleDto> scheduleDtoList) {
         this.message = message;
         this.scheduleDtoList = scheduleDtoList;

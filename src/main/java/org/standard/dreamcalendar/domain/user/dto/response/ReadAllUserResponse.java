@@ -14,10 +14,6 @@ public class ReadAllUserResponse {
      @JsonProperty("user_list")
      private List<UserDto> userDtoList;
 
-     public ReadAllUserResponse(String message) {
-          this.message = message;
-     }
-
      public ReadAllUserResponse(String message, List<UserDto> userDtoList) {
           this.message = message;
           this.userDtoList = userDtoList;

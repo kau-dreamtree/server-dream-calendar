@@ -13,7 +13,7 @@ import org.standard.dreamcalendar.domain.user.dto.response.ReadAllUserResponse;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RestController("")
+@RestController
 public class UserAdminController {
 
     private final UserService userService;

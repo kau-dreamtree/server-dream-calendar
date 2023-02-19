@@ -13,7 +13,7 @@ PROFILE_URI="http://localhost:$IDLE_PORT/profile"
 echo "$TIME_NOW > Health Check ..." >> "$DEPLOY_LOG"
 echo "$TIME_NOW > IDLE_PORT: $IDLE_PORT" >> "$DEPLOY_LOG"
 echo "$TIME_NOW > curl -s $PROFILE_URI" >> "$DEPLOY_LOG"
-sleep 10
+sleep 5
 
 for RETRY_COUNT in {1..5}
 do
@@ -31,7 +31,7 @@ do
     echo "$TIME_NOW > RESPONSE: ${RESPONSE}" >> "$DEPLOY_LOG"
   fi
 
-  if [ "${RETRY_COUNT}" -eq 10 ]
+  if [ "${RETRY_COUNT}" -eq 5 ]
   then
     echo "$TIME_NOW > Health Check 실패" >> "$DEPLOY_LOG"
     echo "$TIME_NOW > Nginx에 연결하지 않고 배포를 종료합니다." >> "$DEPLOY_LOG"

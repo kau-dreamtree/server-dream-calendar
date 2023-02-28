@@ -1,9 +1,11 @@
-package org.standard.dreamcalendar.model;
+package org.standard.dreamcalendar.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
+import org.standard.dreamcalendar.domain.email.EmailAuth;
+import org.standard.dreamcalendar.domain.email.EmailAuthDto;
 import org.standard.dreamcalendar.domain.schedule.ScheduleRepository;
 import org.standard.dreamcalendar.domain.schedule.model.Schedule;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
@@ -37,16 +39,23 @@ public class DtoConverter {
                 .build();
     }
 
-    public UserDto toUserDto(User user) {
+    public UserDto toUserDto(User entity) {
         return UserDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .name(user.getName())
-                .picture(user.getPicture())
-                .role(user.getRole())
-                .accessToken(user.getAccessToken())
-                .refreshToken(user.getRefreshToken())
+                .id(entity.getId())
+                .email(entity.getEmail())
+                .password(entity.getPassword())
+                .name(entity.getName())
+                .picture(entity.getPicture())
+                .role(entity.getRole())
+                .accessToken(entity.getAccessToken())
+                .refreshToken(entity.getRefreshToken())
+                .build();
+    }
+
+    public EmailAuth toEmailAuthEntity(EmailAuthDto dto) {
+        return EmailAuth.builder()
+                .email(dto.getEmail())
+                .code(dto.getCode())
                 .build();
     }
 
@@ -70,14 +79,14 @@ public class DtoConverter {
 
     }
 
-    public ScheduleDto toScheduleDto(Schedule schedule) {
+    public ScheduleDto toScheduleDto(Schedule entity) {
         return ScheduleDto.builder()
-                .id(schedule.getId())
-                .title(schedule.getTitle())
-                .tag(schedule.getTag())
-                .isAllDay(schedule.isAllDay())
-                .startAt(schedule.getStartAt())
-                .endAt(schedule.getEndAt())
+                .id(entity.getId())
+                .title(entity.getTitle())
+                .tag(entity.getTag())
+                .isAllDay(entity.isAllDay())
+                .startAt(entity.getStartAt())
+                .endAt(entity.getEndAt())
                 .build();
     }
 

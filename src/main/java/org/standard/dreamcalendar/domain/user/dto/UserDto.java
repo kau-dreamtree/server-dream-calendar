@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.standard.dreamcalendar.domain.user.Role;
+import org.standard.dreamcalendar.domain.user.type.Role;
 
 @AllArgsConstructor
 @NoArgsConstructor

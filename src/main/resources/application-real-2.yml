@@ -5,6 +5,7 @@ spring:
   profiles:
     include:
       - key
+      - email
       - real-db
   jpa:
     show-sql: true

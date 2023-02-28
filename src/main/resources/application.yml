@@ -3,6 +3,7 @@ spring:
   profiles:
     include:
       - key
+      - email
 
   h2:
     console:

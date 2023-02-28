@@ -1,4 +1,4 @@
-package org.statndard.dreamcalendar.config;
+package org.statndard.dreamcalendar.service;
 
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.standard.dreamcalendar.DreamCalendarApplication;
-import org.standard.dreamcalendar.config.Encryptor;
+import org.standard.dreamcalendar.service.Encryptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

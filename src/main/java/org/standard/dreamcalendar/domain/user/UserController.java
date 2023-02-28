@@ -25,8 +25,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> create(@RequestBody UserDto user)
-            throws NoSuchAlgorithmException {
+    public ResponseEntity<HttpStatus> create(@RequestBody UserDto user) throws NoSuchAlgorithmException {
         return (userService.create(user)) ?
                 ResponseEntity.status(HttpStatus.CREATED).build() :
                 ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -42,9 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/auth")
-    public ResponseEntity<HttpStatus> authorize(
-            @RequestHeader("Authorization") String accessToken
-    ) {
+    public ResponseEntity<HttpStatus> authorize(@RequestHeader("Authorization") String accessToken) {
         return ResponseEntity.status(userService.logInByAccessToken(accessToken)).build();
     }
 

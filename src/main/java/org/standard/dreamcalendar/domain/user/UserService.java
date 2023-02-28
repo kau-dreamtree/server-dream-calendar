@@ -5,14 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.standard.dreamcalendar.config.Encryptor;
-import org.standard.dreamcalendar.config.JWTProvider;
+import org.standard.dreamcalendar.domain.user.type.Role;
+import org.standard.dreamcalendar.service.Encryptor;
+import org.standard.dreamcalendar.service.JWTProvider;
 import org.standard.dreamcalendar.domain.user.dto.response.UpdateTokenResponse;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
-import org.standard.dreamcalendar.model.DtoConverter;
+import org.standard.dreamcalendar.service.DtoConverter;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;

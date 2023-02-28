@@ -1,7 +1,10 @@
 package org.standard.dreamcalendar.domain.user;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.standard.dreamcalendar.domain.schedule.model.Schedule;
+import org.standard.dreamcalendar.domain.user.type.Role;
 import org.standard.dreamcalendar.model.BaseModel;
 
 import javax.persistence.*;
@@ -24,6 +27,10 @@ public class User extends BaseModel {
     @Column(nullable = false)
     private String name;
 
+    private String mailKey;
+
+    private Boolean mailAuth;
+
     private String picture;
 
     @Enumerated(EnumType.STRING)
@@ -37,7 +44,7 @@ public class User extends BaseModel {
     private String refreshToken;
 
     @OneToMany(mappedBy = "user")
-    private List<Schedule> schedules = new ArrayList<>();
+    private List<Schedule> schedules;
 
     public void addSchedule(Schedule schedule) {
         schedule.setUser(this);

@@ -4,6 +4,7 @@ spring:
     include:
       - key
       - email
+      - log
 
   h2:
     console:
@@ -17,10 +18,6 @@ spring:
         dialect:
           nodeValue: org.hibernate.dialect.MySQL57Dialect
           storage_engine: innodb
-
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
 
   datasource:
     hikari:

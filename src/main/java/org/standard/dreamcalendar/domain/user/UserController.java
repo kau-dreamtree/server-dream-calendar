@@ -19,11 +19,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/test")
-    public ResponseEntity<HttpStatus> test() {
-        return ResponseEntity.ok().build();
-    }
-
     @PostMapping
     public ResponseEntity<HttpStatus> create(@RequestBody UserDto user) throws NoSuchAlgorithmException {
         return (userService.create(user)) ?

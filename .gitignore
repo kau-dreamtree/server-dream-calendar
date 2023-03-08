@@ -189,4 +189,5 @@ gradle-app.setting
 application-key.yml
 application-oauth.yml
 application-real-db.yml
+application-email.yml
 .DS_Store

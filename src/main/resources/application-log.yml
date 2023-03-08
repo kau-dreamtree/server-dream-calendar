@@ -1,0 +1,21 @@
+# Log Level: TRACE > DEBUG > INFO > WARN > ERROR
+
+logging:
+  level:
+    org:
+      standard:
+        dreamcalendar: trace
+  pattern:
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint}
+              %clr(${LOG_LEVEL_PATTERN:%5p})
+              %clr(${PID:- }){magenta}
+              %clr(---){faint}
+              %clr([%15.15t]){faint}
+              %clr(%-40.40logger{39}){cyan}
+              %clr(:){faint}
+              %msg%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}}"
+  #    file: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
+  #    rolling-file-name: "/logs/abc.%d{yyyy-MM-dd}.%i"
+  #  file:
+  #    name: /logs/abc.log
+  #    max-history: 30

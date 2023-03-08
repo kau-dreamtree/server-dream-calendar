@@ -14,12 +14,12 @@ import java.security.NoSuchAlgorithmException;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/user")
+@RequestMapping
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("/user")
     public ResponseEntity<HttpStatus> create(@RequestBody UserDto user) throws NoSuchAlgorithmException {
         return (userService.create(user)) ?
                 ResponseEntity.status(HttpStatus.CREATED).build() :
@@ -55,7 +55,7 @@ public class UserController {
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/user")
     public ResponseEntity<HttpStatus> delete(@RequestHeader("Authorization") String accessToken) {
         return (userService.delete(accessToken)) ?
                 ResponseEntity.status(HttpStatus.OK).build() :

@@ -27,10 +27,6 @@ public class User extends BaseModel {
     @Column(nullable = false)
     private String name;
 
-    private String mailKey;
-
-    private Boolean mailAuth;
-
     private String picture;
 
     @Enumerated(EnumType.STRING)

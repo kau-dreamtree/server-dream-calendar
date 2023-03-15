@@ -176,12 +176,6 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserDto> findAll() {
-        List<User> userList = userRepository.findAll();
-        return userList.stream().map(converter::toUserDto).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
     public UserDto findById(Long id) {
         User user = userRepository.findById(id).orElse(null);
         return converter.toUserDto(user);

@@ -34,9 +34,9 @@ public class JWTProvider {
 
         Header header = Jwts.header();
         Claims claims = Jwts.claims();
+        String subject = "Authorization";
         SecretKey secretKey = getKey(type);
-
-        String subject = "authorization";
+        Date expiration = getExpirationDate(type);
 
         header.put("typ", "JWT");
         header.put("alg", "HS256");
@@ -47,7 +47,31 @@ public class JWTProvider {
                 .setSubject(subject)
                 .setClaims(claims)
                 .setIssuedAt(new Date())
-                .setExpiration(getExpirationDate(type))
+                .setExpiration(expiration)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact()
+                .replace("=", "");
+
+    }
+
+    public String generateForExpirationTest(String claim, TokenType type, Long second) {
+
+        Header header = Jwts.header();
+        Claims claims = Jwts.claims();
+        String subject = "Authorization";
+        SecretKey secretKey = getKey(type);
+        Date expiration = getCustomExpirationDate(second);
+
+        header.put("typ", "JWT");
+        header.put("alg", "HS256");
+
+        claims.put("email", claim);
+
+        return Jwts.builder()
+                .setSubject(subject)
+                .setClaims(claims)
+                .setIssuedAt(new Date())
+                .setExpiration(expiration)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact()
                 .replace("=", "");
@@ -57,7 +81,6 @@ public class JWTProvider {
     public TokenValidationStatus validateToken(String token, TokenType type) {
 
         try {
-
             SecretKey secretKey = getKey(type);
             Claims claims = getClaims(secretKey, token);
             Date refreshDate = getRefreshDate(claims.getExpiration().getTime());
@@ -65,7 +88,6 @@ public class JWTProvider {
             return (type == TokenType.RefreshToken && refreshDate.before(new Date())) ?
                     TokenValidationStatus.UPDATE :
                     TokenValidationStatus.VALID;
-
         } catch (ExpiredJwtException ex) {
             return TokenValidationStatus.EXPIRED;
         } catch (Exception ex) {
@@ -87,20 +109,21 @@ public class JWTProvider {
 
     private Date getExpirationDate(TokenType type) {
 
-        long ACCESS_EXPIRATION_MS = TimeUnit.HOURS.toMillis(accessTokenExpirationHours);
-        long REFRESH_EXPIRATION_MS = TimeUnit.DAYS.toMillis(refreshTokenExpirationDays);
-
         Date now = new Date();
 
         switch (type) {
             case AccessToken:
-                return new Date(now.getTime() + ACCESS_EXPIRATION_MS);
+                return new Date(now.getTime() + TimeUnit.HOURS.toMillis(accessTokenExpirationHours));
             case RefreshToken:
-                return new Date(now.getTime() + REFRESH_EXPIRATION_MS);
+                return new Date(now.getTime() + TimeUnit.DAYS.toMillis(refreshTokenExpirationDays));
             default:
                 return null;
         }
 
+    }
+
+    private Date getCustomExpirationDate(Long second) {
+        return new Date(new Date().getTime() + TimeUnit.SECONDS.toMillis(second));
     }
 
     private Claims getClaims(SecretKey key, String token) {

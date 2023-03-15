@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-public class ScheduleAdminController {
+public class AdminScheduleController {
 
     private final ScheduleService scheduleService;
 

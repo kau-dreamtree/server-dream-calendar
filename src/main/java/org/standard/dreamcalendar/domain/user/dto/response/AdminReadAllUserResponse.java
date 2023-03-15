@@ -7,14 +7,14 @@ import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import java.util.List;
 
 @Data
-public class ReadAllUserResponse {
+public class AdminReadAllUserResponse {
 
      private String message;
 
      @JsonProperty("user_list")
      private List<UserDto> userDtoList;
 
-     public ReadAllUserResponse(String message, List<UserDto> userDtoList) {
+     public AdminReadAllUserResponse(String message, List<UserDto> userDtoList) {
           this.message = message;
           this.userDtoList = userDtoList;
      }

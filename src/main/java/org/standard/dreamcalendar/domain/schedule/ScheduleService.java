@@ -53,12 +53,8 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleDto find(String accessToken, Long id) {
-        
-        if (
-                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
-                (!userRepository.existsByAccessToken(accessToken))
-        ) {
-            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
+
+        if (validateAccessToken(accessToken)) {
             return null;
         }
 
@@ -71,11 +67,7 @@ public class ScheduleService {
     @Transactional
     public List<ScheduleDto> findAll(String accessToken) {
 
-        if (
-                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
-                (!userRepository.existsByAccessToken(accessToken))
-        ) {
-            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
+        if (validateAccessToken(accessToken)) {
             return null;
         }
 
@@ -103,11 +95,7 @@ public class ScheduleService {
     @Transactional
     public Boolean update(String accessToken, ScheduleDto scheduleDto) {
 
-        if (
-                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
-                (!userRepository.existsByAccessToken(accessToken))
-        ) {
-            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
+        if (validateAccessToken(accessToken)) {
             return false;
         }
 
@@ -123,16 +111,17 @@ public class ScheduleService {
     @Transactional
     public Boolean delete(String accessToken, Long id) {
 
-        if (
-                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
-                (!userRepository.existsByAccessToken(accessToken))
-        ) {
-            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
+        if (validateAccessToken(accessToken)) {
             return false;
         }
 
         scheduleRepository.deleteById(id);
         return true;
+    }
+
+    public Boolean validateAccessToken(String token) {
+        return (tokenProvider.validateToken(token, TokenType.AccessToken) != VALID)
+                || (!userRepository.existsByAccessToken(token));
     }
 
 }

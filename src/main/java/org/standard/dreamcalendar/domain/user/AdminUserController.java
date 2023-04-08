@@ -38,13 +38,19 @@ public class AdminUserController {
 
     // logInByEmailPassword 수정
     @PostMapping("/admin/auth")
-    public ResponseEntity<LogInByEmailPasswordResponse> tokenExpirationTest(@RequestBody AdminTokenExpirationTestDto dto)
-            throws NoSuchAlgorithmException {
+    public ResponseEntity<LogInByEmailPasswordResponse> tokenExpirationTest(
+            @RequestHeader("Authorization") String authorization, @RequestBody AdminTokenExpirationTestDto dto
+    ) throws NoSuchAlgorithmException {
+
+        if (!authorization.equals(adminAuth)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         LogInByEmailPasswordResponse response = userAdminService.tokenExpirationTest(dto);
+
         return (response != null) ?
                 ResponseEntity.status(HttpStatus.OK).body(response) :
                 ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-
 
 }

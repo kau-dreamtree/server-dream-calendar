@@ -16,7 +16,7 @@
 
 ## ⚒️ 기능 소개
 
-> **DreamCalendar**는 ~~
+> **DreamCalendar**는 가볍고 편리한 달력입니다. 
 
 |회원가입 및 로그인|캘린더 보기|
 |:-:|:-:|
@@ -35,7 +35,7 @@
 <br>
 
 ## 🏃🏻 기술적 고민
-> [제목](링크)<br>
+> [Wiki](https://github.com/kau-dreamtree/server-dream-calendar.wiki.git)<br>
 
 ## 협업과정 & iOS Repo
 [iOS Repo](https://github.com/kau-dreamtree/ios-dream-calendar)

@@ -38,8 +38,5 @@
 > [Wiki](https://github.com/kau-dreamtree/server-dream-calendar/wiki/%EA%B8%B0%ED%9A%8D%EA%B3%BC-%EA%B3%A0%EB%AF%BC)<br>
 
 ## 협업과정 & iOS Repo
-[iOS Repo](https://github.com/kau-dreamtree/ios-dream-calendar)
-
-[Github Wiki]()
-
-- 백로그
+> [협업과정]()
+> [iOS Repo](https://github.com/kau-dreamtree/ios-dream-calendar)

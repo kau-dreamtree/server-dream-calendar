@@ -35,8 +35,8 @@
 <br>
 
 ## 🏃🏻 기획, 설계, 기술적 어려움 기록
-> [Wiki](https://github.com/kau-dreamtree/server-dream-calendar/wiki/%EA%B8%B0%ED%9A%8D%EA%B3%BC-%EA%B3%A0%EB%AF%BC)<br>
+> [Wiki](https://github.com/kau-dreamtree/server-dream-calendar/wiki/%EA%B8%B0%ED%9A%8D,-%EC%84%A4%EA%B3%84,-%EA%B8%B0%EC%88%A0%EC%A0%81-%EC%96%B4%EB%A0%A4%EC%9B%80)<br>
 
-## 협업과정 & iOS Repo
-> [협업과정]() <br>
+##  & iOS Repo
+> [회의록](https://github.com/kau-dreamtree/server-dream-calendar/wiki/%ED%9A%8C%EC%9D%98%EB%A1%9D) <br>
 > [iOS Repo](https://github.com/kau-dreamtree/ios-dream-calendar)

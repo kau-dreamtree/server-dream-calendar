@@ -30,7 +30,7 @@
 
 
 ## 🏗 아키텍쳐
-
+![architecture](https://user-images.githubusercontent.com/81848498/231329494-8dad8199-5bea-4995-9659-ee2373c061c6.jpg)
 
 <br>
 
@@ -38,5 +38,5 @@
 > [Wiki](https://github.com/kau-dreamtree/server-dream-calendar/wiki/%EA%B8%B0%ED%9A%8D%EA%B3%BC-%EA%B3%A0%EB%AF%BC)<br>
 
 ## 협업과정 & iOS Repo
-> [협업과정]()
+> [협업과정]() <br>
 > [iOS Repo](https://github.com/kau-dreamtree/ios-dream-calendar)

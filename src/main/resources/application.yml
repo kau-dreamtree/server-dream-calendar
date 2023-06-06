@@ -4,7 +4,6 @@ spring:
     include:
       - key
       - email
-      - log
 
   h2:
     console:

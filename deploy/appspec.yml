@@ -1,23 +1,40 @@
-version: 0.0
+version: 0.1
 os: linux
 
 files:
   - source: /
-    destination: /home/ec2-user/dreamtree
     overwrite: yes
+    destination:
+      main: /home/ec2-user/dreamcalendar_product
+      test: /home/ec2-user/dreamcalendar_test
 
 permissions:
-  - object: /
+  - object: /home/ec2-user/dreamcalendar_product
+    pattern: "**"
+    owner: ec2-user
+    group: ec2-user
+
+  - object: /home/ec2-user/dreamcalendar_test
     pattern: "**"
     owner: ec2-user
     group: ec2-user
 
 hooks:
   AfterInstall:
-    - location: scripts/stop.sh
-      timeout: 60
-      runas: ec2-user
+    main:
+      - location: scripts-product/stop.sh
+        timeout: 60
+        runas: ec2-user
+    test:
+      - location: scripts-test/stop.sh
+        timeout: 60
+        runas: ec2-user
   ApplicationStart:
-    - location: scripts/start.sh
-      timeout: 60
-      runas: ec2-user
+    main:
+      - location: scripts-product/start.sh
+        timeout: 60
+        runas: ec2-user
+    test:
+      - location: scripts-test/start.sh
+        timeout: 60
+        runas: ec2-user

@@ -18,7 +18,7 @@ chmod +x "$JAR_NAME"
 echo "$TIME_NOW "$0" > $JAR_NAME $IDLE_PROFILE 실행" >> "$DEPLOY_LOG"
 
 nohup java -jar \
-  -Dspring.config.location=classpath:/application-"$IDLE_PROFILE".yml,"$PROJECT_ROOT"/application-key.yml,"$PROJECT_ROOT"/application-real-db.yml,"$PROJECT_ROOT"/application-email.yml \
+  -Dspring.config.location=classpath:/application-"$IDLE_PROFILE".yml,"$PROJECT_ROOT"/application-key.yml,"$PROJECT_ROOT"/application-test-db.yml,"$PROJECT_ROOT"/application-email.yml \
   -Dspring.profiles.active="$IDLE_PROFILE" \
   "$JAR_NAME" > "$APP_LOG" 2> "$ERROR_LOG" &
 

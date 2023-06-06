@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Builder
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class User extends BaseModel {
 
     @Column(nullable = false, unique = true)

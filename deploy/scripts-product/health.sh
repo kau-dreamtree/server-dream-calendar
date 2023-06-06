@@ -19,10 +19,10 @@ for RETRY_COUNT in {1..5}
 do
 
   RESPONSE=$(curl -s $PROFILE_URI )
-  UP_COUNT=$(echo ${RESPONSE} | grep 'real' | wc -l)
+  UP_COUNT=$(echo ${RESPONSE} | grep 'test' | wc -l)
 
   if [ "${UP_COUNT}" -ge 1 ]
-  then # 문자열 "real"이 있는지 확인
+  then # 문자열 "test"이 있는지 확인
     echo "$TIME_NOW "$0" > Health Check 성공" >> "$DEPLOY_LOG"
     switch_proxy
     break

@@ -24,7 +24,7 @@ permissions:
 jobs:
 
   deploy:
-    name: Deploy
+    name: Deploy test
     runs-on: ubuntu-latest
     environment: test
 

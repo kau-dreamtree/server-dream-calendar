@@ -3,7 +3,7 @@
 ABSPATH=$(readlink -f "$0")
 ABSDIR=$(dirname "$ABSPATH")
 
-source "${ABSDIR}"/values.sh
+source "${ABSDIR}"/base.sh
 
 function find_idle_profile()
 {

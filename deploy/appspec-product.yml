@@ -7,7 +7,7 @@ files:
     destination: /home/ec2-user/dreamcalendar_product
 
 permissions:
-  - object: /home/ec2-user/dreamcalendar_product
+  - object: /
     pattern: "**"
     owner: ec2-user
     group: ec2-user

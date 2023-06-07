@@ -3,11 +3,13 @@
 ABSPATH=$(readlink -f "$0")
 ABSDIR=$(dirname "$ABSPATH")
 
-source "${ABSDIR}/values.sh"
-
 TIME_NOW=$(date +%c)
 
-LOG_ROOT="$TEST_ROOT/log"
+TEST_PORT_1="8081"
+TEST_PORT_2="8082"
+
+PROJECT_ROOT="/home/ec2-user/dreamcalendar-test"
+LOG_ROOT="$PROJECT_ROOT/log"
 
 APP_LOG="$LOG_ROOT/debug.log"
 ERROR_LOG="$LOG_ROOT/error.log"

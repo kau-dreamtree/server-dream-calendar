@@ -3,8 +3,8 @@ os: linux
 
 files:
   - source: /
+    destination: /home/ec2-user/dreamcalendar-product
     overwrite: yes
-    destination: /home/ec2-user/dreamcalendar_product
 
 permissions:
   - object: /

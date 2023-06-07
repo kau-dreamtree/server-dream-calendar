@@ -46,6 +46,9 @@ jobs:
       - name: Copy JAR file
         run: cp ./build/libs/*.jar ./deploy/
 
+      - name: Select appspec
+        run: cp ./deploy/appspec-prodduct.yml  ./deploy/appspec.yml
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -67,5 +70,4 @@ jobs:
             --application-name $CODE_DEPLOY_APPLICATION_NAME \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
             --deployment-group-name $CODE_DEPLOY_DEPLOYMENT_GROUP_NAME \
-            --s3-location bucket=$S3_BUCKET_NAME,key=$CODE_DEPLOY_APPLICATION_NAME.zip,bundleType=zip \
-            --target-instances TagFilters=[{Key=branch,Type=KEY_AND_VALUE,Value=$(git rev-parse --abbrev-ref HEAD)}]
+            --s3-location bucket=$S3_BUCKET_NAME,key=$CODE_DEPLOY_APPLICATION_NAME.zip,bundleType=zip 

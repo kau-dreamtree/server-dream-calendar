@@ -1,0 +1,23 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    overwrite: yes
+    destination: /home/ec2-user/dreamcalendar_product
+
+permissions:
+  - object: /home/ec2-user/dreamcalendar_product
+    pattern: "**"
+    owner: ec2-user
+    group: ec2-user
+
+hooks:
+  AfterInstall:
+    - location: scripts-product/stop.sh
+      timeout: 60
+      runas: ec2-user
+  ApplicationStart:
+    - location: scripts-product/start.sh
+      timeout: 60
+      runas: ec2-user

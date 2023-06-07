@@ -46,8 +46,10 @@ jobs:
       - name: Copy JAR file
         run: cp ./build/libs/*.jar ./deploy/
 
-      - name: Select appspec
-        run: cp ./deploy/appspec-test.yml ./deploy/appspec.yml
+      - name: Select appspec & scripts
+        run: | 
+          cp ./deploy/appspec-test.yml ./deploy/appspec.yml
+          cp ./deploy/base-test.sh ./deploy/scripts/base.sh
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2

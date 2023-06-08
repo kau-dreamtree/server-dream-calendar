@@ -5,15 +5,17 @@ ABSDIR=$(dirname $ABSPATH)
 
 source "${ABSDIR}/base.sh"
 
+PROFILE_URI="http://localhost:$PORT_1/$DEPLOY_ENV-profile"
+
 function find_idle_profile()
 {
-  RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost/$DEPLOY_ENV-profile")
+  RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" $PROFILE_URI)
 
   if [ ${RESPONSE_CODE} -ge 400 ]
   then
     CURRENT_PROFILE="$DEPLOY_ENV-2"
   else
-    CURRENT_PROFILE=$(curl -s "http://localhost/$DEPLOY_ENV-profile")
+    CURRENT_PROFILE=$(curl -s $PROFILE_URI)
   fi
 
   if [ ${CURRENT_PROFILE} == "$DEPLOY_ENV-1" ]

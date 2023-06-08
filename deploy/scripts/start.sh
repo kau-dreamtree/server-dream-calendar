@@ -23,4 +23,4 @@ nohup java -jar \
   $JAR_NAME > $DEBUG_LOG 2> $ERROR_LOG &
 
 CURRENT_PID=$(pgrep -f $JAR_NAME)
-echo "$TIME_NOW $0 > 실행된 PID $CURRENT_PID\n" >> $DEPLOY_LOG
+echo -e "$TIME_NOW $0 > 실행된 PID $CURRENT_PID\n" >> $DEPLOY_LOG

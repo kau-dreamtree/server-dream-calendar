@@ -6,7 +6,7 @@ files:
     destination: /home/ec2-user/dreamcalendar-test
     overwrite: yes
 
-file_exists_behavior: OVERWRITE
+file_exists_behavior: RETAIN
 
 permissions:
   - object: /

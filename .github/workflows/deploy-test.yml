@@ -10,7 +10,7 @@ name: Deploy test to AWS EC2
 on:
   push:
     branches:
-      - 'test'
+      - test
 
 env:
   AWS_REGION: ap-northeast-2

@@ -3,7 +3,7 @@ os: linux
 
 files:
   - source: /
-    destination: /home/ec2-user/dreamtree
+    destination: /home/ec2-user/dreamcalendar-test
     overwrite: yes
 
 permissions:
@@ -14,10 +14,10 @@ permissions:
 
 hooks:
   AfterInstall:
-    - location: scripts/stop.sh
+    - location: scripts-test/stop.sh
       timeout: 60
       runas: ec2-user
   ApplicationStart:
-    - location: scripts/start.sh
+    - location: scripts-test/start.sh
       timeout: 60
       runas: ec2-user

@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Entity
-@Table(name = "SCHEDULES")
 public class Schedule extends BaseModel {
 
     @ManyToOne

@@ -14,22 +14,17 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-public class ProfileController {
+public class ProductProfileController {
 
     private final Environment environment;
 
-    @GetMapping("/test")
-    public ResponseEntity<HttpStatus> test() {
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/profile")
+    @GetMapping("/product-profile")
     public String profile() {
         List<String> profiles = Arrays.asList(environment.getActiveProfiles());
-        List<String> realProfiles = Arrays.asList("real-1", "real-2");
+        List<String> testProfiles = Arrays.asList("test-1", "test-2");
         String defaultProfile = profiles.isEmpty() ? "default" : profiles.get(0);
         return profiles.stream()
-                .filter(realProfiles::contains)
+                .filter(testProfiles::contains)
                 .findAny()
                 .orElse(defaultProfile);
     }

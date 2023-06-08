@@ -1,34 +1,39 @@
 #!/usr/bin/env bash
 
+ABSPATH=$(readlink -f $0)
+ABSDIR=$(dirname $ABSPATH)
+
+source "${ABSDIR}/base.sh"
+
 function find_idle_profile()
 {
-  RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/profile)
+  RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost/$DEPLOY_ENV-profile")
 
-  if [ "${RESPONSE_CODE}" -ge 400 ]
+  if [ ${RESPONSE_CODE} -ge 400 ]
   then
-    CURRENT_PROFILE=real-2
+    CURRENT_PROFILE="$DEPLOY_ENV-2"
   else
-    CURRENT_PROFILE=$(curl -s http://localhost/profile)
+    CURRENT_PROFILE=$(curl -s "http://localhost/$DEPLOY_ENV-profile")
   fi
 
-  if [ "${CURRENT_PROFILE}" == real-1 ]
+  if [ ${CURRENT_PROFILE} == "$DEPLOY_ENV-1" ]
   then
-    IDLE_PROFILE=real-2
+    IDLE_PROFILE="$DEPLOY_ENV-2"
   else
-    IDLE_PROFILE=real-1
+    IDLE_PROFILE="$DEPLOY_ENV-1"
   fi
 
-  echo "${IDLE_PROFILE}"
+  echo ${IDLE_PROFILE}
 }
 
 function find_idle_port()
 {
   IDLE_PROFILE=$(find_idle_profile)
 
-  if [ "${IDLE_PROFILE}" == real-1 ]
+  if [ ${IDLE_PROFILE} == "$DEPLOY_ENV-1" ]
   then
-    echo "8081"
+    echo $PORT_1
   else
-    echo "8082"
+    echo $PORT_2
   fi
 }

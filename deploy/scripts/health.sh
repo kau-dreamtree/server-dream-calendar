@@ -24,18 +24,18 @@ do
 
   if [ ${UP_COUNT} -ge 1 ]
   then
-    echo "$TIME_NOW $0 > Health Check 성공" >> $DEPLOY_LOG
+    echo -e "$TIME_NOW $0 > Health Check 성공\n" >> $DEPLOY_LOG
     switch_proxy
     break
   else
     echo "$TIME_NOW $0 > 응답을 알 수 없거나 실행 상태가 아닙니다." >> $DEPLOY_LOG
-    echo "$TIME_NOW $0 > RESPONSE: ${RESPONSE}" >> $DEPLOY_LOG
+    echo -e "$TIME_NOW $0 > RESPONSE: ${RESPONSE}\n" >> $DEPLOY_LOG
   fi
 
   if [ "${RETRY_COUNT}" -eq 5 ]
   then
     echo "$TIME_NOW $0 > Health Check 실패" >> $DEPLOY_LOG
-    echo "$TIME_NOW $0 > Nginx에 연결하지 않고 배포를 종료합니다." >> $DEPLOY_LOG
+    echo -e "$TIME_NOW $0 > Nginx에 연결하지 않고 배포를 종료합니다.\n" >> $DEPLOY_LOG
     exit 1
   fi
 

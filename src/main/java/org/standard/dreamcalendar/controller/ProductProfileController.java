@@ -21,7 +21,7 @@ public class ProductProfileController {
     @GetMapping("/product-profile")
     public String profile() {
         List<String> profiles = Arrays.asList(environment.getActiveProfiles());
-        List<String> testProfiles = Arrays.asList("test-1", "test-2");
+        List<String> testProfiles = Arrays.asList("product-1", "product-2");
         String defaultProfile = profiles.isEmpty() ? "default" : profiles.get(0);
         return profiles.stream()
                 .filter(testProfiles::contains)

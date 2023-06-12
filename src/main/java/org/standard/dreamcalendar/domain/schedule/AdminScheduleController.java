@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 public class AdminScheduleController {
 
-    private final ScheduleService scheduleService;
+    private final AdminScheduleService scheduleService;
 
     @Value("${spring.security.user.password}")
     private String adminAuth;
@@ -29,7 +29,7 @@ public class AdminScheduleController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        List<ScheduleDto> scheduleDtoList = scheduleService.findAllAdmin();
+        List<ScheduleDto> scheduleDtoList = scheduleService.readAllAdmin();
 
         String message = (scheduleDtoList.isEmpty()) ? "등록된 일정이 없습니다." : "success";
 

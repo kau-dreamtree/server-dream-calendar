@@ -30,7 +30,7 @@ public class ScheduleController {
     public ResponseEntity<ScheduleDto> read(
             @PathVariable Long id ,@RequestHeader("Authorization") String accessToken
     ) {
-        ScheduleDto scheduleDto = scheduleService.find(accessToken, id);
+        ScheduleDto scheduleDto = scheduleService.read(accessToken, id);
         return (scheduleDto != null) ?
                 ResponseEntity.status(HttpStatus.OK).body(scheduleDto) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -38,7 +38,7 @@ public class ScheduleController {
 
     @GetMapping("/schedules")
     public ResponseEntity<List> readAll(@RequestHeader("Authorization") String accessToken) {
-        List<ScheduleDto> scheduleDtoList = scheduleService.findAll(accessToken);
+        List<ScheduleDto> scheduleDtoList = scheduleService.readAll(accessToken);
         return (scheduleDtoList != null) ?
                 ResponseEntity.status(HttpStatus.OK).body(scheduleDtoList) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

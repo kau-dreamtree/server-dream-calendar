@@ -46,14 +46,14 @@ public class ScheduleService {
         return true;
     }
 
-    @Transactional
-    public Boolean exists(Long id) {
-        return scheduleRepository.existsById(id);
-    }
+    /**
+     * accessToken으로 schedule id의 소유자 user를 검증 후 schedule을 반환합니다.
+     * @param accessToken
+     * @param id
+     * @return found schedule entity
+     */
+    public ScheduleDto read(String accessToken, Long id) {
 
-    @Transactional
-    public ScheduleDto find(String accessToken, Long id) {
-        
         if (
                 (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
                 (!userRepository.existsByAccessToken(accessToken))
@@ -63,13 +63,14 @@ public class ScheduleService {
         }
 
         Schedule schedule = scheduleRepository.findById(id).orElse(null);
-        
-        return converter.toScheduleDto(schedule);
+        User scheduleOwner = schedule != null ? schedule.getUser() : null;
+        User user = userRepository.findByAccessToken(accessToken).orElse(null);
+
+        return user != null && user.equals(scheduleOwner) ? converter.toScheduleDto(schedule) : null;
 
     }
 
-    @Transactional
-    public List<ScheduleDto> findAll(String accessToken) {
+    public List<ScheduleDto> readAll(String accessToken) {
 
         if (
                 (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
@@ -88,16 +89,6 @@ public class ScheduleService {
                         .map(converter::toScheduleDto)
                         .collect(Collectors.toList());
 
-    }
-
-    @Transactional
-    public List<ScheduleDto> findAllAdmin() {
-        List<Schedule> schedules = scheduleRepository.findAll();
-        return (schedules.isEmpty()) ?
-                Collections.emptyList() :
-                schedules.stream()
-                        .map(converter::toScheduleDto)
-                        .collect(Collectors.toList());
     }
 
     @Transactional

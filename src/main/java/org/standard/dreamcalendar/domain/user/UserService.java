@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.domain.user.type.Role;
 import org.standard.dreamcalendar.service.Encryptor;
-import org.standard.dreamcalendar.service.JWTProvider;
+import org.standard.dreamcalendar.service.JwtProvider;
 import org.standard.dreamcalendar.domain.user.dto.response.UpdateTokenResponse;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
@@ -28,7 +28,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final Encryptor encryptor;
-    private final JWTProvider tokenProvider;
+    private final JwtProvider tokenProvider;
     private final DtoConverter converter;
 
     @Transactional

@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class JWTProvider {
+public class JwtProvider {
 
     @Value("${access-key}")
     private String ACCESS_GENERATION_KEY;

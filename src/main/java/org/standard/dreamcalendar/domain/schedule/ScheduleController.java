@@ -46,18 +46,20 @@ public class ScheduleController {
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @PutMapping("/schedule")
+    @PutMapping("/schedule/{id}")
     public ResponseEntity<HttpStatus> update(
-            @RequestHeader("Authorization")  String accessToken,
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String accessToken,
             @RequestBody ScheduleDto scheduleDto
     ) {
-        return (scheduleService.update(accessToken, scheduleDto)) ?
+        return (scheduleService.update(accessToken, id, scheduleDto)) ?
                 ResponseEntity.status(HttpStatus.OK).build() :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @DeleteMapping("/schedule")
+    @DeleteMapping("/schedule/{id}")
     public ResponseEntity<HttpStatus> delete(
+            @PathVariable Long id,
             @RequestHeader("Authorization") String accessToken,
             @RequestBody ScheduleDto scheduleDto
     ) {

@@ -33,7 +33,6 @@ public class ScheduleService {
                 (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
                 (!userRepository.existsByAccessToken(accessToken))
         ) {
-            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
             return null;
         }
 
@@ -46,19 +45,13 @@ public class ScheduleService {
         return converter.toScheduleDto(schedule);
     }
 
-    /**
-     * accessToken으로 schedule id의 소유자 user를 검증 후 schedule을 반환합니다.
-     * @param accessToken
-     * @param id
-     * @return found schedule entity
-     */
     public ScheduleDto read(String accessToken, Long id) {
 
         if (
                 (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
+                (!scheduleRepository.existsById(id)) ||
                 (!userRepository.existsByAccessToken(accessToken))
         ) {
-            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
             return null;
         }
 
@@ -76,7 +69,6 @@ public class ScheduleService {
                 (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
                 (!userRepository.existsByAccessToken(accessToken))
         ) {
-            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
             return null;
         }
 
@@ -92,21 +84,20 @@ public class ScheduleService {
     }
 
     @Transactional
-    public Boolean update(String accessToken, ScheduleDto scheduleDto) {
+    public Boolean update(String accessToken, Long id, ScheduleDto scheduleDto) {
 
         if (
-                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
+                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) || 
+                (!scheduleRepository.existsById(id)) || 
                 (!userRepository.existsByAccessToken(accessToken))
         ) {
-            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
             return false;
         }
 
         scheduleRepository.updateByAllParams(
-                scheduleDto.getId(), scheduleDto.getTitle(), scheduleDto.getTag(),
+                id, scheduleDto.getTitle(), scheduleDto.getTag(),
                 scheduleDto.isAllDay(), scheduleDto.getStartAt(), scheduleDto.getEndAt()
         );
-
         return true;
 
     }
@@ -115,10 +106,10 @@ public class ScheduleService {
     public Boolean delete(String accessToken, Long id) {
 
         if (
-                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
+                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) || 
+                (!scheduleRepository.existsById(id)) ||
                 (!userRepository.existsByAccessToken(accessToken))
         ) {
-            // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
             return false;
         }
 

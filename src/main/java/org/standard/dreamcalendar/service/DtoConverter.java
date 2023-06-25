@@ -7,7 +7,7 @@ import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
 import org.standard.dreamcalendar.domain.email.EmailAuth;
 import org.standard.dreamcalendar.domain.email.EmailAuthDto;
 import org.standard.dreamcalendar.domain.schedule.ScheduleRepository;
-import org.standard.dreamcalendar.domain.schedule.model.Schedule;
+import org.standard.dreamcalendar.domain.schedule.Schedule;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;

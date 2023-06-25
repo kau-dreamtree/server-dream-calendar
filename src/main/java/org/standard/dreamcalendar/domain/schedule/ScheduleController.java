@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
-import org.standard.dreamcalendar.domain.schedule.model.Schedule;
 
 import java.util.List;
 

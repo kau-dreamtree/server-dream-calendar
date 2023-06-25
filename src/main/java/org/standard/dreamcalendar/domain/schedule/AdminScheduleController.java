@@ -29,7 +29,7 @@ public class AdminScheduleController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        List<ScheduleDto> scheduleDtoList = scheduleService.readAllAdmin();
+        List<ScheduleDto> scheduleDtoList = scheduleService.readAll();
 
         String message = (scheduleDtoList.isEmpty()) ? "등록된 일정이 없습니다." : "success";
 

@@ -27,14 +27,14 @@ public class ScheduleService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Boolean create(String accessToken, ScheduleDto scheduleDto) {
+    public ScheduleDto create(String accessToken, ScheduleDto scheduleDto) {
 
         if (
                 (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
                 (!userRepository.existsByAccessToken(accessToken))
         ) {
             // TODO: 토큰 갱신 및 유저 확인 루틴, AOP 적용
-            return false;
+            return null;
         }
 
         User user = userRepository.findByAccessToken(accessToken).orElse(null);
@@ -43,7 +43,7 @@ public class ScheduleService {
         user.addSchedule(schedule);
         scheduleRepository.save(schedule);
 
-        return true;
+        return converter.toScheduleDto(schedule);
     }
 
     /**

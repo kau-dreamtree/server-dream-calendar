@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
+import org.standard.dreamcalendar.domain.schedule.model.Schedule;
 
 import java.util.List;
 
@@ -17,12 +18,13 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("/schedule")
-    public ResponseEntity<HttpStatus> create(
+    public ResponseEntity<ScheduleDto> create(
             @RequestHeader("Authorization")  String accessToken,
             @RequestBody ScheduleDto scheduleDto
     ) {
-        return (scheduleService.create(accessToken, scheduleDto)) ?
-                ResponseEntity.status(HttpStatus.CREATED).build() :
+        ScheduleDto result = scheduleService.create(accessToken, scheduleDto);
+        return (result != null) ?
+                ResponseEntity.status(HttpStatus.CREATED).body(result) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 

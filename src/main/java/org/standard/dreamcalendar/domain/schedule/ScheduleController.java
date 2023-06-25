@@ -60,10 +60,9 @@ public class ScheduleController {
     @DeleteMapping("/schedule/{id}")
     public ResponseEntity<HttpStatus> delete(
             @PathVariable Long id,
-            @RequestHeader("Authorization") String accessToken,
-            @RequestBody ScheduleDto scheduleDto
+            @RequestHeader("Authorization") String accessToken
     ) {
-        return (scheduleService.delete(accessToken, scheduleDto.getId())) ?
+        return (scheduleService.delete(accessToken, id)) ?
                 ResponseEntity.status(HttpStatus.NO_CONTENT).build() :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }

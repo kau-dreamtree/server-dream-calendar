@@ -1,14 +1,11 @@
 package org.standard.dreamcalendar.domain.user;
 
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.standard.dreamcalendar.domain.schedule.model.Schedule;
+import org.standard.dreamcalendar.domain.schedule.Schedule;
 import org.standard.dreamcalendar.domain.user.type.Role;
 import org.standard.dreamcalendar.model.BaseModel;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor

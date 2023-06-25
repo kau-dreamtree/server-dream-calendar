@@ -5,10 +5,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
-import org.standard.dreamcalendar.domain.schedule.model.Schedule;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Transactional
@@ -17,7 +15,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             "where s.id = ?1")
     void updateByAllParams(
             @NonNull Long id, @NonNull String title, @NonNull int tag,
-            @NonNull boolean isAllDay, LocalDateTime startAt, LocalDateTime endAt
+            @NonNull boolean isAllDay, @NonNull LocalDateTime startAt, @NonNull LocalDateTime endAt
     );
 
 }

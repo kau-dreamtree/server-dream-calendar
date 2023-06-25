@@ -27,4 +27,7 @@ public class ScheduleDto {
     @JsonProperty("end_at")
     private LocalDateTime endAt;
 
+    @JsonProperty("user_id")
+    private Long userId;
+
 }

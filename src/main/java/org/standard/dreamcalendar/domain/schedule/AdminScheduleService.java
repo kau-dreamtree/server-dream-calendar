@@ -3,7 +3,6 @@ package org.standard.dreamcalendar.domain.schedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
-import org.standard.dreamcalendar.domain.schedule.model.Schedule;
 import org.standard.dreamcalendar.service.DtoConverter;
 
 import java.util.Collections;
@@ -17,7 +16,7 @@ public class AdminScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final DtoConverter converter;
 
-    public List<ScheduleDto> readAllAdmin() {
+    public List<ScheduleDto> readAll() {
         List<Schedule> schedules = scheduleRepository.findAll();
         return (schedules.isEmpty()) ?
                 Collections.emptyList() :

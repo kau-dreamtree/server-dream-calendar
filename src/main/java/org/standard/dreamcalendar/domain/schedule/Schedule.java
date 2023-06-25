@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.domain.schedule.model;
+package org.standard.dreamcalendar.domain.schedule;
 
 import org.standard.dreamcalendar.model.BaseModel;
 import org.standard.dreamcalendar.domain.user.User;
@@ -26,8 +26,10 @@ public class Schedule extends BaseModel {
     @Column(nullable = false)
     private boolean isAllDay;
 
+    @Column(nullable = false)
     private LocalDateTime startAt;
 
+    @Column(nullable = false)
     private LocalDateTime endAt;
 
 }

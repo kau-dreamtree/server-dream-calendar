@@ -10,7 +10,7 @@ import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordR
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.service.DtoConverter;
 import org.standard.dreamcalendar.service.Encryptor;
-import org.standard.dreamcalendar.service.JWTProvider;
+import org.standard.dreamcalendar.service.JwtProvider;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -23,7 +23,7 @@ public class AdminUserService {
 
     private final UserRepository userRepository;
     private final Encryptor encryptor;
-    private final JWTProvider tokenProvider;
+    private final JwtProvider tokenProvider;
     private final DtoConverter converter;
 
     @Transactional(readOnly = true)

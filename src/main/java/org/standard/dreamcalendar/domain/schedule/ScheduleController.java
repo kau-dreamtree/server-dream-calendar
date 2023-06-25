@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
+import org.standard.dreamcalendar.domain.schedule.model.Schedule;
 
 import java.util.List;
 
@@ -17,12 +18,13 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("/schedule")
-    public ResponseEntity<HttpStatus> create(
+    public ResponseEntity<ScheduleDto> create(
             @RequestHeader("Authorization")  String accessToken,
             @RequestBody ScheduleDto scheduleDto
     ) {
-        return (scheduleService.create(accessToken, scheduleDto)) ?
-                ResponseEntity.status(HttpStatus.CREATED).build() :
+        ScheduleDto result = scheduleService.create(accessToken, scheduleDto);
+        return (result != null) ?
+                ResponseEntity.status(HttpStatus.CREATED).body(result) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
@@ -30,7 +32,7 @@ public class ScheduleController {
     public ResponseEntity<ScheduleDto> read(
             @PathVariable Long id ,@RequestHeader("Authorization") String accessToken
     ) {
-        ScheduleDto scheduleDto = scheduleService.find(accessToken, id);
+        ScheduleDto scheduleDto = scheduleService.read(accessToken, id);
         return (scheduleDto != null) ?
                 ResponseEntity.status(HttpStatus.OK).body(scheduleDto) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -38,28 +40,29 @@ public class ScheduleController {
 
     @GetMapping("/schedules")
     public ResponseEntity<List> readAll(@RequestHeader("Authorization") String accessToken) {
-        List<ScheduleDto> scheduleDtoList = scheduleService.findAll(accessToken);
+        List<ScheduleDto> scheduleDtoList = scheduleService.readAll(accessToken);
         return (scheduleDtoList != null) ?
                 ResponseEntity.status(HttpStatus.OK).body(scheduleDtoList) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @PutMapping("/schedule")
+    @PutMapping("/schedule/{id}")
     public ResponseEntity<HttpStatus> update(
-            @RequestHeader("Authorization")  String accessToken,
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String accessToken,
             @RequestBody ScheduleDto scheduleDto
     ) {
-        return (scheduleService.update(accessToken, scheduleDto)) ?
+        return (scheduleService.update(accessToken, id, scheduleDto)) ?
                 ResponseEntity.status(HttpStatus.OK).build() :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @DeleteMapping("/schedule")
+    @DeleteMapping("/schedule/{id}")
     public ResponseEntity<HttpStatus> delete(
-            @RequestHeader("Authorization") String accessToken,
-            @RequestBody ScheduleDto scheduleDto
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String accessToken
     ) {
-        return (scheduleService.delete(accessToken, scheduleDto.getId())) ?
+        return (scheduleService.delete(accessToken, id)) ?
                 ResponseEntity.status(HttpStatus.NO_CONTENT).build() :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }

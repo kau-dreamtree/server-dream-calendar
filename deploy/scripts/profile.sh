@@ -14,7 +14,7 @@ function find_idle_profile()
   if [ "$CURRENT_PROFILE" == "${DEPLOY_ENV}-1" ]
   then
     IDLE_PROFILE="$DEPLOY_ENV-2"
-  else if [ "$CURRENT_PROFILE" == "${DEPLOY_ENV}-2" ]
+  else [ "$CURRENT_PROFILE" == "${DEPLOY_ENV}-2" ]
     IDLE_PROFILE="$DEPLOY_ENV-1"
   fi
 

@@ -6,6 +6,7 @@ ABSDIR=$(dirname "$ABSPATH")
 TIME_NOW=$(date +%c)
 
 DEPLOY_ENV="test"
+DOMAIN="test"
 
 PORT_1="8081"
 PORT_2="8082"

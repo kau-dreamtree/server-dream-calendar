@@ -32,7 +32,7 @@ do
     echo -e "$TIME_NOW $0 > RESPONSE: ${RESPONSE}\n" >> $DEPLOY_LOG
   fi
 
-  if [ "${RETRY_COUNT}" -eq 5 ]
+  if [ ${RETRY_COUNT} -eq 5 ]
   then
     echo "$TIME_NOW $0 > Health Check 실패" >> $DEPLOY_LOG
     echo -e "$TIME_NOW $0 > Nginx에 연결하지 않고 배포를 종료합니다.\n" >> $DEPLOY_LOG

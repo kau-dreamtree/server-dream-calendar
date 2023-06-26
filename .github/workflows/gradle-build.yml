@@ -9,7 +9,7 @@ name: Gradle Build
 
 on:
   push:
-    branches: [ "user", "schedule", "deploy", "test" ]
+    branches: [ "user", "schedule", "deploy" ]
 
 permissions:
   contents: read

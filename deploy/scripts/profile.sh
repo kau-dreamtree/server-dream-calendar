@@ -26,7 +26,7 @@ function find_idle_port()
 {
   IDLE_PROFILE=$(find_idle_profile)
 
-  if [ ${IDLE_PROFILE} == "$DEPLOY_ENV-1" ]
+  if [ $IDLE_PROFILE == "$DEPLOY_ENV-1" ]
   then
     echo $PORT_1
   else

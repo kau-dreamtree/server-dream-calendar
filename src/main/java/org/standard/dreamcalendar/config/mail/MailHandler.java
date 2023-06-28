@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.config.auth;
+package org.standard.dreamcalendar.config.mail;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

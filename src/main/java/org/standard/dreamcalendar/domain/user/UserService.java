@@ -91,7 +91,6 @@ public class UserService {
      * @param accessToken
      * @return HttpStatus
      */
-    @Transactional
     public HttpStatus logInByAccessToken(String accessToken) {
 
         User user = userRepository.findByAccessToken(accessToken).orElse(null);
@@ -175,19 +174,16 @@ public class UserService {
         return true;
     }
 
-    @Transactional(readOnly = true)
     public UserDto findById(Long id) {
         User user = userRepository.findById(id).orElse(null);
         return converter.toUserDto(user);
     }
 
-    @Transactional(readOnly = true)
     public List<UserDto> findUsersByUsername(String username) {
         List<User> userList = userRepository.findByName(username);
         return userList.stream().map(converter::toUserDto).collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public UserDto findByEmail(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
         return converter.toUserDto(user);

@@ -26,7 +26,6 @@ public class AdminUserService {
     private final JwtProvider tokenProvider;
     private final DtoConverter converter;
 
-    @Transactional(readOnly = true)
     public List<UserDto> findAll() {
         List<User> userList = userRepository.findAll();
         return userList.stream().map(converter::toUserDto).collect(Collectors.toList());

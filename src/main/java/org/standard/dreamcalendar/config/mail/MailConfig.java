@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.config.auth;
+package org.standard.dreamcalendar.config.mail;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

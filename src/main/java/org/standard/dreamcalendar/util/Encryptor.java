@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.service;
+package org.standard.dreamcalendar.util;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

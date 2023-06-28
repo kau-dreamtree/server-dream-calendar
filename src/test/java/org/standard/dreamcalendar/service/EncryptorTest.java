@@ -1,6 +1,7 @@
 package org.standard.dreamcalendar.service;
 
 import org.junit.Test;
+import org.standard.dreamcalendar.util.Encryptor;
 
 import java.security.NoSuchAlgorithmException;
 

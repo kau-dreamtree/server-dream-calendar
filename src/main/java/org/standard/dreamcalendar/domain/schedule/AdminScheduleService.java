@@ -3,7 +3,7 @@ package org.standard.dreamcalendar.domain.schedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
-import org.standard.dreamcalendar.service.DtoConverter;
+import org.standard.dreamcalendar.util.DtoConverter;
 
 import java.util.Collections;
 import java.util.List;

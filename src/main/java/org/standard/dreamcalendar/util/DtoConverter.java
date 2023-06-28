@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.service;
+package org.standard.dreamcalendar.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

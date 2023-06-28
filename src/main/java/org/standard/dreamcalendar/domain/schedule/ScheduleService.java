@@ -3,12 +3,12 @@ package org.standard.dreamcalendar.domain.schedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.standard.dreamcalendar.service.JwtProvider;
+import org.standard.dreamcalendar.util.JwtProvider;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
-import org.standard.dreamcalendar.service.DtoConverter;
+import org.standard.dreamcalendar.util.DtoConverter;
 
 import java.util.Collections;
 import java.util.List;

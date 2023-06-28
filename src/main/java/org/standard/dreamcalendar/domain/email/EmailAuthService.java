@@ -5,7 +5,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.config.mail.AuthCodeGenerator;
-import org.standard.dreamcalendar.service.DtoConverter;
+import org.standard.dreamcalendar.util.DtoConverter;
 
 @Service
 @RequiredArgsConstructor

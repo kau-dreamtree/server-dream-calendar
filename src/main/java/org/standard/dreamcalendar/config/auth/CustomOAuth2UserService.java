@@ -14,7 +14,7 @@ import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
 import org.standard.dreamcalendar.config.auth.dto.SessionUser;
 import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.User;
-import org.standard.dreamcalendar.service.DtoConverter;
+import org.standard.dreamcalendar.util.DtoConverter;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;

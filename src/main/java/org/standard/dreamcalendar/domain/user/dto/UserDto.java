@@ -15,7 +15,7 @@ public class UserDto {
 
     private Long id;
     private String email;
-    private String password;
+    private transient String password;
     private String name;
     private String picture;
     private Role role;

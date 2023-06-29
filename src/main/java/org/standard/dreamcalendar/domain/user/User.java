@@ -1,6 +1,9 @@
 package org.standard.dreamcalendar.domain.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.standard.dreamcalendar.domain.schedule.Schedule;
 import org.standard.dreamcalendar.domain.user.type.Role;
 import org.standard.dreamcalendar.model.BaseModel;
@@ -13,7 +16,13 @@ import java.util.List;
 @Getter
 @Builder
 @Entity
-@Table(name = "users")
+@Table(
+        name = "users",
+        indexes = {
+                @Index(name = "access_index", columnList = "accessToken"),
+                @Index(name = "refresh_index", columnList = "refreshToken")
+        }
+)
 public class User extends BaseModel {
 
     @Column(nullable = false, unique = true)
@@ -67,7 +76,6 @@ public class User extends BaseModel {
         return "User{" +
                 "id='" + this.getId() + '\'' +
                 "email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", picture='" + picture + '\'' +
                 ", role='" + role + '\'' +

@@ -59,24 +59,28 @@ public class DtoConverter {
                 .build();
     }
 
+    private Schedule generateScheduleEntity(ScheduleDto dto) {
+        return Schedule.builder()
+                .title(dto.getTitle())
+                .isAllDay(dto.isAllDay())
+                .startAt(dto.getStartAt())
+                .endAt(dto.getEndAt())
+                .tag(dto.getTag())
+                .build();
+    }
+
     public Schedule toScheduleEntity(ScheduleDto dto) {
-
         if (dto.getId() == null || !scheduleRepository.existsById(dto.getId())) {
-            return Schedule.builder()
-                    .title(dto.getTitle())
-                    .isAllDay(dto.isAllDay())
-                    .startAt(dto.getStartAt())
-                    .endAt(dto.getEndAt())
-                    .tag(dto.getTag())
-                    .build();
+            return generateScheduleEntity(dto);
         }
-
-        scheduleRepository.updateByAllParams(
-                dto.getId(), dto.getTitle(), dto.getTag(), dto.isAllDay(), dto.getStartAt(), dto.getEndAt()
-        );
-
-        return scheduleRepository.findById(dto.getId()).orElse(null);
-
+        return scheduleRepository.updateByAllParams(
+                dto.getId(),
+                dto.getTitle(),
+                dto.getTag(),
+                dto.isAllDay(),
+                dto.getStartAt(),
+                dto.getEndAt()
+        ).orElse(null);
     }
 
     public ScheduleDto toScheduleDto(Schedule entity) {

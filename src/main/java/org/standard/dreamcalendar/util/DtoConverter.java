@@ -26,7 +26,6 @@ public class DtoConverter {
                 .name(dto.getName())
                 .picture(dto.getPicture())
                 .role(dto.getRole())
-                .accessToken(dto.getAccessToken())
                 .refreshToken(dto.getRefreshToken())
                 .build();
     }
@@ -47,7 +46,6 @@ public class DtoConverter {
                 .name(entity.getName())
                 .picture(entity.getPicture())
                 .role(entity.getRole())
-                .accessToken(entity.getAccessToken())
                 .refreshToken(entity.getRefreshToken())
                 .build();
     }

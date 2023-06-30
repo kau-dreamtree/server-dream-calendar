@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.type.Role;
 import org.standard.dreamcalendar.util.Encryptor;
 import org.standard.dreamcalendar.util.JwtProvider;
@@ -46,14 +47,6 @@ public class UserService {
 
     }
 
-    /**
-     * 예외 <br>
-     * 1. 클라이언트가 입력한 이메일이 DB에 없는 경우 <br>
-     * 2. 클라이언트가 입력한 비밀번호가 DB의 비밀번호와 일치하지 않는 경우 <br>
-     * @param userDto
-     * @return UpdateTokenResponse
-     * @throws NoSuchAlgorithmException
-     */
     @Transactional
     public LogInByEmailPasswordResponse logInByEmailPassword(UserDto userDto) throws NoSuchAlgorithmException {
 
@@ -71,7 +64,6 @@ public class UserService {
         String accessToken = tokenProvider.generate(user.getEmail(), TokenType.AccessToken);
         String refreshToken = tokenProvider.generate(user.getEmail(), TokenType.RefreshToken);
 
-        user.updateAccessToken(accessToken);
         user.updateRefreshToken(refreshToken);
 
         return LogInByEmailPasswordResponse.builder()
@@ -80,70 +72,40 @@ public class UserService {
                 .build();
     }
 
-    /**
-     * 아래 세 조건을 모두 만족하면 ACCEPTED <br>
-     * <p>1. 입력된 토큰이 유효하여 ID를 추출할 수 있음 <br>
-     * 2. 해당 ID의 사용자가 DB에 존재함 <br>
-     * 3. 해당 ID의 accessToken과 입력된 토큰이 일치함 <br>
-     * <p> 예외 <br>
-     * <p>1. 토큰이 DB에 없거나 다를 겅우 400 Bad Request <br>
-     * 2. 토큰이  만료된 경우 401 Unauthorized
-     * @param accessToken
-     * @return HttpStatus
-     */
     public HttpStatus logInByAccessToken(String accessToken) {
 
-        User user = userRepository.findByAccessToken(accessToken).orElse(null);
-        TokenValidationStatus validation = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
 
-        if (user == null || validation == INVALID) {
+        if (result.getStatus() == INVALID) {
             return HttpStatus.BAD_REQUEST;
         }
 
-        if (validation == EXPIRED) {
+        if (result.getStatus() == EXPIRED) {
             return HttpStatus.UNAUTHORIZED;
         }
 
         return HttpStatus.OK;
     }
 
-    /**
-     * 1. Refresh token이 서버와 일치하는지 확인 <br>
-     * 2. 정상이고 만료되지 않은 경우 access token만 갱신하여 return <br>
-     * 3. 정상이고 곧 만료되는 경우 두 토큰 모두 갱신하여 return <br>
-     * 4. DB에 없거나 만료된 경우 return null
-     *
-     *
-     * @param refreshToken
-     * @return UpdateTokenResponse
-     */
     @Transactional
     public UpdateTokenResponse updateToken(String refreshToken) {
 
         User user = userRepository.findByRefreshToken(refreshToken).orElse(null);
 
-        TokenValidationStatus validation = tokenProvider.validateToken(refreshToken, TokenType.RefreshToken);
+        TokenValidationResult result = tokenProvider.validateToken(refreshToken, TokenType.RefreshToken);
 
-        if (user == null || validation == EXPIRED || validation == INVALID) {
+        if (user == null || result.getStatus() == EXPIRED || result.getStatus() == INVALID) {
             return null;
         }
 
-        String message = "Access Token Updated";
-
-        if (validation == UPDATE) {
-            String newRefreshToken = tokenProvider.generate(user.getEmail(), TokenType.RefreshToken);
-            user.updateRefreshToken(newRefreshToken);
-            message = "Access & Refresh Token Updated";
-        }
-
         String accessToken = tokenProvider.generate(user.getEmail(), TokenType.AccessToken);
+        String newRefreshToken = tokenProvider.generate(user.getEmail(), TokenType.RefreshToken);
 
-        user.updateAccessToken(accessToken);
+        user.updateRefreshToken(newRefreshToken);
 
         return UpdateTokenResponse.builder()
-                .message(message)
-                .accessToken(user.getAccessToken())
-                .refreshToken(user.getRefreshToken())
+                .accessToken(accessToken)
+                .refreshToken(newRefreshToken)
                 .build();
 
     }
@@ -151,26 +113,26 @@ public class UserService {
     @Transactional
     public Boolean logOut(String accessToken) {
 
-        User user = userRepository.findByAccessToken(accessToken).orElse(null);
-        if (user == null) {
+        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+        if (result.getStatus() == INVALID || result.getStatus() == EXPIRED) {
             return false;
         }
 
-        userRepository.updateAccessTokenAndRefreshToken(user.getId(), null, null);
-
+        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
+        user.updateRefreshToken(null);
         return true;
     }
 
     @Transactional
     public Boolean delete(String accessToken) {
 
-        User user = userRepository.findByAccessToken(accessToken).orElse(null);
-        if (user == null) {
+        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+        if (result.getStatus() == INVALID || result.getStatus() == EXPIRED) {
             return false;
         }
 
+        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
         userRepository.deleteById(user.getId());
-
         return true;
     }
 

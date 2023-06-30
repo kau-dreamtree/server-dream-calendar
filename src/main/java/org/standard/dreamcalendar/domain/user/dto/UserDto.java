@@ -15,13 +15,10 @@ public class UserDto {
 
     private Long id;
     private String email;
-    private transient String password;
+    private String password;
     private String name;
     private String picture;
     private Role role;
-
-    @JsonProperty("access_token")
-    private String accessToken;
 
     @JsonProperty("refresh_token")
     private String refreshToken;

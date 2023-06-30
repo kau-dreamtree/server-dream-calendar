@@ -18,10 +18,7 @@ import java.util.List;
 @Entity
 @Table(
         name = "users",
-        indexes = {
-                @Index(name = "access_index", columnList = "accessToken"),
-                @Index(name = "refresh_index", columnList = "refreshToken")
-        }
+        indexes = {@Index(name = "refresh_index", columnList = "refreshToken")}
 )
 public class User extends BaseModel {
 
@@ -40,9 +37,6 @@ public class User extends BaseModel {
     private Role role;
 
     @Column(unique = true)
-    private String accessToken;
-
-    @Column(unique = true)
     private String refreshToken;
 
     @OneToMany(mappedBy = "user")
@@ -55,10 +49,6 @@ public class User extends BaseModel {
 
     public void updatePassword(String password) {
         this.password = password;
-    }
-
-    public void updateAccessToken(String accessToken) {
-        this.accessToken = accessToken;
     }
 
     public void updateRefreshToken(String refreshToken) {
@@ -79,7 +69,6 @@ public class User extends BaseModel {
                 ", name='" + name + '\'' +
                 ", picture='" + picture + '\'' +
                 ", role='" + role + '\'' +
-                ", accessToken='" + accessToken + '\'' +
                 ", refreshToken='" + refreshToken + '\'' +
                 '}';
     }

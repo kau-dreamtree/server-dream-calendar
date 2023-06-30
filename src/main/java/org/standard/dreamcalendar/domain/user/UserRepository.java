@@ -11,29 +11,9 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Transactional
-    @Modifying(clearAutomatically = true)
-    @Query("update User u set u.accessToken = ?2, u.refreshToken = ?3 where u.id = ?1")
-    int updateAccessTokenAndRefreshToken(Long id, String accessToken, String refreshToken);
-
-    @Transactional
-    @Modifying(clearAutomatically = true)
-    @Query("update User u set u.accessToken = ?2 where u.id = ?1")
-    int updateAccessToken(@NonNull Long id, @NonNull String accessToken);
-
-    @Transactional
-    @Modifying(clearAutomatically = true)
-    @Query("update User u set u.refreshToken = ?2 where u.id = ?1")
-    int updateRefreshToken(@NonNull Long id, @NonNull String refreshToken);
-
-    boolean existsByAccessToken(String accessToken);
-
     List<User> findByName(String username);
 
     Optional<User> findByEmail(String email);
 
-    Optional<User> findByAccessToken(String accessToken);
-
     Optional<User> findByRefreshToken(String refreshToken);
-
 }

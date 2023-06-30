@@ -31,7 +31,6 @@ public class AdminUserService {
         return userList.stream().map(converter::toUserDto).collect(Collectors.toList());
     }
 
-    // logInByEmailPassword 수정
     @Transactional
     public LogInByEmailPasswordResponse tokenExpirationTest(AdminTokenExpirationTestDto dto)
             throws NoSuchAlgorithmException {
@@ -54,7 +53,6 @@ public class AdminUserService {
                 user.getEmail(), TokenType.RefreshToken, dto.getRefreshExpiration()
         );
 
-        user.updateAccessToken(accessToken);
         user.updateRefreshToken(refreshToken);
 
         return LogInByEmailPasswordResponse.builder()

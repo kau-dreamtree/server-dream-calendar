@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
 
@@ -30,7 +31,7 @@ public class JwtProvider {
     @Value("${refresh-days}")
     private int refreshDays;
 
-    public String generate(String claim, TokenType type) {
+    public String generate(String email, TokenType type) {
 
         Header header = Jwts.header();
         Claims claims = Jwts.claims();
@@ -41,7 +42,7 @@ public class JwtProvider {
         header.put("typ", "JWT");
         header.put("alg", "HS256");
 
-        claims.put("email", claim);
+        claims.put("email", email);
 
         return Jwts.builder()
                 .setSubject(subject)
@@ -78,22 +79,16 @@ public class JwtProvider {
 
     }
 
-    public TokenValidationStatus validateToken(String token, TokenType type) {
-
+    public TokenValidationResult validateToken(String token, TokenType type) {
         try {
             SecretKey secretKey = getKey(type);
             Claims claims = getClaims(secretKey, token);
-            Date refreshDate = getRefreshDate(claims.getExpiration().getTime());
-
-            return (type == TokenType.RefreshToken && refreshDate.before(new Date())) ?
-                    TokenValidationStatus.UPDATE :
-                    TokenValidationStatus.VALID;
+            return new TokenValidationResult(TokenValidationStatus.VALID, claims.get("email", String.class));
         } catch (ExpiredJwtException ex) {
-            return TokenValidationStatus.EXPIRED;
+            return new TokenValidationResult(TokenValidationStatus.EXPIRED, null);
         } catch (Exception ex) {
-            return TokenValidationStatus.INVALID;
+            return new TokenValidationResult(TokenValidationStatus.INVALID, null);
         }
-
     }
 
     private SecretKey getKey(TokenType type) {

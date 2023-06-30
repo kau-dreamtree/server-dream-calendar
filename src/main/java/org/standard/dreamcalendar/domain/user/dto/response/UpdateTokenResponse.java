@@ -8,8 +8,6 @@ import lombok.Data;
 @Data
 public class UpdateTokenResponse {
 
-    private String message;
-
     @JsonProperty("access_token")
     private String accessToken;
 

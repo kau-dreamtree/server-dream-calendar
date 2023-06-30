@@ -3,6 +3,7 @@ package org.standard.dreamcalendar.domain.schedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.util.JwtProvider;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
@@ -28,14 +29,13 @@ public class ScheduleService {
     @Transactional
     public ScheduleDto create(String accessToken, ScheduleDto scheduleDto) {
 
-        if (
-                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
-                (!userRepository.existsByAccessToken(accessToken))
-        ) {
+        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+
+        if (result.getStatus() != VALID) {
             return null;
         }
 
-        User user = userRepository.findByAccessToken(accessToken).orElse(null);
+        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
 
         Schedule schedule = converter.toScheduleEntity(scheduleDto);
         user.addSchedule(schedule);
@@ -46,17 +46,16 @@ public class ScheduleService {
 
     public ScheduleDto read(String accessToken, Long id) {
 
-        if (
-                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
-                (!scheduleRepository.existsById(id)) ||
-                (!userRepository.existsByAccessToken(accessToken))
-        ) {
+        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+
+        if ((result.getStatus() != VALID) || (!scheduleRepository.existsById(id))) {
             return null;
         }
 
+        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
+
         Schedule schedule = scheduleRepository.findById(id).orElse(null);
         User scheduleOwner = schedule != null ? schedule.getUser() : null;
-        User user = userRepository.findByAccessToken(accessToken).orElse(null);
 
         return user != null && user.equals(scheduleOwner) ? converter.toScheduleDto(schedule) : null;
 
@@ -64,14 +63,13 @@ public class ScheduleService {
 
     public List<ScheduleDto> readAll(String accessToken) {
 
-        if (
-                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) ||
-                (!userRepository.existsByAccessToken(accessToken))
-        ) {
+        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+
+        if (result.getStatus() != VALID) {
             return null;
         }
 
-        User user = userRepository.findByAccessToken(accessToken).orElse(null);
+        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
         List<Schedule> schedules = user.getSchedules();
 
         return (schedules.isEmpty()) ?
@@ -85,11 +83,9 @@ public class ScheduleService {
     @Transactional
     public Boolean update(String accessToken, Long id, ScheduleDto scheduleDto) {
 
-        if (
-                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) || 
-                (!scheduleRepository.existsById(id)) || 
-                (!userRepository.existsByAccessToken(accessToken))
-        ) {
+        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+
+        if ((result.getStatus() != VALID) || (!scheduleRepository.existsById(id))) {
             return false;
         }
 
@@ -104,11 +100,9 @@ public class ScheduleService {
     @Transactional
     public Boolean delete(String accessToken, Long id) {
 
-        if (
-                (tokenProvider.validateToken(accessToken, TokenType.AccessToken) != VALID) || 
-                (!scheduleRepository.existsById(id)) ||
-                (!userRepository.existsByAccessToken(accessToken))
-        ) {
+        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+
+        if ((result.getStatus() != VALID) || (!scheduleRepository.existsById(id))) {
             return false;
         }
 

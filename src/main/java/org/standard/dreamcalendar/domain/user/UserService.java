@@ -94,7 +94,7 @@ public class UserService {
 
         TokenValidationResult result = tokenProvider.validateToken(refreshToken, TokenType.RefreshToken);
 
-        if (user == null || result.getStatus() == EXPIRED || result.getStatus() == INVALID) {
+        if (user == null || result.getStatus() != VALID) {
             return null;
         }
 
@@ -114,12 +114,14 @@ public class UserService {
     public Boolean logOut(String accessToken) {
 
         TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
-        if (result.getStatus() == INVALID || result.getStatus() == EXPIRED) {
+
+        if (result.getStatus() != VALID) {
             return false;
         }
 
         User user = userRepository.findByEmail(result.getEmail()).orElse(null);
         user.updateRefreshToken(null);
+
         return true;
     }
 
@@ -127,12 +129,14 @@ public class UserService {
     public Boolean delete(String accessToken) {
 
         TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
-        if (result.getStatus() == INVALID || result.getStatus() == EXPIRED) {
+
+        if (result.getStatus() != VALID) {
             return false;
         }
 
         User user = userRepository.findByEmail(result.getEmail()).orElse(null);
         userRepository.deleteById(user.getId());
+
         return true;
     }
 

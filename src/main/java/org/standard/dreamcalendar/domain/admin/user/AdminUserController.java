@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
 import org.standard.dreamcalendar.domain.user.dto.response.AdminReadAllUserResponse;
+import org.standard.dreamcalendar.domain.user.dto.response.TokenResponse;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -37,7 +38,7 @@ public class AdminUserController {
 
     // logInByEmailPassword 수정
     @PostMapping("/admin/auth")
-    public ResponseEntity<LogInByEmailPasswordResponse> tokenExpirationTest(
+    public ResponseEntity<TokenResponse> tokenExpirationTest(
             @RequestHeader("Authorization") String authorization, @RequestBody AdminTokenExpirationTestDto dto
     ) throws NoSuchAlgorithmException {
 
@@ -45,7 +46,7 @@ public class AdminUserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        LogInByEmailPasswordResponse response = userAdminService.tokenExpirationTest(dto);
+        TokenResponse response = userAdminService.tokenExpirationTest(dto);
 
         return (response != null) ?
                 ResponseEntity.status(HttpStatus.OK).body(response) :

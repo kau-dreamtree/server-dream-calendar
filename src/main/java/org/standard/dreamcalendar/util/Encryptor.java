@@ -48,13 +48,13 @@ public class Encryptor {
             throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
+        byte[] cipherBytes = Base64.getDecoder().decode(cipherText);
+
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
         IvParameterSpec ivParameterSpec = new IvParameterSpec(key.substring(0, 16).getBytes());
-
         cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParameterSpec);
 
-        byte[] cipherBytes = Base64.getDecoder().decode(cipherText);
         byte[] plainTexts = cipher.doFinal(cipherBytes);
 
         return new String(plainTexts, StandardCharsets.UTF_8);

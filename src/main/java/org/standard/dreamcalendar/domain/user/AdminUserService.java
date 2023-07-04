@@ -6,7 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.domain.user.dto.AdminTokenExpirationTestDto;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
+<<<<<<< Updated upstream
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
+=======
+import org.standard.dreamcalendar.domain.user.dto.response.TokenResponse;
+>>>>>>> Stashed changes
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.util.DtoConverter;
 import org.standard.dreamcalendar.util.Encryptor;
@@ -47,10 +51,10 @@ public class AdminUserService {
 
         // Save & issue tokens
         String accessToken = tokenProvider.generateForExpirationTest(
-                user.getEmail(), TokenType.AccessToken, dto.getAccessExpiration()
+                user.getId(), TokenType.AccessToken, dto.getAccessExpiration()
         );
         String refreshToken = tokenProvider.generateForExpirationTest(
-                user.getEmail(), TokenType.RefreshToken, dto.getRefreshExpiration()
+                user.getId(), TokenType.RefreshToken, dto.getRefreshExpiration()
         );
 
         user.updateRefreshToken(refreshToken);

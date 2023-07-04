@@ -35,7 +35,7 @@ public class ScheduleService {
             return null;
         }
 
-        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
+        User user = userRepository.findById(result.getUserId()).orElse(null);
 
         Schedule schedule = converter.toScheduleEntity(scheduleDto);
         user.addSchedule(schedule);
@@ -52,7 +52,7 @@ public class ScheduleService {
             return null;
         }
 
-        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
+        User user = userRepository.findById(result.getUserId()).orElse(null);
 
         Schedule schedule = scheduleRepository.findById(id).orElse(null);
         User scheduleOwner = schedule != null ? schedule.getUser() : null;
@@ -69,7 +69,7 @@ public class ScheduleService {
             return null;
         }
 
-        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
+        User user = userRepository.findById(result.getUserId()).orElse(null);
         List<Schedule> schedules = user.getSchedules();
 
         return (schedules.isEmpty()) ?

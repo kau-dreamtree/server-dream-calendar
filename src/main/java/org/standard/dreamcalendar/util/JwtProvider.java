@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class JwtProvider {
 
     @Value("${access-key}")
+<<<<<<< Updated upstream
     private String ACCESS_GENERATION_KEY;
     @Value("${refresh-key}")
     private String REFRESH_GENERATION_KEY;
@@ -30,8 +31,17 @@ public class JwtProvider {
     private long refreshTokenExpirationDays;
     @Value("${refresh-days}")
     private int refreshDays;
+=======
+    private final String ACCESS_GENERATION_KEY;
+    @Value("${refresh-key}")
+    private final String REFRESH_GENERATION_KEY;
+    @Value("${access-expiration-hours}")
+    private final long accessTokenExpirationHours;
+    @Value("${refresh-expiration-days}")
+    private final long refreshTokenExpirationDays;
+>>>>>>> Stashed changes
 
-    public String generate(String email, TokenType type) {
+    public String generate(Long id, TokenType type) {
 
         Header header = Jwts.header();
         Claims claims = Jwts.claims();
@@ -42,7 +52,7 @@ public class JwtProvider {
         header.put("typ", "JWT");
         header.put("alg", "HS256");
 
-        claims.put("email", email);
+        claims.put("user_id", id);
 
         return Jwts.builder()
                 .setSubject(subject)
@@ -52,10 +62,20 @@ public class JwtProvider {
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact()
                 .replace("=", "");
-
     }
 
-    public String generateForExpirationTest(String claim, TokenType type, Long second) {
+    public TokenValidationResult validateToken(String token, TokenType type) {
+        Long userId = extractId(token, type);
+        return new TokenValidationResult(TokenValidationStatus.VALID, userId);
+    }
+
+    public Long extractId(String token, TokenType type) {
+        SecretKey secretKey = getKey(type);
+        Claims claims = getClaims(secretKey, token);
+        return claims.get("user_id", Long.class);
+    }
+
+    public String generateForExpirationTest(Long userId, TokenType type, Long second) {
 
         Header header = Jwts.header();
         Claims claims = Jwts.claims();
@@ -66,7 +86,7 @@ public class JwtProvider {
         header.put("typ", "JWT");
         header.put("alg", "HS256");
 
-        claims.put("email", claim);
+        claims.put("user_id", userId);
 
         return Jwts.builder()
                 .setSubject(subject)
@@ -77,18 +97,6 @@ public class JwtProvider {
                 .compact()
                 .replace("=", "");
 
-    }
-
-    public TokenValidationResult validateToken(String token, TokenType type) {
-        try {
-            SecretKey secretKey = getKey(type);
-            Claims claims = getClaims(secretKey, token);
-            return new TokenValidationResult(TokenValidationStatus.VALID, claims.get("email", String.class));
-        } catch (ExpiredJwtException ex) {
-            return new TokenValidationResult(TokenValidationStatus.EXPIRED, null);
-        } catch (Exception ex) {
-            return new TokenValidationResult(TokenValidationStatus.INVALID, null);
-        }
     }
 
     private SecretKey getKey(TokenType type) {
@@ -127,10 +135,6 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    private Date getRefreshDate(Long expiration) {
-        return new Date(expiration - TimeUnit.DAYS.toMillis(refreshDays));
     }
 
 }

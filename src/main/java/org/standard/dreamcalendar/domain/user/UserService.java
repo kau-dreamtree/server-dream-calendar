@@ -61,8 +61,8 @@ public class UserService {
         }
 
         // Save & issue tokens
-        String accessToken = tokenProvider.generate(user.getEmail(), TokenType.AccessToken);
-        String refreshToken = tokenProvider.generate(user.getEmail(), TokenType.RefreshToken);
+        String accessToken = tokenProvider.generate(user.getId(), TokenType.AccessToken);
+        String refreshToken = tokenProvider.generate(user.getId(), TokenType.RefreshToken);
 
         user.updateRefreshToken(refreshToken);
 
@@ -98,8 +98,8 @@ public class UserService {
             return null;
         }
 
-        String accessToken = tokenProvider.generate(user.getEmail(), TokenType.AccessToken);
-        String newRefreshToken = tokenProvider.generate(user.getEmail(), TokenType.RefreshToken);
+        String accessToken = tokenProvider.generate(user.getId(), TokenType.AccessToken);
+        String newRefreshToken = tokenProvider.generate(user.getId(), TokenType.RefreshToken);
 
         user.updateRefreshToken(newRefreshToken);
 
@@ -119,7 +119,7 @@ public class UserService {
             return false;
         }
 
-        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
+        User user = userRepository.findById(result.getUserId()).orElse(null);
         user.updateRefreshToken(null);
 
         return true;
@@ -134,7 +134,7 @@ public class UserService {
             return false;
         }
 
-        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
+        User user = userRepository.findById(result.getUserId()).orElse(null);
         userRepository.deleteById(user.getId());
 
         return true;

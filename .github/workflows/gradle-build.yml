@@ -15,10 +15,9 @@ permissions:
   contents: read
 
 jobs:
-  runs-on: ubuntu-latest
-
   build:
     environment: test
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.3.0
 

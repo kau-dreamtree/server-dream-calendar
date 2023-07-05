@@ -30,6 +30,3 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: clean build
-
-      - name: Print error message
-        run: cat build/reports/tests/test/index.html

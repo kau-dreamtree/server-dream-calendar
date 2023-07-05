@@ -16,14 +16,13 @@ permissions:
 
 jobs:
   build:
-    environment: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.3.0
 
       - name: Copy secret
         env:
-          SECRET: ${{ secrets.APPLICATION }}
+          SECRET: ${{ secrets.APPLICATION_TEST }}
           SECRET_DIR: src/test/resources
           SECRET_FILE: application.yml
         run: echo $SECRET > $SECRET_DIR/$SECRET_FILE

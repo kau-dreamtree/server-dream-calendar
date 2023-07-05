@@ -3,7 +3,7 @@
 ABSPATH=$(readlink -f "$0")
 ABSDIR=$(dirname "$ABSPATH")
 
-TIME_NOW=$(date +%c)
+TIME_NOW=$(date "+%Y-%m-%d %H:%M:%S %Z")
 
 DEPLOY_ENV="test"
 DOMAIN="test"

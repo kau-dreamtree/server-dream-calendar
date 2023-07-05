@@ -4,6 +4,13 @@ server:
 database: h2
 
 spring:
+
+  redis:
+    host: localhost
+    port: 6379
+    time-to-live: 3600
+    cache-null-values: true
+
   security:
     user:
       password: testtesttesttesttesttesttesttesttesttesttesttest

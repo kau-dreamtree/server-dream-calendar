@@ -3,12 +3,10 @@ package org.standard.dreamcalendar.domain.schedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
-import org.standard.dreamcalendar.util.JwtProvider;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.UserRepository;
-import org.standard.dreamcalendar.domain.user.type.TokenType;
+import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.util.DtoConverter;
 
 import java.util.Collections;
@@ -22,14 +20,11 @@ import static org.standard.dreamcalendar.domain.user.type.TokenValidationStatus.
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final JwtProvider tokenProvider;
     private final DtoConverter converter;
     private final UserRepository userRepository;
 
     @Transactional
-    public ScheduleDto create(String accessToken, ScheduleDto scheduleDto) {
-
-        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+    public ScheduleDto create(TokenValidationResult result, ScheduleDto scheduleDto) {
 
         if (result.getStatus() != VALID) {
             return null;
@@ -44,9 +39,7 @@ public class ScheduleService {
         return converter.toScheduleDto(schedule);
     }
 
-    public ScheduleDto read(String accessToken, Long id) {
-
-        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+    public ScheduleDto read(TokenValidationResult result, Long id) {
 
         if ((result.getStatus() != VALID) || (!scheduleRepository.existsById(id))) {
             return null;
@@ -61,9 +54,7 @@ public class ScheduleService {
 
     }
 
-    public List<ScheduleDto> readAll(String accessToken) {
-
-        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+    public List<ScheduleDto> readAll(TokenValidationResult result) {
 
         if (result.getStatus() != VALID) {
             return null;
@@ -81,9 +72,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public Boolean update(String accessToken, Long id, ScheduleDto scheduleDto) {
-
-        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+    public Boolean update(TokenValidationResult result, Long id, ScheduleDto scheduleDto) {
 
         if ((result.getStatus() != VALID) || (!scheduleRepository.existsById(id))) {
             return false;
@@ -98,9 +87,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public Boolean delete(String accessToken, Long id) {
-
-        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+    public Boolean delete(TokenValidationResult result, Long id) {
 
         if ((result.getStatus() != VALID) || (!scheduleRepository.existsById(id))) {
             return false;

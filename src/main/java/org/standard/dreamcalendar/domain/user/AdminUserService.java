@@ -6,11 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.domain.user.dto.AdminTokenExpirationTestDto;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
-<<<<<<< Updated upstream
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
-=======
-import org.standard.dreamcalendar.domain.user.dto.response.TokenResponse;
->>>>>>> Stashed changes
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.util.DtoConverter;
 import org.standard.dreamcalendar.util.Encryptor;
@@ -40,7 +36,7 @@ public class AdminUserService {
             throws NoSuchAlgorithmException {
 
         // Check email address in DB
-        User user = userRepository.findByEmail(dto.getEmail()).orElse(null);
+        User user = userRepository.findById(dto.getId()).orElse(null);
 
         // Check password in DB
         String givenPassword = encryptor.SHA256(dto.getPassword());
@@ -51,10 +47,10 @@ public class AdminUserService {
 
         // Save & issue tokens
         String accessToken = tokenProvider.generateForExpirationTest(
-                user.getId(), TokenType.AccessToken, dto.getAccessExpiration()
+                dto.getId(), dto.getTimeUnit(), dto.getAccessExpiration(), TokenType.AccessToken
         );
         String refreshToken = tokenProvider.generateForExpirationTest(
-                user.getId(), TokenType.RefreshToken, dto.getRefreshExpiration()
+                dto.getId(), dto.getTimeUnit(), dto.getRefreshExpiration(), TokenType.RefreshToken
         );
 
         user.updateRefreshToken(refreshToken);

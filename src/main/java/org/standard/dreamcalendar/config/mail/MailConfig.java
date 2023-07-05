@@ -1,5 +1,6 @@
 package org.standard.dreamcalendar.config.mail;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,20 +9,21 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+@RequiredArgsConstructor
 @Configuration
 public class MailConfig {
 
     @Value("${email.host}")
-    private String host;
+    private final String host;
 
     @Value("${email.port}")
-    private int port;
+    private final int port;
 
     @Value("${email.username}")
-    private String username;
+    private final String username;
 
     @Value("${email.password}")
-    private String password;
+    private final String password;
 
     @Bean
     public JavaMailSender javaMailSender() {

@@ -20,7 +20,7 @@ public class AdminUserController {
     private final AdminUserService userAdminService;
 
     @Value("${spring.security.user.password}")
-    private String adminAuth;
+    private final String adminAuth;
 
     @GetMapping("/admin/users")
     public ResponseEntity<AdminReadAllUserResponse> readAllUsers(@RequestHeader("Authorization") String authorization) {

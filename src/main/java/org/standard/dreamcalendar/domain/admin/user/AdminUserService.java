@@ -1,10 +1,11 @@
-package org.standard.dreamcalendar.domain.user;
+package org.standard.dreamcalendar.domain.admin.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.standard.dreamcalendar.domain.user.dto.AdminTokenExpirationTestDto;
+import org.standard.dreamcalendar.domain.user.User;
+import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
 import org.standard.dreamcalendar.domain.user.type.TokenType;

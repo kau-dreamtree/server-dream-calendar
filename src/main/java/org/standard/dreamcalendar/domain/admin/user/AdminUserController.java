@@ -1,11 +1,10 @@
-package org.standard.dreamcalendar.domain.user;
+package org.standard.dreamcalendar.domain.admin.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.standard.dreamcalendar.domain.user.dto.AdminTokenExpirationTestDto;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
 import org.standard.dreamcalendar.domain.user.dto.response.AdminReadAllUserResponse;

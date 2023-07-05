@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.standard.dreamcalendar.domain.auth.AccessTokenArgumentResolver;
 import org.standard.dreamcalendar.util.JwtProvider;
 
 import java.util.List;

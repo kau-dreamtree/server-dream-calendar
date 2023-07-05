@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.domain.user.dto.response;
+package org.standard.dreamcalendar.domain.admin.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

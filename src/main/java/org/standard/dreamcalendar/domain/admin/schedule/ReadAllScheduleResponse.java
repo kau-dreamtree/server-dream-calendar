@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.domain.schedule.dto.response;
+package org.standard.dreamcalendar.domain.admin.schedule;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -14,8 +14,11 @@ public class ReadAllScheduleResponse {
     @JsonProperty("schedule_list")
     private List<ScheduleDto> scheduleDtoList;
 
+    private int count;
+
     public ReadAllScheduleResponse(String message, List<ScheduleDto> scheduleDtoList) {
         this.message = message;
         this.scheduleDtoList = scheduleDtoList;
+        this.count = scheduleDtoList.size();
     }
 }

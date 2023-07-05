@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.standard.dreamcalendar.domain.auth.AccessToken;
+import org.standard.dreamcalendar.config.auth.AccessToken;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 

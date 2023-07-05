@@ -1,11 +1,10 @@
-package org.standard.dreamcalendar.domain.user.dto;
+package org.standard.dreamcalendar.domain.admin.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.standard.dreamcalendar.domain.user.type.Role;
 
 @AllArgsConstructor
 @NoArgsConstructor

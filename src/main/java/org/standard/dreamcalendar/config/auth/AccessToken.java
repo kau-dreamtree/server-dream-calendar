@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.domain.auth;
+package org.standard.dreamcalendar.config.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

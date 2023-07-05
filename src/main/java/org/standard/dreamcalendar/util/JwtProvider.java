@@ -2,6 +2,7 @@ package org.standard.dreamcalendar.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,17 +22,15 @@ import java.util.concurrent.TimeUnit;
 public class JwtProvider {
 
     @Value("${access-key}")
-    private String ACCESS_GENERATION_KEY;
+    private final String ACCESS_GENERATION_KEY;
     @Value("${refresh-key}")
-    private String REFRESH_GENERATION_KEY;
+    private final String REFRESH_GENERATION_KEY;
     @Value("${access-expiration-hours}")
-    private long accessTokenExpirationHours;
+    private final long accessTokenExpirationHours;
     @Value("${refresh-expiration-days}")
-    private long refreshTokenExpirationDays;
-    @Value("${refresh-days}")
-    private int refreshDays;
+    private final long refreshTokenExpirationDays;
 
-    public String generate(String email, TokenType type) {
+    public String generate(Long id, TokenType type) {
 
         Header header = Jwts.header();
         Claims claims = Jwts.claims();
@@ -42,7 +41,7 @@ public class JwtProvider {
         header.put("typ", "JWT");
         header.put("alg", "HS256");
 
-        claims.put("email", email);
+        claims.put("user_id", id);
 
         return Jwts.builder()
                 .setSubject(subject)
@@ -52,21 +51,36 @@ public class JwtProvider {
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact()
                 .replace("=", "");
-
     }
 
-    public String generateForExpirationTest(String claim, TokenType type, Long second) {
+    public TokenValidationResult validateToken(String token, TokenType type) {
+        try {
+            return new TokenValidationResult(TokenValidationStatus.VALID, extractId(token, type));
+        } catch (ExpiredJwtException e) {
+            return new TokenValidationResult(TokenValidationStatus.EXPIRED, extractId(token, type));
+        } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
+            return new TokenValidationResult(TokenValidationStatus.INVALID, null);
+        }
+    }
+
+    public Long extractId(String token, TokenType type) {
+        SecretKey secretKey = getKey(type);
+        Claims claims = getClaims(secretKey, token);
+        return claims.get("user_id", Long.class);
+    }
+
+    public String generateForExpirationTest(long userId, String timeUnit, long duration, TokenType type) {
 
         Header header = Jwts.header();
         Claims claims = Jwts.claims();
         String subject = "Authorization";
         SecretKey secretKey = getKey(type);
-        Date expiration = getCustomExpirationDate(second);
+        Date expiration = getCustomExpirationDate(getTimeUnit(timeUnit), duration);
 
         header.put("typ", "JWT");
         header.put("alg", "HS256");
 
-        claims.put("email", claim);
+        claims.put("user_id", userId);
 
         return Jwts.builder()
                 .setSubject(subject)
@@ -77,18 +91,6 @@ public class JwtProvider {
                 .compact()
                 .replace("=", "");
 
-    }
-
-    public TokenValidationResult validateToken(String token, TokenType type) {
-        try {
-            SecretKey secretKey = getKey(type);
-            Claims claims = getClaims(secretKey, token);
-            return new TokenValidationResult(TokenValidationStatus.VALID, claims.get("email", String.class));
-        } catch (ExpiredJwtException ex) {
-            return new TokenValidationResult(TokenValidationStatus.EXPIRED, null);
-        } catch (Exception ex) {
-            return new TokenValidationResult(TokenValidationStatus.INVALID, null);
-        }
     }
 
     private SecretKey getKey(TokenType type) {
@@ -117,8 +119,23 @@ public class JwtProvider {
 
     }
 
-    private Date getCustomExpirationDate(Long second) {
-        return new Date(new Date().getTime() + TimeUnit.SECONDS.toMillis(second));
+    private TimeUnit getTimeUnit(String unit) {
+        switch (unit) {
+            case "seconds":
+                return TimeUnit.SECONDS;
+            case "minutes":
+                return TimeUnit.MINUTES;
+            case "hours":
+                return TimeUnit.HOURS;
+            case "days":
+                return TimeUnit.DAYS;
+            default:
+                return null;
+        }
+    }
+
+    private Date getCustomExpirationDate(TimeUnit timeUnit, long duration) {
+        return new Date(new Date().getTime() + timeUnit.convert(duration, timeUnit));
     }
 
     private Claims getClaims(SecretKey key, String token) {
@@ -127,10 +144,6 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    private Date getRefreshDate(Long expiration) {
-        return new Date(expiration - TimeUnit.DAYS.toMillis(refreshDays));
     }
 
 }

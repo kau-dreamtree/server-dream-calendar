@@ -160,6 +160,7 @@ replay_pid*
 .gradle
 deploy/jar/
 !src/**/build/
+build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -186,6 +187,7 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,intellij,git
 
 # User Custom
+application-spring-test.yml
 application-test-1.yml
 application-test-2.yml
 application-test-db.yml

@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import org.standard.dreamcalendar.domain.schedule.dto.response.ReadAllScheduleResponse;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
+import org.standard.dreamcalendar.domain.schedule.dto.response.ReadAllScheduleResponse;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class AdminScheduleController {
     private final AdminScheduleService scheduleService;
 
     @Value("${spring.security.user.password}")
-    private String adminAuth;
+    private final String adminAuth;
 
     @GetMapping("/admin/schedules")
     public ResponseEntity<ReadAllScheduleResponse> readAllSchedule(@RequestHeader("Authorization") String authorization) {

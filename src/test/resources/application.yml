@@ -4,8 +4,9 @@ server:
 database: h2
 
 spring:
-  profiles:
-    include: key
+  security:
+    user:
+      password: testtesttesttesttesttesttesttesttesttesttesttest
   jpa:
     show-sql: true
     format-sql: true
@@ -24,3 +25,16 @@ logging:
     org:
       springframework:
         web: trace
+
+email:
+  host: 'smtp.gmail.com'
+  port: '587'
+  username: test@gmail.com
+  password: test
+
+aes-key: testtesttesttesttesttesttesttest
+
+access-key: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttes1
+refresh-key: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttes2
+access-expiration-hours: 1
+refresh-expiration-days: 2

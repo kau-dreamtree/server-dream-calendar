@@ -36,7 +36,7 @@ public class AdminUserService {
             throws NoSuchAlgorithmException {
 
         // Check email address in DB
-        User user = userRepository.findByEmail(dto.getEmail()).orElse(null);
+        User user = userRepository.findById(dto.getId()).orElse(null);
 
         // Check password in DB
         String givenPassword = encryptor.SHA256(dto.getPassword());
@@ -47,10 +47,10 @@ public class AdminUserService {
 
         // Save & issue tokens
         String accessToken = tokenProvider.generateForExpirationTest(
-                user.getEmail(), TokenType.AccessToken, dto.getAccessExpiration()
+                dto.getId(), dto.getTimeUnit(), dto.getAccessExpiration(), TokenType.AccessToken
         );
         String refreshToken = tokenProvider.generateForExpirationTest(
-                user.getEmail(), TokenType.RefreshToken, dto.getRefreshExpiration()
+                dto.getId(), dto.getTimeUnit(), dto.getRefreshExpiration(), TokenType.RefreshToken
         );
 
         user.updateRefreshToken(refreshToken);

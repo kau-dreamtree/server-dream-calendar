@@ -18,7 +18,9 @@ public class AdminTokenExpirationTestDto {
     private String password;
     private String name;
     private String picture;
-    private Role role;
+
+    @JsonProperty("time_unit")
+    private String timeUnit;
 
     @JsonProperty("access_token")
     private String accessToken;

@@ -6,15 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
+import org.standard.dreamcalendar.domain.user.dto.UserDto;
+import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
+import org.standard.dreamcalendar.domain.user.dto.response.UpdateTokenResponse;
 import org.standard.dreamcalendar.domain.user.type.Role;
+import org.standard.dreamcalendar.domain.user.type.TokenType;
+import org.standard.dreamcalendar.util.DtoConverter;
 import org.standard.dreamcalendar.util.Encryptor;
 import org.standard.dreamcalendar.util.JwtProvider;
-import org.standard.dreamcalendar.domain.user.dto.response.UpdateTokenResponse;
-import org.standard.dreamcalendar.domain.user.type.TokenType;
-import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
-import org.standard.dreamcalendar.domain.user.dto.UserDto;
-import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
-import org.standard.dreamcalendar.util.DtoConverter;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -61,8 +60,8 @@ public class UserService {
         }
 
         // Save & issue tokens
-        String accessToken = tokenProvider.generate(user.getEmail(), TokenType.AccessToken);
-        String refreshToken = tokenProvider.generate(user.getEmail(), TokenType.RefreshToken);
+        String accessToken = tokenProvider.generate(user.getId(), TokenType.AccessToken);
+        String refreshToken = tokenProvider.generate(user.getId(), TokenType.RefreshToken);
 
         user.updateRefreshToken(refreshToken);
 
@@ -72,9 +71,7 @@ public class UserService {
                 .build();
     }
 
-    public HttpStatus logInByAccessToken(String accessToken) {
-
-        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+    public HttpStatus logInByAccessToken(TokenValidationResult result) {
 
         if (result.getStatus() == INVALID) {
             return HttpStatus.BAD_REQUEST;
@@ -98,8 +95,8 @@ public class UserService {
             return null;
         }
 
-        String accessToken = tokenProvider.generate(user.getEmail(), TokenType.AccessToken);
-        String newRefreshToken = tokenProvider.generate(user.getEmail(), TokenType.RefreshToken);
+        String accessToken = tokenProvider.generate(user.getId(), TokenType.AccessToken);
+        String newRefreshToken = tokenProvider.generate(user.getId(), TokenType.RefreshToken);
 
         user.updateRefreshToken(newRefreshToken);
 
@@ -111,31 +108,26 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean logOut(String accessToken) {
-
-        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+    public Boolean logOut(TokenValidationResult result) {
 
         if (result.getStatus() != VALID) {
             return false;
         }
 
-        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
+        User user = userRepository.findById(result.getUserId()).orElse(null);
         user.updateRefreshToken(null);
 
         return true;
     }
 
     @Transactional
-    public Boolean delete(String accessToken) {
-
-        TokenValidationResult result = tokenProvider.validateToken(accessToken, TokenType.AccessToken);
+    public Boolean delete(TokenValidationResult result) {
 
         if (result.getStatus() != VALID) {
             return false;
         }
 
-        User user = userRepository.findByEmail(result.getEmail()).orElse(null);
-        userRepository.deleteById(user.getId());
+        userRepository.deleteById(result.getUserId());
 
         return true;
     }

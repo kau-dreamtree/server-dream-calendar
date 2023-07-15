@@ -1,13 +1,17 @@
 spring:
 
+  security:
+    user:
+      password: testtesttesttesttesttesttesttesttesttesttesttest
+
   main:
     banner-mode: off
 
-  profiles:
-    include:
-      - key
-      - email
-      - redis
+  redis:
+    host: localhost
+    port: 6379
+    time-to-live: 3600
+    cache-null-values: true
 
   h2:
     console:
@@ -32,3 +36,16 @@ spring:
   output:
     ansi:
       enabled: always
+
+aes-key: testtesttesttesttesttesttesttest
+
+access-key: testtesttesttesttesttesttesttest
+refresh-key: testtesttesttesttesttesttesttest
+access-expiration-hours: 1
+refresh-expiration-days: 1
+
+email:
+  host: 'smtp.gmail.com'
+  port: '587'
+  username: test@test.com
+  password: test

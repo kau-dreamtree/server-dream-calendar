@@ -187,14 +187,5 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,intellij,git
 
 # User Custom
-application-spring-test.yml
-application-test-1.yml
-application-test-2.yml
-application-test-db.yml
-application-product-1.yml
-application-product-2.yml
-application-product-db.yml
-application-key.yml
-application-oauth.yml
-application-email.yml
+application-*.yml
 .DS_Store

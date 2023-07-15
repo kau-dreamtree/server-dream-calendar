@@ -14,16 +14,16 @@ import java.util.Properties;
 public class MailConfig {
 
     @Value("${email.host}")
-    private final String host;
+    private String host;
 
     @Value("${email.port}")
-    private final int port;
+    private int port;
 
     @Value("${email.username}")
-    private final String username;
+    private String username;
 
     @Value("${email.password}")
-    private final String password;
+    private String password;
 
     @Bean
     public JavaMailSender javaMailSender() {

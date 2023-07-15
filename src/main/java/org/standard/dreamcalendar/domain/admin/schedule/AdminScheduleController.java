@@ -22,7 +22,7 @@ public class AdminScheduleController {
     private final AdminScheduleService scheduleService;
 
     @Value("${spring.security.user.password}")
-    private final String adminAuth;
+    private String adminAuth;
 
     @GetMapping("/admin/schedules")
     public ResponseEntity<ReadAllScheduleResponse> readAllSchedule(

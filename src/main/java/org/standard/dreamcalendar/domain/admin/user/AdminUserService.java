@@ -47,11 +47,11 @@ public class AdminUserService {
         }
 
         // Save & issue tokens
-        String accessToken = tokenProvider.generateForExpirationTest(
-                dto.getId(), dto.getTimeUnit(), dto.getAccessExpiration(), TokenType.AccessToken
+        String accessToken = tokenProvider.generate(
+                dto.getId(), TokenType.AccessToken, dto.getTimeUnit(), dto.getAccessExpiration()
         );
-        String refreshToken = tokenProvider.generateForExpirationTest(
-                dto.getId(), dto.getTimeUnit(), dto.getRefreshExpiration(), TokenType.RefreshToken
+        String refreshToken = tokenProvider.generate(
+                dto.getId(), TokenType.RefreshToken, dto.getTimeUnit(), dto.getRefreshExpiration()
         );
 
         user.updateRefreshToken(refreshToken);

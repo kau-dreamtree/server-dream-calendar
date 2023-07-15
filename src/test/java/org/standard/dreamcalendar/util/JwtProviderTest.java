@@ -1,40 +1,74 @@
 package org.standard.dreamcalendar.util;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
 
 class JwtProviderTest {
 
-    String accessKey = "test-test-test-test-test-test-test";
-    String refreshKey = "test-test-test-test-test-test-test";
-    long accessExpire = 1L;
-    long refreshExpire = 1L;
+    UtilTestConfig config;
+    JwtProvider jwtProvider;
 
-    JwtProvider jwtProvider = new JwtProvider(accessKey, refreshKey, accessExpire, refreshExpire);
-
-    @Test
-    void generate() {
-
+    @BeforeEach
+    void setUp() {
+        config = new UtilTestConfig();
+        jwtProvider = config.jwtProvider();
     }
 
     @Test
-    void validateToken() {
-    }
+    void validToken() {
 
-    @Test
-    void extractId() {
-
-        Long id = 1L;
+        // given
+        long userId = 1L;
         TokenType type = TokenType.AccessToken;
 
-        String token = jwtProvider.generate(id, type);
+        TokenValidationResult expected = new TokenValidationResult(TokenValidationStatus.VALID, userId);
 
-        Long result = jwtProvider.extractId(token, TokenType.AccessToken);
+        // when
+        String token = jwtProvider.generate(userId, type);
+        TokenValidationResult result = jwtProvider.validateToken(token, type);
 
-        assertEquals(id, result);
+        // then
+        Assertions.assertEquals(expected, result);
+    }
 
+    @Test
+    void expiredToken() {
+
+        // given
+        long userId = 1L;
+        TokenType type = TokenType.AccessToken;
+        String timeUnit = "millis";
+
+        long duration = 0L;     // duration 바꿔가면서 test
+
+        TokenValidationResult expected = new TokenValidationResult(TokenValidationStatus.EXPIRED, null);
+
+        // when
+        String token = jwtProvider.generate(userId, type, timeUnit, duration);
+        TokenValidationResult result = jwtProvider.validateToken(token, type);
+
+        // then
+        Assertions.assertEquals(expected, result);
+    }
+
+    @Test
+    void invalidToken() {
+
+        // given
+        TokenType type = TokenType.AccessToken;
+
+        TokenValidationResult expected = new TokenValidationResult(TokenValidationStatus.INVALID, null);
+
+        // when
+        String token = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
+        TokenValidationResult result = jwtProvider.validateToken(token, type);
+
+        // then
+        Assertions.assertEquals(expected, result);
     }
 
 }

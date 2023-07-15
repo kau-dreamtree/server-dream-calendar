@@ -1,47 +1,34 @@
-server:
-  port: 8080
-
-database: h2
-
 spring:
 
-  redis:
-    host: localhost
-    port: 6379
-    time-to-live: 3600
-    cache-null-values: true
+  main:
+    banner-mode: off
 
-  security:
-    user:
-      password: testtesttesttesttesttesttesttesttesttesttesttest
+  profiles:
+    include:
+      - key
+      - email
+      - redis
+
+  h2:
+    console:
+      enabled: 'true'
+
   jpa:
     show-sql: true
     format-sql: true
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-  mvc:
-    log-request-details: true
+    properties:
+      hibernate:
+        dialect:
+          nodeValue: org.hibernate.dialect.MySQL57Dialect
+          storage_engine: innodb
+
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:mem://localhost/~/test;MODE=MYSQL
+
+  session:
+    store-type: jdbc
+
   output:
     ansi:
       enabled: always
-
-logging:
-  level:
-    org:
-      springframework:
-        web: trace
-
-email:
-  host: 'smtp.gmail.com'
-  port: '587'
-  username: test@gmail.com
-  password: test
-
-aes-key: testtesttesttesttesttesttesttest
-
-access-key: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttes1
-refresh-key: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttes2
-access-expiration-hours: 1
-refresh-expiration-days: 2

@@ -3,6 +3,8 @@ package org.standard.dreamcalendar.util;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,35 +18,46 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Component
 public class JwtProvider {
 
     @Value("${access-key}")
-    private final String ACCESS_GENERATION_KEY;
+    private String ACCESS_GENERATION_KEY;
     @Value("${refresh-key}")
-    private final String REFRESH_GENERATION_KEY;
+    private String REFRESH_GENERATION_KEY;
     @Value("${access-expiration-hours}")
-    private final long accessTokenExpirationHours;
+    private long accessTokenExpirationHours;
     @Value("${refresh-expiration-days}")
-    private final long refreshTokenExpirationDays;
+    private long refreshTokenExpirationDays;
 
     public String generate(Long id, TokenType type) {
 
-        Header header = Jwts.header();
         Claims claims = Jwts.claims();
-        String subject = "Authorization";
         SecretKey secretKey = getKey(type);
         Date expiration = getExpirationDate(type);
-
-        header.put("typ", "JWT");
-        header.put("alg", "HS256");
 
         claims.put("user_id", id);
 
         return Jwts.builder()
-                .setSubject(subject)
+                .setClaims(claims)
+                .setIssuedAt(new Date())
+                .setExpiration(expiration)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact()
+                .replace("=", "");
+    }
+
+    public String generate(Long id, TokenType type, String timeUnit, Long duration) {
+
+        Claims claims = Jwts.claims();
+        SecretKey secretKey = getKey(type);
+        Date expiration = getCustomExpirationDate(getTimeUnit(timeUnit), duration);
+
+        claims.put("user_id", id);
+
+        return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(expiration)
@@ -57,40 +70,16 @@ public class JwtProvider {
         try {
             return new TokenValidationResult(TokenValidationStatus.VALID, extractId(token, type));
         } catch (ExpiredJwtException e) {
-            return new TokenValidationResult(TokenValidationStatus.EXPIRED, extractId(token, type));
+            return new TokenValidationResult(TokenValidationStatus.EXPIRED, null);
         } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             return new TokenValidationResult(TokenValidationStatus.INVALID, null);
         }
     }
 
-    public Long extractId(String token, TokenType type) {
+    private Long extractId(String token, TokenType type) {
         SecretKey secretKey = getKey(type);
         Claims claims = getClaims(secretKey, token);
         return claims.get("user_id", Long.class);
-    }
-
-    public String generateForExpirationTest(long userId, String timeUnit, long duration, TokenType type) {
-
-        Header header = Jwts.header();
-        Claims claims = Jwts.claims();
-        String subject = "Authorization";
-        SecretKey secretKey = getKey(type);
-        Date expiration = getCustomExpirationDate(getTimeUnit(timeUnit), duration);
-
-        header.put("typ", "JWT");
-        header.put("alg", "HS256");
-
-        claims.put("user_id", userId);
-
-        return Jwts.builder()
-                .setSubject(subject)
-                .setClaims(claims)
-                .setIssuedAt(new Date())
-                .setExpiration(expiration)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
-                .compact()
-                .replace("=", "");
-
     }
 
     private SecretKey getKey(TokenType type) {
@@ -121,8 +110,8 @@ public class JwtProvider {
 
     private TimeUnit getTimeUnit(String unit) {
         switch (unit) {
-            case "seconds":
-                return TimeUnit.SECONDS;
+            case "millis":
+                return TimeUnit.MILLISECONDS;
             case "minutes":
                 return TimeUnit.MINUTES;
             case "hours":
@@ -130,15 +119,15 @@ public class JwtProvider {
             case "days":
                 return TimeUnit.DAYS;
             default:
-                return null;
+                return TimeUnit.SECONDS;
         }
     }
 
-    private Date getCustomExpirationDate(TimeUnit timeUnit, long duration) {
-        return new Date(new Date().getTime() + timeUnit.convert(duration, timeUnit));
+    protected Date getCustomExpirationDate(TimeUnit timeUnit, long duration) {
+        return new Date(System.currentTimeMillis() + timeUnit.toMillis(duration));
     }
 
-    private Claims getClaims(SecretKey key, String token) {
+    private Claims getClaims(SecretKey key, String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

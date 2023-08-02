@@ -26,14 +26,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * 테스트 순서 <br>
- * 1. 회원가입
- * 2. 이메일, 비밀번호 로그인
- * 3. 토큰 인증
- * 4. 토큰 갱신
- * 5. 일정 생성
- * 6. 일정 조회
- * 7. 일정 수정
- * 8. 일정 삭제
+ * 1. 회원가입 <br>
+ * 2. 이메일, 비밀번호 로그인 <br>
+ * 3. 토큰 인증 <br>
+ * 4. 토큰 갱신 <br>
+ * 5. 일정 생성 <br>
+ * 6. 일정 조회 <br>
+ * 7. 일정 수정 <br>
+ * 8. 일정 삭제 <br>
  */
 
 @SuppressWarnings("ALL")

@@ -25,7 +25,7 @@ public class AccessTokenArgumentResolver implements HandlerMethodArgumentResolve
     }
 
     @Override
-    public TokenValidationResult resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public TokenValidationResult resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
 

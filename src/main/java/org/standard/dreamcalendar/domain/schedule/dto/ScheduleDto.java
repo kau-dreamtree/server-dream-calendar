@@ -14,7 +14,7 @@ public class ScheduleDto {
 
     private Long id;
     private String title;
-    private int tag;
+    private Integer tag;
 
     @JsonProperty("is_all_day")
     private boolean isAllDay;

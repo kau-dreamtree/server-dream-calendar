@@ -35,16 +35,13 @@ public class JwtProvider {
     public String generate(Long id, TokenType type) {
 
         Claims claims = Jwts.claims();
-        SecretKey secretKey = getKey(type);
-        Date expiration = getExpirationDate(type);
-
         claims.put("user_id", id);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
-                .setExpiration(expiration)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .setExpiration(getExpirationDate(type))
+                .signWith(getKey(type), SignatureAlgorithm.HS256)
                 .compact()
                 .replace("=", "");
     }
@@ -52,16 +49,13 @@ public class JwtProvider {
     public String generate(Long id, TokenType type, String timeUnit, Long duration) {
 
         Claims claims = Jwts.claims();
-        SecretKey secretKey = getKey(type);
-        Date expiration = getCustomExpirationDate(getTimeUnit(timeUnit), duration);
-
         claims.put("user_id", id);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
-                .setExpiration(expiration)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .setExpiration(getCustomExpirationDate(getTimeUnit(timeUnit), duration))
+                .signWith(getKey(type), SignatureAlgorithm.HS256)
                 .compact()
                 .replace("=", "");
     }
@@ -77,9 +71,7 @@ public class JwtProvider {
     }
 
     private Long extractId(String token, TokenType type) {
-        SecretKey secretKey = getKey(type);
-        Claims claims = getClaims(secretKey, token);
-        return claims.get("user_id", Long.class);
+        return getClaims(getKey(type), token).get("user_id", Long.class);
     }
 
     private SecretKey getKey(TokenType type) {

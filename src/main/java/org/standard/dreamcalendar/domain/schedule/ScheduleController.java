@@ -9,6 +9,7 @@ import org.standard.dreamcalendar.config.auth.AccessToken;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 
+import java.net.URI;
 import java.util.List;
 
 @Slf4j
@@ -24,7 +25,7 @@ public class ScheduleController {
             @RequestBody ScheduleDto scheduleDto
     ) {
         ScheduleDto dto = scheduleService.create(result, scheduleDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        return ResponseEntity.created(URI.create("schedule/" + dto.getId())).body(dto);
     }
 
     @GetMapping("/schedule/{id}")

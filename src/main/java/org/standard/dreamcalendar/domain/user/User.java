@@ -16,10 +16,7 @@ import java.util.List;
 @Getter
 @Builder
 @Entity
-@Table(
-        name = "users",
-        indexes = {@Index(name = "refresh_index", columnList = "refreshToken")}
-)
+@Table(name = "users")
 public class User extends BaseModel {
 
     @Column(nullable = false, unique = true)

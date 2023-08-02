@@ -1,77 +1,57 @@
 package org.standard.dreamcalendar.domain.user;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
+import org.standard.dreamcalendar.domain.user.dto.response.TokenResponse;
 import org.standard.dreamcalendar.domain.user.dto.response.UpdateTokenResponse;
+import org.standard.dreamcalendar.domain.user.template.JwtGenerationContext;
 import org.standard.dreamcalendar.domain.user.type.Role;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.util.DtoConverter;
 import org.standard.dreamcalendar.util.Encryptor;
 import org.standard.dreamcalendar.util.JwtProvider;
 
+import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.standard.dreamcalendar.domain.user.type.TokenValidationStatus.*;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final Encryptor encryptor;
-    private final JwtProvider tokenProvider;
+    private final JwtProvider jwtProvider;
     private final DtoConverter converter;
+    private final JwtGenerationContext jwtGenerationContext;
 
     @Transactional
-    public Boolean create(UserDto userDto) throws NoSuchAlgorithmException {
-
-        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
-            return false;
-        }
-
+    public URI create(UserDto userDto) throws NoSuchAlgorithmException {
         userDto.setRole(Role.USER);
         userDto.setPassword(encryptor.SHA256(userDto.getPassword()));
-        userRepository.save(converter.toUserEntity(userDto));
-
-        return true;
-
+        return URI.create("user/" + userRepository.save(converter.toUserEntity(userDto)).getId().toString());
     }
 
     @Transactional
-    public LogInByEmailPasswordResponse logInByEmailPassword(UserDto userDto) throws NoSuchAlgorithmException {
-
-        // Check email address in DB
-        User user = userRepository.findByEmail(userDto.getEmail()).orElse(null);
-
-        // Check password in DB
-        String givenPassword = encryptor.SHA256(userDto.getPassword());
-
-        if (user == null || !givenPassword.equals(user.getPassword())) {
-            return null;
-        }
-
-        // Save & issue tokens
-        String accessToken = tokenProvider.generate(user.getId(), TokenType.AccessToken);
-        String refreshToken = tokenProvider.generate(user.getId(), TokenType.RefreshToken);
-
-        user.updateRefreshToken(refreshToken);
-
-        return LogInByEmailPasswordResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+    public TokenResponse logInByEmailPassword(UserDto userDto) throws NoSuchAlgorithmException {
+        return jwtGenerationContext.generateTokenByEmailPassword(
+                userDto,
+                (user) -> userRepository.existsByEmail(user.getEmail())
+                            && encryptor.SHA256(userDto.getPassword()).equals(user.getPassword())
+        );
     }
 
-    public HttpStatus logInByAccessToken(TokenValidationResult result) {
+    public HttpStatus authorize(TokenValidationResult result) {
 
         if (result.getStatus() == INVALID) {
             return HttpStatus.BAD_REQUEST;
@@ -85,26 +65,12 @@ public class UserService {
     }
 
     @Transactional
-    public UpdateTokenResponse updateToken(String refreshToken) {
-
-        User user = userRepository.findByRefreshToken(refreshToken).orElse(null);
-
-        TokenValidationResult result = tokenProvider.validateToken(refreshToken, TokenType.RefreshToken);
-
-        if (user == null || result.getStatus() != VALID) {
-            return null;
-        }
-
-        String accessToken = tokenProvider.generate(user.getId(), TokenType.AccessToken);
-        String newRefreshToken = tokenProvider.generate(user.getId(), TokenType.RefreshToken);
-
-        user.updateRefreshToken(newRefreshToken);
-
-        return UpdateTokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(newRefreshToken)
-                .build();
-
+    public TokenResponse updateToken(String refreshToken) throws NoSuchAlgorithmException {
+        return jwtGenerationContext.generateTokenByEmailPassword(
+                refreshToken,
+                (user) -> user != null
+                            && jwtProvider.validateToken(refreshToken, TokenType.RefreshToken).getStatus() == VALID
+        );
     }
 
     @Transactional
@@ -114,10 +80,7 @@ public class UserService {
             return false;
         }
 
-        User user = userRepository.findById(result.getUserId()).orElse(null);
-        user.updateRefreshToken(null);
-
-        return true;
+        return userRepository.updateRefreshTokenById(null, result.getUserId());
     }
 
     @Transactional
@@ -142,9 +105,8 @@ public class UserService {
         return userList.stream().map(converter::toUserDto).collect(Collectors.toList());
     }
 
-    public UserDto findByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
-        return converter.toUserDto(user);
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
 }

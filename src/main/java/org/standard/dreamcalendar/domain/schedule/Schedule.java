@@ -1,16 +1,20 @@
 package org.standard.dreamcalendar.domain.schedule;
 
-import org.standard.dreamcalendar.model.BaseModel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.standard.dreamcalendar.domain.user.User;
-import lombok.*;
+import org.standard.dreamcalendar.model.BaseModel;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Builder
 @Entity
 public class Schedule extends BaseModel {
@@ -32,4 +36,7 @@ public class Schedule extends BaseModel {
     @Column(nullable = false)
     private LocalDateTime endAt;
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

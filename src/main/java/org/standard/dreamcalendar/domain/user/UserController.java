@@ -9,6 +9,7 @@ import org.standard.dreamcalendar.config.auth.AccessToken;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
+import org.standard.dreamcalendar.domain.user.dto.response.TokenResponse;
 import org.standard.dreamcalendar.domain.user.dto.response.UpdateTokenResponse;
 
 import java.security.NoSuchAlgorithmException;
@@ -22,16 +23,16 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/user")
-    public ResponseEntity<HttpStatus> create(@RequestBody UserDto user) throws NoSuchAlgorithmException {
-        return (userService.create(user)) ?
-                ResponseEntity.status(HttpStatus.CREATED).build() :
-                ResponseEntity.status(HttpStatus.CONFLICT).build();
+    public ResponseEntity<String> signUp(@RequestBody UserDto user) throws NoSuchAlgorithmException {
+        return (userService.findByEmail(user.getEmail()).isPresent()) ?
+                ResponseEntity.status(HttpStatus.CONFLICT).build() :
+                ResponseEntity.created(userService.create(user)).build();
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<LogInByEmailPasswordResponse> logInByEmailPassword(@RequestBody UserDto user)
+    public ResponseEntity<TokenResponse> logInByEmailPassword(@RequestBody UserDto user)
             throws NoSuchAlgorithmException {
-        LogInByEmailPasswordResponse response = userService.logInByEmailPassword(user);
+        TokenResponse response = userService.logInByEmailPassword(user);
         return (response != null) ?
                 ResponseEntity.status(HttpStatus.OK).body(response) :
                 ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -39,12 +40,13 @@ public class UserController {
 
     @GetMapping("/auth")
     public ResponseEntity<HttpStatus> authorize(@AccessToken TokenValidationResult result) {
-        return ResponseEntity.status(userService.logInByAccessToken(result)).build();
+        return ResponseEntity.status(userService.authorize(result)).build();
     }
 
     @GetMapping("/auth-refresh")
-    public ResponseEntity<UpdateTokenResponse> updateToken(@RequestHeader("Authorization") String refreshToken) {
-        UpdateTokenResponse response = userService.updateToken(refreshToken.split("Bearer ")[1]);
+    public ResponseEntity<TokenResponse> updateToken(@RequestHeader("Authorization") String refreshToken)
+            throws NoSuchAlgorithmException {
+        TokenResponse response = userService.updateToken(refreshToken.split("Bearer ")[1]);
         return (response != null) ?
                 ResponseEntity.status(HttpStatus.OK).body(response) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

@@ -56,10 +56,7 @@ public class AdminUserService {
 
         user.updateRefreshToken(refreshToken);
 
-        return LogInByEmailPasswordResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        return new LogInByEmailPasswordResponse(accessToken, refreshToken);
     }
 
 }

@@ -1,7 +1,6 @@
 package org.standard.dreamcalendar.domain.user.template;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.domain.user.User;
@@ -9,9 +8,8 @@ import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.dto.response.TokenResponse;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
-import org.standard.dreamcalendar.util.JwtProvider;
+import org.standard.dreamcalendar.global.util.JwtProvider;
 
-import javax.persistence.EntityNotFoundException;
 import java.security.NoSuchAlgorithmException;
 
 @RequiredArgsConstructor

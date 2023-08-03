@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.config.auth;
+package org.standard.dreamcalendar.domain.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,11 +10,11 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
-import org.standard.dreamcalendar.config.auth.dto.SessionUser;
+import org.standard.dreamcalendar.domain.auth.dto.SessionUser;
+import org.standard.dreamcalendar.domain.auth.dto.OAuthAttributes;
 import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.User;
-import org.standard.dreamcalendar.util.DtoConverter;
+import org.standard.dreamcalendar.global.util.DtoConverter;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;

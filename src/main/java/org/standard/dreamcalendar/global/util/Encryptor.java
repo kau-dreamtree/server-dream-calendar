@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.util;
+package org.standard.dreamcalendar.global.util;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class Encryptor {
     public String SHA256(String plainText) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
         messageDigest.update(plainText.getBytes(StandardCharsets.UTF_8));
-        return bytesToHex(messageDigest.digest());
+        return Encoder.bytesToHex(messageDigest.digest());
     }
 
     public String AES256Encode(String plainText)
@@ -43,14 +43,14 @@ public class Encryptor {
 
         byte[] cipherText = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
 
-        return bytesToHex(cipherText);
+        return Encoder.bytesToHex(cipherText);
     }
 
     public String AES256Decode(String cipherText)
             throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
-        byte[] cipherBytes = hexToBytes(cipherText);
+        byte[] cipherBytes = Encoder.hexToBytes(cipherText);
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
@@ -60,23 +60,5 @@ public class Encryptor {
         byte[] plainTexts = cipher.doFinal(cipherBytes);
 
         return new String(plainTexts, StandardCharsets.UTF_8);
-    }
-
-    public String bytesToHex(byte[] bytes) {
-        StringBuilder builder = new StringBuilder();
-        for (byte b : bytes) {
-            builder.append(String.format("%02x", b));
-        }
-        return builder.toString().toUpperCase();
-    }
-
-    public byte[] hexToBytes(String hex) {
-        int length = hex.length();
-        byte[] bytes = new byte[length/2];
-        for (int i = 0; i < length; i += 2) {
-            bytes[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4)
-                    + Character.digit(hex.charAt(i + 1), 16));
-        }
-        return bytes;
     }
 }

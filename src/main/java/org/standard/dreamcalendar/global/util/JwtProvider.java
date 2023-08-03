@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.util;
+package org.standard.dreamcalendar.global.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.standard.dreamcalendar.domain.schedule.Schedule;
 import org.standard.dreamcalendar.domain.user.type.Role;
-import org.standard.dreamcalendar.model.BaseModel;
+import org.standard.dreamcalendar.global.model.BaseModel;
 
 import javax.persistence.*;
 import java.util.List;

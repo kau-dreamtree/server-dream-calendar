@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.standard.dreamcalendar.domain.user.User;
-import org.standard.dreamcalendar.model.BaseModel;
+import org.standard.dreamcalendar.global.model.BaseModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

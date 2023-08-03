@@ -6,20 +6,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
-import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
 import org.standard.dreamcalendar.domain.user.dto.response.TokenResponse;
-import org.standard.dreamcalendar.domain.user.dto.response.UpdateTokenResponse;
 import org.standard.dreamcalendar.domain.user.template.JwtGenerationContext;
 import org.standard.dreamcalendar.domain.user.type.Role;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
-import org.standard.dreamcalendar.util.DtoConverter;
-import org.standard.dreamcalendar.util.Encryptor;
-import org.standard.dreamcalendar.util.JwtProvider;
+import org.standard.dreamcalendar.global.util.DtoConverter;
+import org.standard.dreamcalendar.global.util.Encryptor;
+import org.standard.dreamcalendar.global.util.JwtProvider;
 
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 

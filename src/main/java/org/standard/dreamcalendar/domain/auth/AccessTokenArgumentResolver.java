@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.config.auth;
+package org.standard.dreamcalendar.domain.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -9,7 +9,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
-import org.standard.dreamcalendar.util.JwtProvider;
+import org.standard.dreamcalendar.global.util.JwtProvider;
 
 import javax.servlet.http.HttpServletRequest;
 

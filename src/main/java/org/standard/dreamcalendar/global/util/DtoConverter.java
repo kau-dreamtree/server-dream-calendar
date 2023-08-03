@@ -1,9 +1,9 @@
-package org.standard.dreamcalendar.util;
+package org.standard.dreamcalendar.global.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.standard.dreamcalendar.config.auth.dto.OAuthAttributes;
+import org.standard.dreamcalendar.domain.auth.dto.OAuthAttributes;
 import org.standard.dreamcalendar.domain.email.EmailAuth;
 import org.standard.dreamcalendar.domain.email.EmailAuthDto;
 import org.standard.dreamcalendar.domain.schedule.ScheduleRepository;

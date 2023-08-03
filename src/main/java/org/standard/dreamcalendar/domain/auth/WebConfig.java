@@ -1,10 +1,10 @@
-package org.standard.dreamcalendar.config.auth;
+package org.standard.dreamcalendar.domain.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.standard.dreamcalendar.util.JwtProvider;
+import org.standard.dreamcalendar.global.util.JwtProvider;
 
 import java.util.List;
 

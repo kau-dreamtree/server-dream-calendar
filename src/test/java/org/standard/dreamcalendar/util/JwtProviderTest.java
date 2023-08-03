@@ -1,22 +1,19 @@
 package org.standard.dreamcalendar.util;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
+import org.standard.dreamcalendar.global.util.JwtProvider;
+
+import static org.standard.dreamcalendar.util.UtilTestConfig.TEST_KEY_256;
 
 class JwtProviderTest {
 
-    UtilTestConfig config;
-    JwtProvider jwtProvider;
-
-    @BeforeEach
-    void setUp() {
-        config = new UtilTestConfig();
-        jwtProvider = config.jwtProvider();
-    }
+    JwtProvider jwtProvider = new JwtProvider(
+            TEST_KEY_256, TEST_KEY_256, 1L, 1L
+    );
 
     @Test
     void validToken() {

@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.model;
+package org.standard.dreamcalendar.global.model;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

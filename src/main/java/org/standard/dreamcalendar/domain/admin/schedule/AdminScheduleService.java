@@ -7,7 +7,7 @@ import org.standard.dreamcalendar.domain.schedule.ScheduleRepository;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.UserRepository;
-import org.standard.dreamcalendar.util.DtoConverter;
+import org.standard.dreamcalendar.global.util.DtoConverter;
 
 import java.util.Collections;
 import java.util.List;

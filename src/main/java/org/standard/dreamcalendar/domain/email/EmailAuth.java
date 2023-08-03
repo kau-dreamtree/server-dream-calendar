@@ -1,7 +1,7 @@
 package org.standard.dreamcalendar.domain.email;
 
 import lombok.*;
-import org.standard.dreamcalendar.model.BaseModel;
+import org.standard.dreamcalendar.global.model.BaseModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

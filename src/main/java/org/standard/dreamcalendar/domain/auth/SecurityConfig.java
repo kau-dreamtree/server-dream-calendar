@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.config.auth;
+package org.standard.dreamcalendar.domain.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

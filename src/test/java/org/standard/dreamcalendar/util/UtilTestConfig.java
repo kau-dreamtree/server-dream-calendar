@@ -1,20 +1,23 @@
 package org.standard.dreamcalendar.util;
 
-import org.junit.jupiter.api.TestFactory;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.standard.dreamcalendar.global.util.Encryptor;
+import org.standard.dreamcalendar.global.util.JwtProvider;
 
+@TestConfiguration
 public class UtilTestConfig {
 
-    private final String key = "testtesttesttesttesttesttesttest"; // 32bytes(256bit)
+    protected static final String TEST_KEY_256 = "l6ybz1s9hk6j0g1qmzotgoi5w2ym1nrm"; // 32bytes(256bit)
 
-    public Encryptor encryptor() {
-        return new Encryptor(key);
+    @Bean
+    Encryptor encryptor() {
+        return new Encryptor(TEST_KEY_256);
     }
 
-    public JwtProvider jwtProvider() {
-        return new JwtProvider(key, key, 1L, 1L);
+    @Bean
+    JwtProvider jwtProvider() {
+        return new JwtProvider(TEST_KEY_256, TEST_KEY_256, 1L, 1L);
     }
 
 }

@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.config.redis;
+package org.standard.dreamcalendar.domain.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

@@ -12,7 +12,6 @@ import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import java.net.URI;
 import java.util.List;
 
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class ScheduleController {

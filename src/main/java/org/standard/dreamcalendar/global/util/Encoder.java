@@ -11,7 +11,7 @@ public class Encoder {
             hex.append(Character.forDigit((b & 0xF0) >> 4, 16))
                     .append(Character.forDigit((b & 0x0F), 16));
         }
-        return hex.toString();
+        return hex.toString().toUpperCase();
     }
 
     public static byte[] hexToBytes(String hex) {

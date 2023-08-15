@@ -76,8 +76,8 @@ public class UserService {
         if (result.getStatus() != VALID) {
             return false;
         }
-
-        return userRepository.updateRefreshTokenById(null, result.getUserId());
+        userRepository.updateRefreshTokenById(null, result.getUserId());
+        return true;
     }
 
     @Transactional

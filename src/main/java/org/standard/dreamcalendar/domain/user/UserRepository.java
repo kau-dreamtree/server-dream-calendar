@@ -23,6 +23,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Modifying
     @Query("update User u set u.refreshToken = ?1 where u.id = ?2")
-    boolean updateRefreshTokenById(@Nullable String refreshToken, @NonNull Long id);
-
+    void updateRefreshTokenById(@Nullable String refreshToken, @NonNull Long id);
 }

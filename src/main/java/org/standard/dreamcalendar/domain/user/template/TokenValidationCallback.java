@@ -4,6 +4,6 @@ import org.standard.dreamcalendar.domain.user.User;
 
 import java.security.NoSuchAlgorithmException;
 
-public interface JwtGenerationCallback {
-    boolean validateUser(User userDto) throws NoSuchAlgorithmException;
+public interface TokenValidationCallback {
+    boolean validate(User userDto) throws NoSuchAlgorithmException;
 }

@@ -5,39 +5,36 @@ import org.junit.jupiter.api.Test;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
-import org.standard.dreamcalendar.global.util.JwtProvider;
+import org.standard.dreamcalendar.global.util.Encryptor;
+import org.standard.dreamcalendar.global.util.token.AccessTokenProvider;
 
 import static org.standard.dreamcalendar.util.UtilTestConfig.TEST_KEY_256;
 
-class JwtProviderTest {
+class AccessTokenProviderTest {
 
-    JwtProvider jwtProvider = new JwtProvider(
-            TEST_KEY_256, TEST_KEY_256, 1L, 1L
-    );
+    AccessTokenProvider accessTokenProvider = new AccessTokenProvider(TEST_KEY_256, 1L);
 
     @Test
-    void validToken() {
+    void validToken() throws Exception {
 
         // given
         long userId = 1L;
-        TokenType type = TokenType.AccessToken;
 
         TokenValidationResult expected = new TokenValidationResult(TokenValidationStatus.VALID, userId);
 
         // when
-        String token = jwtProvider.generate(userId, type);
-        TokenValidationResult result = jwtProvider.validateToken(token, type);
+        String token = accessTokenProvider.generate(userId);
+        TokenValidationResult result = accessTokenProvider.validateToken(token);
 
         // then
         Assertions.assertEquals(expected, result);
     }
 
     @Test
-    void expiredToken() {
+    void expiredToken() throws Exception {
 
         // given
         long userId = 1L;
-        TokenType type = TokenType.AccessToken;
         String timeUnit = "millis";
 
         long duration = 0L;     // duration 바꿔가면서 test
@@ -45,8 +42,8 @@ class JwtProviderTest {
         TokenValidationResult expected = new TokenValidationResult(TokenValidationStatus.EXPIRED, null);
 
         // when
-        String token = jwtProvider.generate(userId, type, timeUnit, duration);
-        TokenValidationResult result = jwtProvider.validateToken(token, type);
+        String token = accessTokenProvider.generate(userId, timeUnit, duration);
+        TokenValidationResult result = accessTokenProvider.validateToken(token);
 
         // then
         Assertions.assertEquals(expected, result);
@@ -56,13 +53,11 @@ class JwtProviderTest {
     void invalidToken() {
 
         // given
-        TokenType type = TokenType.AccessToken;
-
         TokenValidationResult expected = new TokenValidationResult(TokenValidationStatus.INVALID, null);
 
         // when
         String token = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
-        TokenValidationResult result = jwtProvider.validateToken(token, type);
+        TokenValidationResult result = accessTokenProvider.validateToken(token);
 
         // then
         Assertions.assertEquals(expected, result);

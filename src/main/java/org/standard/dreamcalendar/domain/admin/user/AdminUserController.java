@@ -39,7 +39,7 @@ public class AdminUserController {
     @PostMapping("/admin/auth")
     public ResponseEntity<LogInByEmailPasswordResponse> tokenExpirationTest(
             @RequestHeader("Authorization") String authorization, @RequestBody AdminTokenExpirationTestDto dto
-    ) throws NoSuchAlgorithmException {
+    ) throws Exception {
 
         if (!authorization.equals(adminAuth)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

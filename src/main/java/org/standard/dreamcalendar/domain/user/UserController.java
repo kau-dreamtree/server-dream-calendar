@@ -26,8 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<TokenResponse> logInByEmailPassword(@RequestBody UserDto user)
-            throws NoSuchAlgorithmException {
+    public ResponseEntity<TokenResponse> logInByEmailPassword(@RequestBody UserDto user) throws Exception {
         TokenResponse response = userService.logInByEmailPassword(user);
         return (response != null) ?
                 ResponseEntity.status(HttpStatus.OK).body(response) :
@@ -40,8 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/auth-refresh")
-    public ResponseEntity<TokenResponse> updateToken(@RequestHeader("Authorization") String refreshToken)
-            throws NoSuchAlgorithmException {
+    public ResponseEntity<TokenResponse> updateToken(@RequestHeader("Authorization") String refreshToken) throws Exception {
         TokenResponse response = userService.updateToken(refreshToken.split("Bearer ")[1]);
         return (response != null) ?
                 ResponseEntity.status(HttpStatus.OK).body(response) :
@@ -50,16 +48,12 @@ public class UserController {
 
     @GetMapping("/auth/logout")
     public ResponseEntity<HttpStatus> logOut(@AccessToken TokenValidationResult result) {
-        return (userService.logOut(result)) ?
-                ResponseEntity.status(HttpStatus.OK).build() :
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(userService.logOut(result)).build();
     }
 
     @DeleteMapping("/user")
     public ResponseEntity<HttpStatus> delete(@AccessToken TokenValidationResult result) {
-        return (userService.delete(result)) ?
-                ResponseEntity.status(HttpStatus.OK).build() :
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(userService.delete(result)).build();
     }
 
 }

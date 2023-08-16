@@ -7,28 +7,26 @@ import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.dto.response.TokenResponse;
-import org.standard.dreamcalendar.domain.user.type.TokenType;
-import org.standard.dreamcalendar.global.util.JwtProvider;
-
-import java.security.NoSuchAlgorithmException;
+import org.standard.dreamcalendar.global.util.token.TokenProvider;
 
 @RequiredArgsConstructor
 @Component
-public class JwtGenerationContext {
+public class TokenGenerationContext {
 
     private final UserRepository userRepository;
-    private final JwtProvider jwtProvider;
+    private final TokenProvider accessTokenProvider;
+    private final TokenProvider refreshTokenProvider;
 
     @Transactional
-    public <T> TokenResponse generateTokenByEmailPassword(T userInfo, JwtGenerationCallback callback) throws NoSuchAlgorithmException {
+    public <T> TokenResponse generateTokensByEmailPassword(T userInfo, TokenValidationCallback callback) throws Exception {
 
         User user = findUser(userInfo);
-        boolean validation = callback.validateUser(user);
+        boolean validation = callback.validate(user);
 
         if (validation) {
 
-            String accessToken = jwtProvider.generate(user.getId(), TokenType.AccessToken);
-            String refreshToken = jwtProvider.generate(user.getId(), TokenType.RefreshToken);
+            String accessToken = accessTokenProvider.generate(user.getId());
+            String refreshToken = refreshTokenProvider.generate(user.getId());
 
             user.updateRefreshToken(refreshToken);
             userRepository.save(user);
@@ -48,6 +46,4 @@ public class JwtGenerationContext {
         }
         return null;
     }
-
-
 }

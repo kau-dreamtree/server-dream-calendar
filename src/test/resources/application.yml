@@ -43,9 +43,3 @@ access-key: testtesttesttesttesttesttesttest
 refresh-key: testtesttesttesttesttesttesttest
 access-expiration-hours: 1
 refresh-expiration-days: 1
-
-email:
-  host: 'smtp.gmail.com'
-  port: '587'
-  username: test@test.com
-  password: test

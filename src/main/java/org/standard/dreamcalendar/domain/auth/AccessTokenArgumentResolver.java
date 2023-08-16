@@ -9,7 +9,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.type.TokenType;
-import org.standard.dreamcalendar.global.util.JwtProvider;
+import org.standard.dreamcalendar.global.util.token.AccessTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class AccessTokenArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final JwtProvider jwtProvider;
+    private final AccessTokenProvider accessTokenProvider;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -26,11 +26,8 @@ public class AccessTokenArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public TokenValidationResult resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
-
         String token = httpServletRequest.getHeader("Authorization").split("Bearer ")[1];
-
-        return jwtProvider.validateToken(token, TokenType.AccessToken);
+        return accessTokenProvider.validateToken(token);
     }
 }

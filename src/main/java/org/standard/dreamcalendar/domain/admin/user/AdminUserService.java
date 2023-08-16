@@ -8,12 +8,10 @@ import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
-import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.global.util.DtoConverter;
 import org.standard.dreamcalendar.global.util.Encryptor;
-import org.standard.dreamcalendar.global.util.JwtProvider;
+import org.standard.dreamcalendar.global.util.token.TokenProvider;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,8 +21,8 @@ import java.util.stream.Collectors;
 public class AdminUserService {
 
     private final UserRepository userRepository;
-    private final Encryptor encryptor;
-    private final JwtProvider tokenProvider;
+    private final TokenProvider accessTokenProvider;
+    private final TokenProvider refreshTokenProvider;
     private final DtoConverter converter;
 
     public List<UserDto> findAll() {
@@ -33,26 +31,21 @@ public class AdminUserService {
     }
 
     @Transactional
-    public LogInByEmailPasswordResponse tokenExpirationTest(AdminTokenExpirationTestDto dto)
-            throws NoSuchAlgorithmException {
+    public LogInByEmailPasswordResponse tokenExpirationTest(AdminTokenExpirationTestDto dto) throws Exception {
 
         // Check email address in DB
         User user = userRepository.findById(dto.getId()).orElse(null);
 
         // Check password in DB
-        String givenPassword = encryptor.SHA256(dto.getPassword());
+        String givenPassword = Encryptor.SHA256(dto.getPassword());
 
         if (user == null || !givenPassword.equals(user.getPassword())) {
             return null;
         }
 
         // Save & issue tokens
-        String accessToken = tokenProvider.generate(
-                dto.getId(), TokenType.AccessToken, dto.getTimeUnit(), dto.getAccessExpiration()
-        );
-        String refreshToken = tokenProvider.generate(
-                dto.getId(), TokenType.RefreshToken, dto.getTimeUnit(), dto.getRefreshExpiration()
-        );
+        String accessToken = accessTokenProvider.generate(dto.getId(), dto.getTimeUnit(), dto.getAccessExpiration());
+        String refreshToken = refreshTokenProvider.generate(dto.getId());
 
         user.updateRefreshToken(refreshToken);
 

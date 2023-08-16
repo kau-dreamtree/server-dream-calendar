@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.standard.dreamcalendar.domain.auth.dto.OAuthAttributes;
-import org.standard.dreamcalendar.domain.email.EmailAuth;
-import org.standard.dreamcalendar.domain.email.EmailAuthDto;
 import org.standard.dreamcalendar.domain.schedule.ScheduleRepository;
 import org.standard.dreamcalendar.domain.schedule.Schedule;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
@@ -47,13 +45,6 @@ public class DtoConverter {
                 .picture(entity.getPicture())
                 .role(entity.getRole())
                 .refreshToken(entity.getRefreshToken())
-                .build();
-    }
-
-    public EmailAuth toEmailAuthEntity(EmailAuthDto dto) {
-        return EmailAuth.builder()
-                .email(dto.getEmail())
-                .code(dto.getCode())
                 .build();
     }
 

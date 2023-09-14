@@ -32,7 +32,6 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'it.ozimov:embedded-redis:0.7.3'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }

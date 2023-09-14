@@ -3,11 +3,15 @@ package org.standard.dreamcalendar.global.util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.standard.dreamcalendar.domain.auth.dto.OAuthAttributes;
+import org.standard.dreamcalendar.domain.auth.AuthInfo;
+import org.standard.dreamcalendar.domain.auth.AuthRepository;
+import org.standard.dreamcalendar.domain.auth.dto.AuthInfoDto;
+import org.standard.dreamcalendar.domain.oauth2.dto.OAuthAttributes;
 import org.standard.dreamcalendar.domain.schedule.ScheduleRepository;
 import org.standard.dreamcalendar.domain.schedule.Schedule;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
+import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 
 @Slf4j
@@ -15,6 +19,7 @@ import org.standard.dreamcalendar.domain.user.dto.UserDto;
 @Component
 public class DtoConverter {
 
+    private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
 
     public User toUserEntity(UserDto dto) {
@@ -24,7 +29,6 @@ public class DtoConverter {
                 .name(dto.getName())
                 .picture(dto.getPicture())
                 .role(dto.getRole())
-                .refreshToken(dto.getRefreshToken())
                 .build();
     }
 
@@ -44,17 +48,6 @@ public class DtoConverter {
                 .name(entity.getName())
                 .picture(entity.getPicture())
                 .role(entity.getRole())
-                .refreshToken(entity.getRefreshToken())
-                .build();
-    }
-
-    private Schedule generateScheduleEntity(ScheduleDto dto) {
-        return Schedule.builder()
-                .title(dto.getTitle())
-                .isAllDay(dto.isAllDay())
-                .startAt(dto.getStartAt())
-                .endAt(dto.getEndAt())
-                .tag(dto.getTag())
                 .build();
     }
 
@@ -70,6 +63,16 @@ public class DtoConverter {
                 dto.getStartAt(),
                 dto.getEndAt()
         ).orElse(null);
+    }
+
+    private Schedule generateScheduleEntity(ScheduleDto dto) {
+        return Schedule.builder()
+                .title(dto.getTitle())
+                .isAllDay(dto.isAllDay())
+                .startAt(dto.getStartAt())
+                .endAt(dto.getEndAt())
+                .tag(dto.getTag())
+                .build();
     }
 
     public ScheduleDto toScheduleDto(Schedule entity) {

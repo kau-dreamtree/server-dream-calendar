@@ -7,48 +7,28 @@ import org.springframework.web.bind.annotation.*;
 import org.standard.dreamcalendar.domain.auth.AccessToken;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
-import org.standard.dreamcalendar.domain.user.dto.response.TokenResponse;
 
 import java.security.NoSuchAlgorithmException;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping("/user")
-    public ResponseEntity<String> signUp(@RequestBody UserDto user) throws NoSuchAlgorithmException {
-        return (userService.findByEmail(user.getEmail()).isPresent()) ?
-                ResponseEntity.status(HttpStatus.CONFLICT).build() :
-                ResponseEntity.created(userService.create(user)).build();
+    public ResponseEntity<HttpStatus> signUp(@RequestBody UserDto userDto) throws NoSuchAlgorithmException {
+        return ResponseEntity.status(userService.create(userDto)).build();
     }
 
-    @PostMapping("/auth")
-    public ResponseEntity<TokenResponse> logInByEmailPassword(@RequestBody UserDto user) throws Exception {
-        TokenResponse response = userService.logInByEmailPassword(user);
-        return (response != null) ?
-                ResponseEntity.status(HttpStatus.OK).body(response) :
-                ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    @GetMapping("/user")
+    public ResponseEntity<UserDto> get(@AccessToken TokenValidationResult result) {
+        return ResponseEntity.ok(userService.findById(result.getUserId()));
     }
 
-    @GetMapping("/auth")
-    public ResponseEntity<HttpStatus> authorize(@AccessToken TokenValidationResult result) {
-        return ResponseEntity.status(userService.authorize(result)).build();
-    }
-
-    @GetMapping("/auth-refresh")
-    public ResponseEntity<TokenResponse> updateToken(@RequestHeader("Authorization") String refreshToken) throws Exception {
-        TokenResponse response = userService.updateToken(refreshToken.split("Bearer ")[1]);
-        return (response != null) ?
-                ResponseEntity.status(HttpStatus.OK).body(response) :
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
-
-    @GetMapping("/auth/logout")
-    public ResponseEntity<HttpStatus> logOut(@AccessToken TokenValidationResult result) {
-        return ResponseEntity.status(userService.logOut(result)).build();
+    @PutMapping("/user")
+    public ResponseEntity<HttpStatus> update(@AccessToken TokenValidationResult result, @RequestBody UserDto userDto) {
+        return ResponseEntity.status(userService.update(result, userDto)).build();
     }
 
     @DeleteMapping("/user")

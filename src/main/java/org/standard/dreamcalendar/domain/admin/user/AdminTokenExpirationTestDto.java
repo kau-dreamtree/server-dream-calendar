@@ -29,8 +29,4 @@ public class AdminTokenExpirationTestDto {
 
     @JsonProperty("refresh_token")
     private String refreshToken;
-
-    @JsonProperty("refresh_expiration")
-    private Long refreshExpiration;
-
 }

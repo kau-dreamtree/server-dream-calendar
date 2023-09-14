@@ -4,76 +4,57 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.standard.dreamcalendar.domain.auth.AuthService;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
-import org.standard.dreamcalendar.domain.user.dto.response.TokenResponse;
-import org.standard.dreamcalendar.domain.user.template.TokenGenerationContext;
-import org.standard.dreamcalendar.domain.user.type.Role;
-import org.standard.dreamcalendar.domain.user.type.TokenType;
+import org.standard.dreamcalendar.domain.user.enums.Role;
 import org.standard.dreamcalendar.global.util.DtoConverter;
 import org.standard.dreamcalendar.global.util.Encryptor;
-import org.standard.dreamcalendar.global.util.token.AccessTokenProvider;
 
-import java.net.URI;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.standard.dreamcalendar.domain.user.type.TokenValidationStatus.*;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AuthService authService;
     private final DtoConverter converter;
-    private final TokenGenerationContext tokenGenerationContext;
 
     @Transactional
-    public URI create(UserDto userDto) throws NoSuchAlgorithmException {
-        userDto.setRole(Role.USER);
-        userDto.setPassword(Encryptor.SHA256(userDto.getPassword()));
-        return URI.create("user/" + userRepository.save(converter.toUserEntity(userDto)).getId().toString());
+    public HttpStatus create(UserDto userDto) throws NoSuchAlgorithmException {
+        if (!userRepository.existsByEmail(userDto.getEmail())) {
+            userDto.setRole(Role.USER);
+            userDto.setPassword(Encryptor.SHA256(userDto.getPassword()));
+            User user = userRepository.save(converter.toUserEntity(userDto));
+            authService.create(user);
+            return HttpStatus.CREATED;
+        }
+        return HttpStatus.CONFLICT;
     }
 
-    @Transactional
-    public TokenResponse logInByEmailPassword(UserDto userDto) throws Exception {
-        return tokenGenerationContext.generateTokensByEmailPassword(
-                userDto,
-                (user) -> userRepository.existsByEmail(user.getEmail())
-                            && Encryptor.SHA256(userDto.getPassword()).equals(user.getPassword())
-        );
+    public UserDto findById(Long id) {
+        return converter.toUserDto(userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found")));
     }
 
-    public HttpStatus authorize(TokenValidationResult result) {
+    public HttpStatus update(TokenValidationResult result, UserDto userDto) {
         switch (result.getStatus()) {
             case INVALID:
                 return HttpStatus.BAD_REQUEST;
             case EXPIRED:
                 return HttpStatus.UNAUTHORIZED;
             default:
-                return HttpStatus.OK;
+                updateUser(userDto);
+                return HttpStatus.NO_CONTENT;
         }
     }
 
     @Transactional
-    public TokenResponse updateToken(String refreshToken) throws Exception {
-        return tokenGenerationContext.generateTokensByEmailPassword(refreshToken, Objects::nonNull);
-    }
-
-    @Transactional
-    public HttpStatus logOut(TokenValidationResult result) {
-        switch (result.getStatus()) {
-            case INVALID:
-                return HttpStatus.BAD_REQUEST;
-            case EXPIRED:
-                return HttpStatus.UNAUTHORIZED;
-            default:
-                userRepository.updateRefreshTokenById(null, result.getUserId());
-                return HttpStatus.OK;
-        }
+    private void updateUser(UserDto userDto) {
+        User user = userRepository.findById(userDto.getId()).orElseThrow(IllegalArgumentException::new);
+        user.updatePassword(userDto.getPassword());
+        user.updateOnSocialLogIn(userDto.getName(), userDto.getPicture());
+        userRepository.save(user);
     }
 
     public HttpStatus delete(TokenValidationResult result) {
@@ -88,7 +69,4 @@ public class UserService {
         }
     }
 
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 }

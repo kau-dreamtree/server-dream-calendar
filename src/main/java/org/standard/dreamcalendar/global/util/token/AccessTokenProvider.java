@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
-import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
+import org.standard.dreamcalendar.domain.user.enums.TokenValidationStatus;
 import org.standard.dreamcalendar.global.util.Encryptor;
 
 import javax.crypto.SecretKey;

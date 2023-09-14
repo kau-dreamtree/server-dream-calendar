@@ -30,3 +30,4 @@ public class AccessTokenArgumentResolver implements HandlerMethodArgumentResolve
         return accessTokenProvider.validateToken(token);
     }
 }
+

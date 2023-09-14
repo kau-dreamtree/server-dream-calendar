@@ -3,15 +3,11 @@ package org.standard.dreamcalendar.global.util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.standard.dreamcalendar.domain.auth.AuthInfo;
-import org.standard.dreamcalendar.domain.auth.AuthRepository;
-import org.standard.dreamcalendar.domain.auth.dto.AuthInfoDto;
 import org.standard.dreamcalendar.domain.oauth2.dto.OAuthAttributes;
-import org.standard.dreamcalendar.domain.schedule.ScheduleRepository;
 import org.standard.dreamcalendar.domain.schedule.Schedule;
+import org.standard.dreamcalendar.domain.schedule.ScheduleRepository;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
 import org.standard.dreamcalendar.domain.user.User;
-import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
 
 @Slf4j
@@ -19,7 +15,6 @@ import org.standard.dreamcalendar.domain.user.dto.UserDto;
 @Component
 public class DtoConverter {
 
-    private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
 
     public User toUserEntity(UserDto dto) {

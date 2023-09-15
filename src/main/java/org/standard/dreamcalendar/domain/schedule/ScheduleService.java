@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.standard.dreamcalendar.domain.user.type.TokenValidationStatus.VALID;
+import static org.standard.dreamcalendar.domain.user.enums.TokenValidationStatus.VALID;
 
 @RequiredArgsConstructor
 @Service

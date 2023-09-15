@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.standard.dreamcalendar.domain.schedule.Schedule;
-import org.standard.dreamcalendar.domain.user.type.Role;
+import org.standard.dreamcalendar.domain.user.enums.Role;
 import org.standard.dreamcalendar.global.model.BaseModel;
 
 import javax.persistence.*;
@@ -33,9 +33,6 @@ public class User extends BaseModel {
     @Column(nullable = false)
     private Role role;
 
-    @Column(unique = true)
-    private String refreshToken;
-
     @OneToMany(mappedBy = "user")
     private List<Schedule> schedules;
 
@@ -46,10 +43,6 @@ public class User extends BaseModel {
 
     public void updatePassword(String password) {
         this.password = password;
-    }
-
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
     }
 
     public User updateOnSocialLogIn(String name, String picture) {
@@ -66,7 +59,6 @@ public class User extends BaseModel {
                 ", name='" + name + '\'' +
                 ", picture='" + picture + '\'' +
                 ", role='" + role + '\'' +
-                ", refreshToken='" + refreshToken + '\'' +
                 '}';
     }
 

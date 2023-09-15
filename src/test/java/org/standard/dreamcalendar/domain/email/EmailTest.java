@@ -7,13 +7,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 class EmailTest {
 
-    EmailService emailService = new MockEmailService();
+    EmailService mockService = new MockEmailService();
+
+    String subject = "테스트 제목";
+    String message = "테스트 내용";
+    String recipient = "sjw_3@naver.com";
 
     @Test
     void send() {
-        String subject = "테스트 제목";
-        String message = "테스트 내용";
-        String recipient = "sjw_3@naver.com";
-        emailService.sendMail(subject, message, recipient);
+        mockService.sendMail(subject, message, recipient);
     }
+
 }

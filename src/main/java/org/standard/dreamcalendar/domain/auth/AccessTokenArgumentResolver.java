@@ -8,7 +8,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
-import org.standard.dreamcalendar.domain.user.type.TokenType;
 import org.standard.dreamcalendar.global.util.token.AccessTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;

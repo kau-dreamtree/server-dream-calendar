@@ -5,6 +5,7 @@ spring:
       - key
       - email
       - redis
+      - h2
 
   h2:
     console:

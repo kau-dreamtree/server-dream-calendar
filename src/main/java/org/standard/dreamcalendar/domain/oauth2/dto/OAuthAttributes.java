@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.domain.auth.dto;
+package org.standard.dreamcalendar.domain.oauth2.dto;
 
 import lombok.Builder;
 import lombok.Getter;

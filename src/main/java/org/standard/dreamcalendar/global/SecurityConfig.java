@@ -1,4 +1,4 @@
-package org.standard.dreamcalendar.domain.auth;
+package org.standard.dreamcalendar.global;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .and()
                 .logout()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
                 .build();
     }

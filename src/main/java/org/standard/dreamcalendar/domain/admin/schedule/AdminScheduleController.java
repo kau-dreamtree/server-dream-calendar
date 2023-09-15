@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.standard.dreamcalendar.domain.admin.user.AdminUserService;
 import org.standard.dreamcalendar.domain.schedule.dto.ScheduleDto;
-import org.standard.dreamcalendar.domain.user.User;
 
 import java.util.List;
 

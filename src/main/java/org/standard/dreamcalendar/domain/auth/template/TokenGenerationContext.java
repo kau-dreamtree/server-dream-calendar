@@ -1,8 +1,10 @@
-package org.standard.dreamcalendar.domain.user.template;
+package org.standard.dreamcalendar.domain.auth.template;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.standard.dreamcalendar.domain.auth.AuthInfo;
+import org.standard.dreamcalendar.domain.auth.AuthRepository;
 import org.standard.dreamcalendar.domain.user.User;
 import org.standard.dreamcalendar.domain.user.UserRepository;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
@@ -14,22 +16,24 @@ import org.standard.dreamcalendar.global.util.token.TokenProvider;
 public class TokenGenerationContext {
 
     private final UserRepository userRepository;
+    private final AuthRepository authRepository;
     private final TokenProvider accessTokenProvider;
     private final TokenProvider refreshTokenProvider;
 
     @Transactional
-    public <T> TokenResponse generateTokensByEmailPassword(T userInfo, TokenValidationCallback callback) throws Exception {
+    public <T> TokenResponse authorizeAndGenerateTokens(T userInfo, TokenValidationCallback callback) throws Exception {
 
         User user = findUser(userInfo);
-        boolean validation = callback.validate(user);
+        boolean authorized = callback.validate(user);
 
-        if (validation) {
+        if (authorized) {
 
             String accessToken = accessTokenProvider.generate(user.getId());
             String refreshToken = refreshTokenProvider.generate(user.getId());
 
-            user.updateRefreshToken(refreshToken);
-            userRepository.save(user);
+            AuthInfo authInfo = authRepository.findById(user.getId()).orElseThrow(IllegalArgumentException::new);
+            authInfo.updateRefreshToken(refreshToken);
+            authRepository.save(authInfo);
 
             return new TokenResponse(accessToken, refreshToken);
         }
@@ -42,7 +46,8 @@ public class TokenGenerationContext {
             return userRepository.findByEmail(((UserDto) userInfo).getEmail()).orElse(null);
         }
         if (userInfo instanceof String) {
-            return userRepository.findByRefreshToken((String) userInfo).orElse(null);
+            AuthInfo authInfo = authRepository.findByRefreshToken((String) userInfo).orElseThrow(IllegalArgumentException::new);
+            return userRepository.findById(authInfo.getId()).orElse(null);
         }
         return null;
     }

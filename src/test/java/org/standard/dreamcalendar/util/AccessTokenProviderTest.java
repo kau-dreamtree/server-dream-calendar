@@ -3,9 +3,7 @@ package org.standard.dreamcalendar.util;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.standard.dreamcalendar.domain.user.dto.TokenValidationResult;
-import org.standard.dreamcalendar.domain.user.type.TokenType;
-import org.standard.dreamcalendar.domain.user.type.TokenValidationStatus;
-import org.standard.dreamcalendar.global.util.Encryptor;
+import org.standard.dreamcalendar.domain.user.enums.TokenValidationStatus;
 import org.standard.dreamcalendar.global.util.token.AccessTokenProvider;
 
 import static org.standard.dreamcalendar.util.UtilTestConfig.TEST_KEY_256;
@@ -15,7 +13,7 @@ class AccessTokenProviderTest {
     AccessTokenProvider accessTokenProvider = new AccessTokenProvider(TEST_KEY_256, 1L);
 
     @Test
-    void validToken() throws Exception {
+    void validateToken() throws Exception {
 
         // given
         long userId = 1L;

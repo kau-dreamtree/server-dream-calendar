@@ -25,6 +25,7 @@ dependencies {
     implementation 'com.h2database:h2'
     implementation 'org.projectlombok:lombok:1.18.24'
     implementation 'org.mariadb.jdbc:mariadb-java-client'
+    implementation 'mysql:mysql-connector-java'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'

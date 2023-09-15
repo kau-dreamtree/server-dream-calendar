@@ -7,10 +7,6 @@ spring:
       - redis
       - h2
 
-  h2:
-    console:
-      enabled: 'true'
-
   jpa:
     show-sql: true
     format-sql: true
@@ -19,10 +15,6 @@ spring:
         dialect:
           nodeValue: org.hibernate.dialect.MySQL57Dialect
           storage_engine: innodb
-
-  datasource:
-    hikari:
-      jdbc-url: jdbc:h2:mem://localhost/~/test;MODE=MYSQL
 
   session:
     store-type: jdbc

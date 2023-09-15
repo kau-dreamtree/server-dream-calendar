@@ -6,18 +6,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.standard.dreamcalendar.domain.user.dto.UserDto;
-import org.standard.dreamcalendar.domain.user.dto.response.LogInByEmailPasswordResponse;
 import org.standard.dreamcalendar.domain.user.dto.response.AdminReadAllUserResponse;
 import org.standard.dreamcalendar.domain.user.dto.response.TokenResponse;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 public class AdminUserController {
 
-    private final AdminUserService userAdminService;
+    private final AdminAuthService adminAuthService;
 
     @Value("${spring.security.user.password}")
     private String adminAuth;
@@ -26,10 +24,10 @@ public class AdminUserController {
     public ResponseEntity<AdminReadAllUserResponse> readAllUsers(@RequestHeader("Authorization") String authorization) {
 
         if (!authorization.equals(adminAuth)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.badRequest().build();
         }
 
-        List<UserDto> userDtoList = userAdminService.findAll();
+        List<UserDto> userDtoList = adminAuthService.findAll();
 
         String message = (userDtoList.isEmpty()) ? "등록된 사용자가 없습니다." : "success";
 
@@ -43,14 +41,14 @@ public class AdminUserController {
     ) throws Exception {
 
         if (!authorization.equals(adminAuth)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.badRequest().build();
         }
 
-        TokenResponse response = userAdminService.tokenExpirationTest(dto);
+        TokenResponse response = adminAuthService.tokenExpirationTest(dto);
 
         return (response != null) ?
-                ResponseEntity.status(HttpStatus.OK).body(response) :
-                ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                ResponseEntity.ok(response) :
+                ResponseEntity.notFound().build();
     }
 
 }

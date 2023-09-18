@@ -1,9 +1,6 @@
 ## 📅 Dream Calendar
  iOS 달력 앱 드림캘린더 개발 프로젝트입니다.
 
-![dream-calendar](https://user-images.githubusercontent.com/81848498/229658173-9ce8e7ce-f279-4542-9959-50f2a45a470b.png)
-
-
 ## ⚙️ 기술 스택
 ![JAVA](https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white")
 ![Spring Boot](https://img.shields.io/badge/springboot-6DB33F?&style=for-the-badge&logo=SpringBoot&logoColor=white)
